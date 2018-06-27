@@ -1,0 +1,41 @@
+{
+	"policybundle": [{
+			"benefitType": {
+				"benefits": [],
+				"cityCatAndAllowance": [{
+					"cityCatId": 1,
+					"limitSpent": true,
+					"min": 10000,
+					"max": 2000000,
+				 	"flex": true,
+					"flex%": 1.2
+				}, {
+					"cityCatId": 3,
+					"limitSpent": true,
+					"min": 10000,
+					"max": 2000000,
+					"flex": true,
+					"flex%": 1.2
+				}]
+			}
+		},
+		{
+			"benefitType": {
+				"benefits": [],
+				"cityCatAndAllowance": [{
+					"limitSpent": true,
+					"min": 10000,
+					"max": 2000000,
+					"flex": true,
+					"flex%": 1.2
+				}, {
+					"limitSpent": true,
+					"min": 10000,
+					"max": 2000000,
+					"flex": true,
+					"flex%": 1.2
+				}]
+			}
+		}
+	]
+}

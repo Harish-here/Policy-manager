@@ -1,0 +1,329 @@
+<template>
+  <div id='create' class=''>
+      
+    <div class='fl w100'>
+      <ul class='p5-10 o-gray'>
+            <li class='fl p5-10'>
+                <div class='p5-10 f10 pl-0'>Policy Bundle</div>
+                <input name='policy bundle' type='text' class='p2-4 black b6' v-model='bundleName' />
+            </li>
+            <li class='fl p5-10 '>
+                <div class='p5-10 f10 pl-0'>Policy Code</div>
+                <input name='policy bundle' type='text' class='p2-4 black' v-model='bundleCode' />
+            </li> 
+            <li class='fl p5-10'>
+                <br/>
+                <button class='btn btn-primary btn-sm' @click='sendBundle'>Save Bundle</button>
+            </li>
+        
+      </ul>
+    </div>
+    <div class='fl w100 p5-10'>
+        <ul class='fl w100 b6 center cursor'>
+            <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Accomodation"}' @click='activeTab = "Accomodation"'>Accomodation</li>
+            <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Per Diem"}' @click='activeTab = "Per Diem"'>Per Diem</li>
+            <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Conveyence"}' @click='activeTab = "Conveyence"'>Conveyence</li>
+            <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Entertainment"}' @click='activeTab = "Entertainment"'>Entertainment</li>
+        </ul>
+    </div>
+    <div class='fl w100 p5-10' v-for='(j,index) in policyBundles' :key='index' :class='{"dbNo":j.benefitTypeId.label !== activeTab}'>
+            <div class='panel panel-default fl w100'  :id="index">
+                    <div class='panel-heading fl w100'>
+                        <div class='panel-title fl w100'>
+                            <div :href="'#collapselist'+j.benefitTypeId.value " class='fl w30 p5-10 f16'><b>{{ j.benefitTypeId.label }}</b></div>
+                            <select class='fr w10' v-model='copyHolder[index].priority'>
+                                    <option value='1'>1</option>
+                                    <option value='2'>2</option>
+                                    <option value='3'>3</option>
+                                    <option value='4'>4</option>
+                                    <option value='5'>5</option>
+                            </select>
+                            <div class='fr p5-10 w15 al-right f12 b3'>Set Priority</div>
+                        </div>
+                    </div>
+                    <div :id="'collapselist'+j.benefitTypeId.value" class='panel-collapse collapse in fl w100'>
+                        <div class='panel-body'>
+                            <div class='fl w100'>
+                                <div class='fl w40 p5-10'>
+                                    <div class='p5-10'>
+                                        <label class='b3'>Benifits</label>
+                                        <v-select multiple v-model='copyHolder[index].benefits' :options='j.benefits'></v-select>
+                                    </div>
+                                    <div class='p5-10'>
+                                        <label class='b3'>City Category</label>
+                                        <v-select multiple v-model='copyHolder[index].cityCatAndAllowances' :options='j.cityCatAndAllowances'></v-select>
+                                    </div>
+                                </div>
+                                <div v-if='copyHolder[index].cityCatAndAllowances.length > 0' class='fl w60 p5-10'>
+                                    <table  class='table'>
+                                        <thead>
+                                            <tr>
+                                                <th class='w20'>City Category</th>
+                                                <th class='w10 center'>Unlimited</th>
+                                                <th class='w25 center'>Price</th>
+                                                <th class='w25'>Excess</th>
+                                                <th class='w10 center'  v-if='j.benefitTypeId.label == "Accomodation"'>Star</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr  v-for='(i,ind) in copyHolder[index].cityCatAndAllowances' :id='i.value' :key='i.value'>
+                                        <td class='w20'>{{i.label}}</td>
+                                        <td class='w10 center'>
+                                            <input :id='i.value' v-model='i.limitSpent' type='checkbox' @change='reset(i.value,ind,index)'  >
+                                        </td><!-- @click='disableField(i.value)'-->
+                                        <td class='w25'>
+                                            <div class='p2-4 fl w100'> 
+                                                <span class='fl p5-10 f10'> Min </span>
+                                                <input class='fr w60' :id='i.value' v-model='i.min'  type='number' :disabled='i.limitSpent'>
+                                            </div>
+                                            <div class='p2-4 fl w100'>
+                                                <span class='fl p5-10 f10'>Max </span>
+                                                <input class='fr w60'  :id='i.value' :value='i.limitSpent'  v-model='i.max' :min='i.min' type='number' :disabled='i.limitSpent'>
+                                                <span v-if=' Number(i.max) < Number(i.min) ' class='fl red f10'>Should be more than {{i.min}}</span>
+                                            </div> 
+                                        </td>
+                                        <td class='w25 center'>
+                                            <div class=' fl w40 p2-4'>
+                                                &nbsp;Flat
+                                                <input v-model='i.flex' class='fl w25' name='type' type='radio' value='1' :disabled='i.limitSpent'>
+                                            </div>
+                                            <div class='fl w40 p2-4'>
+                                                &nbsp;%
+                                                <input v-model='i.flex' class='fl w25' type='radio' value='2'  name='type' :disabled='i.limitSpent'>
+                                            </div>
+                                            <div class='fl w80'>
+                                                <input v-model='i.flexAmt' class='fl w100' min='0' type='number' :disabled='i.flex == ""'>
+                                            </div>
+                                                
+                                            </td>
+                                        <td v-if='j.benefitTypeId.label == "Accomodation"' >
+                                        <select v-model='i.starCat' class='p2-4' style='width:50px;' :disabled='i.limitSpent'>
+                                            <option value='1'>1</option>
+                                            <option value='2'>2</option>
+                                            <option value='3'>3</option>
+                                            <option value='4'>4</option>
+                                            <option value='5'>5</option>
+                                        </select>
+                                        </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class='fl w60 p10-20 center gray m-top-25' v-else>
+                                            Add city category to configure <b>{{j.benefitTypeId.label}}</b> policy 
+                                </div> 
+                            </div>  
+                            
+                        </div>
+                    </div>
+            </div>
+    </div>
+    <div class='fl w100 p5-10 center'>
+            <button class='btn btn-primary btn-sm' v-if='policyBundles.hasOwnProperty("length") && policyBundles.length > 0' @click='sendBundle'>Save Bundle</button>
+    </div>  
+  </div>
+</template>
+
+<script>
+import api from '../utility/api'
+export default {
+  name: 'List',
+  data(){
+      return {
+          bundleName : '',
+          bundleCode : '',
+          methType : '',
+          cityCategoryHolder:null,
+          cityCategoryData : [],
+          allow : [],
+          benifitsHolder:[],
+          priorityHolder:null,
+          policyBundles:''  ,
+          copyHolder:[],
+          activeTab:"Accomodation" 
+      }
+  },
+//   watch : {
+//       'copyHolder' : function(val){
+//           console.log(val);
+//       }
+//   },
+
+  methods:{
+      fade: function(id,sec){
+        var t = sec * 1000;
+        $('#'+id).fadeIn();
+        setTimeout(function(){
+          $('#'+id).fadeOut()
+        },t)
+        },
+        shows : function(){
+        if(api.production){
+          setProgress(3);
+        }
+      },
+      reset: function(val,label,index){   
+     //    this to reset the 
+         var o = this.copyHolder[index].cityCatAndAllowances[label];
+         if(o.limitSpent === true){
+             o.max = 0 ;
+            o.min = 0;
+            o.flex = "";
+            o.flexAmt = 0;
+         }else{
+            o.max = '' ;
+            o.min = '';
+            o.flex = "";
+            o.flexAmt = '';
+         }
+         
+      },
+      sendBundle : function(){
+          const self = this;let dos = true;
+          var dataToSend = {
+              "benefitBundleId" : "",
+              "bundleName" : self.bundleName,
+              "bundleCode" : self.bundleCode,
+              "companyId" : api.companyId ,
+              "methType" : "create",
+              "policybundles" : self.copyHolder.filter(function(x){
+                  if(x.benefits.length > 0 && x.cityCatAndAllowances.length > 0){
+                      return x;
+                  }
+                  
+              })
+          };
+        
+        if(self.bundleName != '' && self.bundleCode != ''){
+            if(dataToSend.policybundles.length > 0){
+                self.shows()
+            $.post(api.createPolicyBundle,(api.production) ? dataToSend : JSON.stringify(dataToSend)).done(function(res){
+                if(res){
+                const tt = res.toString().split('|');
+                if(tt[0].indexOf('T') === 0){
+                    
+                    $.post(api.getModelPolicyBundle,{'companyId' : api.companyId }).done(function(res){
+                        var t = JSON.parse(res);
+                        t.policybundles.map(function(x){ //set this to true which is default
+                            x.cityCatAndAllowances.map(function(y){
+                                    y['limitSpent'] = true;
+                                    y['min'] = 0;
+                                    y['max'] =0;
+                                    y['flex'] = "";
+                                    y['flexAmt'] = 0;
+                            });
+                        });
+
+                            self.policyBundles = t.policybundles;
+                            var ss = self.policyBundles;
+                           self.copyHolder.length = 0;
+                        for(var i=0;i<self.policyBundles.length;i++){
+                            self.copyHolder.push({
+                                "benefitTypeId": {
+                                        "label": ss[i].benefitTypeId.label,
+                                        "value": ss[i].benefitTypeId.value
+                                    },
+                                    "priority": "",
+                                    "benefits": [],
+                                    "cityCatAndAllowances" :[]
+                            })
+                        }
+                        self.$store.commit('showAlert','s|Policy Bundle '+ self.bundleName +' is created..!');
+                    });
+                }
+                else{
+                    self.$store.commit('showAlert','d|'+tt[1]);
+                }
+                self.bundleName = '';
+                self.bundleCode = '';
+                
+                setTimeout(function(){
+                    self.$emit('refresh',1);
+                },2000)
+                 }
+                  
+                
+            });
+            }else{
+                      alert('atleast one city category or bundle has to be there')
+                  }
+             //URL to create bundle
+                
+        }else{
+            alert("Name and Code is required")
+        }
+        
+      },
+      vald: function(min,max){
+          return min > max
+      }
+  },
+  created(){
+       var self = this;
+       self.shows()
+            $.post(api.getModelPolicyBundle,{'companyId' : api.companyId }).done(function(res){
+                var t = JSON.parse(res);
+                t.policybundles.map(function(x){
+                    x.cityCatAndAllowances.map(function(y){
+                        y['limitSpent'] = true;
+                        y['min'] = 0;
+                        y['max'] =0;
+                        y['flex'] = "";
+                        y['flexAmt'] = 0;
+                    });
+                });
+
+            self.policyBundles = t.policybundles;
+            var ss = self.policyBundles;
+            //creating a copy to have a holder for v-model
+           for(var i=0;i<self.policyBundles.length;i++){
+               self.copyHolder.push({
+                   "benefitTypeId": {
+                        "label": ss[i].benefitTypeId.label,
+                        "value": ss[i].benefitTypeId.value
+                    },
+                    "priority": "",
+                    "benefits": [],
+                    "cityCatAndAllowances" :[]
+               });
+           }
+        });
+    
+  }
+}
+</script>
+
+<style scoped>
+.panel {
+    margin-bottom: 20px;
+    background-color: rgb(255, 255, 255);
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 1px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: transparent;
+    border-image: initial;
+    height: auto !important;
+}
+.panel-default {
+    border-color: rgb(221, 221, 221);
+    border:1px solid #ddd !important
+}
+.panel-heading{
+    background-color:#ddd;
+    padding : 5px 10px !important;
+    height : auto !important;
+}
+.form-control{
+  border-radius : 0px !important;
+  padding : 5px 10px !important; 
+}
+table{
+    font-size : 12px;
+}
+.form-control{
+    height:24px !important;
+}
+
+
+
+</style>
