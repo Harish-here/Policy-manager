@@ -200,7 +200,8 @@ hr{ margin-bottom:0px !important; margin-top:0px !important; }
 }
 /* for tab */
 .br-active{
-    border-bottom: 3px solid #1A73E8;
+	border-bottom: 3px solid #1A73E8;
+	color:#1A73E8;
 }
 ul#tab li{
 	border: none;

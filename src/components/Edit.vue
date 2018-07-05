@@ -491,6 +491,7 @@ table{
 }
 .br-active{
     border-bottom: 3px solid #1A73E8;
+    color:#1A73E8 !important;
 }
 
 </style>
