@@ -53,82 +53,82 @@
                                     </div>
                                 </div>
                                 <div :id="'collapse'+j.benefitTypeId.value" class='panel-collapse collapse in fl w100'>
-                                    <div class='panel-body'>
-                                            <div class='fl w40 p5-10'>
-                                                <div class='p5-10'>
-                                                    <label class='b3'>Benifits</label>
-                                                    <v-select multiple v-model='copyHolder[index].benefits' :options='j.benefits'></v-select>
+                                        <div class='panel-body'>
+                                                <div class='fl w40 p5-10'>
+                                                    <div class='p5-10'>
+                                                        <label class='b3'>Benifits</label>
+                                                        <v-select multiple v-model='copyHolder[index].benefits' :options='j.benefits'></v-select>
+                                                    </div>
+                                                    <div class='p5-10'>
+                                                        <label class='b3'>City Category</label>
+                                                        <v-select multiple v-model='copyHolder[index].cityCatAndAllowances' :options='j.cityCatAndAllowances'></v-select>
+                                                    </div>
                                                 </div>
-                                                <div class='p5-10'>
-                                                    <label class='b3'>City Category</label>
-                                                    <v-select multiple v-model='copyHolder[index].cityCatAndAllowances' :options='j.cityCatAndAllowances'></v-select>
+                                                <div class='fl w60 p5-10' v-if='copyHolder[index].cityCatAndAllowances.length > 0'>                                   
+                                                    <table v-if='copyHolder[index].cityCatAndAllowances.length > 0' class='table'>
+                                                        <thead>
+                                                            <tr>
+                                                                <th class='w20'>City Category</th>
+                                                                <th class='w10 center'>Unlimited</th>
+                                                                <th class='w25 center'>Price</th>
+                                                                <th class='w25'>Excess</th>
+                                                                <th class='w10 center'  v-if='j.benefitTypeId.label == "Accomodation"'>Star</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr  v-for='(i,ind) in copyHolder[index].cityCatAndAllowances' :id='i.value' :key='i.value'>
+                                                            <td class='w20'>{{i.label}}</td>
+                                                            <td class='w10 center'><input :id='i.value' v-model='i.limitSpent' type='checkbox' @change='reset(i.value,ind,index)' ></td><!-- @click='disableField(i.value)'-->
+                                                            <td class='w25'>
+                                                            <div class='p2-4 fl w100'> 
+                                                                <span class='fl p5-10 f10'> Min</span>
+                                                                <input class='fr w60 al-right' :id='i.value' v-model='i.min'  type='number' :disabled='i.limitSpent'>
+                                                            </div>
+                                                            <div class='p2-4 fl w100'>
+                                                                <span class='fl p5-10 f10'>Max </span>
+                                                                <input class='fr w60 al-right'  :id='i.value'  v-model='i.max' :min='i.min' type='number' :disabled='i.limitSpent'>
+                                                                <span v-if=' Number(i.max) < Number(i.min) ' class='fl red f10'>Should be more than {{i.min}}</span>
+                                                            </div> 
+                                                            </td>
+                                                            <td class='w25 center'>
+                                                                <div class=' fl w40 p2-4'>
+                                                                    &nbsp;Flat
+                                                                    <input v-model='i.flex' class='fl w25' name='type' type='radio' value='1' :disabled='i.limitSpent'>
+                                                                </div>
+                                                                <div class='fl w40 p2-4'>
+                                                                    &nbsp;%
+                                                                    <input v-model='i.flex' class='fl w25 ' type='radio' value='2'  name='type' :disabled='i.limitSpent'>
+                                                                </div>
+                                                                <div class='fl w80'>
+                                                                    <input v-model='i.flexAmt' class='fl w100 al-right' min='0' type='number' :disabled='i.limitSpent || i.flex == ""'>
+                                                                </div>
+                                                                
+                                                            </td>
+                                                            <td v-if='j.benefitTypeId.label == "Accomodation"' >
+                                                            <select v-model='i.starCat' class='p2-4' style='width:50px;' :disabled='i.limitSpent'>
+                                                                <option value='1'>1</option>
+                                                                <option value='2'>2</option>
+                                                                <option value='3'>3</option>
+                                                                <option value='4'>4</option>
+                                                                <option value='5'>5</option>
+                                                            </select>
+                                                            </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
                                                 </div>
-                                            </div>
-                                            <div class='fl w60 p5-10' v-if='copyHolder[index].cityCatAndAllowances.length > 0'>                                   
-                                                <table v-if='copyHolder[index].cityCatAndAllowances.length > 0' class='table'>
-                                                    <thead>
-                                                        <tr>
-                                                            <th class='w20'>City Category</th>
-                                                            <th class='w10 center'>Unlimited</th>
-                                                            <th class='w25 center'>Price</th>
-                                                            <th class='w25'>Excess</th>
-                                                            <th class='w10 center'  v-if='j.benefitTypeId.label == "Accomodation"'>Star</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr  v-for='(i,ind) in copyHolder[index].cityCatAndAllowances' :id='i.value' :key='i.value'>
-                                                        <td class='w20'>{{i.label}}</td>
-                                                        <td class='w10 center'><input :id='i.value' v-model='i.limitSpent' type='checkbox' @change='reset(i.value,ind,index)' ></td><!-- @click='disableField(i.value)'-->
-                                                        <td class='w25'>
-                                                        <div class='p2-4 fl w100'> 
-                                                            <span class='fl p5-10 f10'> Min</span>
-                                                            <input class='fr w60 al-right' :id='i.value' v-model='i.min'  type='number' :disabled='i.limitSpent'>
-                                                        </div>
-                                                        <div class='p2-4 fl w100'>
-                                                            <span class='fl p5-10 f10'>Max </span>
-                                                            <input class='fr w60 al-right'  :id='i.value'  v-model='i.max' :min='i.min' type='number' :disabled='i.limitSpent'>
-                                                            <span v-if=' Number(i.max) < Number(i.min) ' class='fl red f10'>Should be more than {{i.min}}</span>
-                                                        </div> 
-                                                        </td>
-                                                        <td class='w25 center'>
-                                                            <div class=' fl w40 p2-4'>
-                                                                &nbsp;Flat
-                                                                <input v-model='i.flex' class='fl w25' name='type' type='radio' value='1' :disabled='i.limitSpent'>
-                                                            </div>
-                                                            <div class='fl w40 p2-4'>
-                                                                &nbsp;%
-                                                                <input v-model='i.flex' class='fl w25 ' type='radio' value='2'  name='type' :disabled='i.limitSpent'>
-                                                            </div>
-                                                            <div class='fl w80'>
-                                                                <input v-model='i.flexAmt' class='fl w100 al-right' min='0' type='number' :disabled='i.limitSpent || i.flex == ""'>
-                                                            </div>
-                                                            
-                                                        </td>
-                                                        <td v-if='j.benefitTypeId.label == "Accomodation"' >
-                                                        <select v-model='i.starCat' class='p2-4' style='width:50px;' :disabled='i.limitSpent'>
-                                                            <option value='1'>1</option>
-                                                            <option value='2'>2</option>
-                                                            <option value='3'>3</option>
-                                                            <option value='4'>4</option>
-                                                            <option value='5'>5</option>
-                                                        </select>
-                                                        </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div class='fl w60 p10-20 center gray' v-else>
-                                                Add city category to configure policy
-                                            </div>    
-                                            
-                                            
-                                    </div>
+                                                <div class='fl w60 p10-20 center gray' v-else>
+                                                    Add city category to configure policy
+                                                </div>    
+                                                
+                                                
+                                        </div>
                                         
-                                    </div>
                                 </div>
                             </div>
-                     </div>
-                
+                    </div>
+                </div>
+      <!-- display the details of policy -->          
     <div class='fl w80 p5-10' id ='displayPanel' v-if='showDetails'>
             <ul class='fl w100 p5-10 o-gray'>
                 <li class='fl p5-10'>
@@ -251,7 +251,7 @@ export default {
           if(self.policyBundle !== null){
           return  self.policyBundle.map(function(obj){
                                 for(var t= 0;t<self.displayHolder.length;t++){
-                                    if(self.displayHolder[t].benefitTypeId.value === obj.benefitTypeId.value){
+                                    if(self.displayHolder[t].benefitTypeId.value == obj.benefitTypeId.value){
                                         return self.displayHolder[t];
                                     }else{
                                         return {
@@ -349,7 +349,7 @@ export default {
                              
                             self.copyHolder = j.policybundles.map(function(obj){
                                 for(var t= 0;t<self.displayHolder.length;t++){
-                                    if(self.displayHolder[t].benefitTypeId.value === obj.benefitTypeId.value){
+                                    if(self.displayHolder[t].benefitTypeId.value == obj.benefitTypeId.value){
                                         return self.displayHolder[t];
                                     }else{
                                         return {
