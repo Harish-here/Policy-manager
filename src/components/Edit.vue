@@ -11,6 +11,7 @@
         
         </ul>
     </div>
+    <!-- <pre>{{copyHolder}}</pre> -->
     <div class='fl w80 p5-10' id='editPanel' v-if='showEdit'>
                 <ul class='fl w100 p5-10 o-gray'>
                     <li class='fl p5-10 '>
@@ -247,14 +248,31 @@ export default {
   components : { List },
   computed : {
       sample(){
-          var self = this;
-          if(self.policyBundle !== null){
-          return  self.policyBundle.map(function(obj){
-                                for(var t= 0;t<self.displayHolder.length;t++){
-                                    if(self.displayHolder[t].benefitTypeId.value == obj.benefitTypeId.value){
-                                        return self.displayHolder[t];
-                                    }else{
-                                        return {
+          const self = this;
+          if(self.policyBundle !== null && self.displayHolder.length > 0){
+                //  return  self.policyBundle.map(function(obj){
+                //                 for(var t= 0;t<self.displayHolder.length;t++){
+                //                     if(self.displayHolder[t].benefitTypeId.value == obj.benefitTypeId.value){
+                //                         return self.displayHolder[t];
+                //                     }else{
+                //                         return {
+                //                             "benefitTypeId": {
+                //                                     "label": obj.benefitTypeId.label,
+                //                                     "value": obj.benefitTypeId.value
+                //                                 },
+                //                                 "priority": "",
+                //                                 "benefits": [],
+                //                                 "cityCatAndAllowances" :[]
+                //                         };
+                //                     }
+                //                 }
+                //             });
+                return self.policyBundle.map(function(obj){
+                    var find = self.displayHolder.find(function(x){ return x.benefitTypeId.value === obj.benefitTypeId.value;})
+                    if(find !== undefined){
+                        return find;
+                    }else{
+                         return {
                                             "benefitTypeId": {
                                                     "label": obj.benefitTypeId.label,
                                                     "value": obj.benefitTypeId.value
@@ -263,12 +281,10 @@ export default {
                                                 "benefits": [],
                                                 "cityCatAndAllowances" :[]
                                         };
-                                    }
-                                }
-                            })
+                    }
+                });       
                             
-                            
-                            }
+            }
 
       }
   },
@@ -346,9 +362,8 @@ export default {
                              //console.log(j.policybundles)
                              //parent data
                              self.policyBundle = j.policybundles;
-                             
-                            self.copyHolder = j.policybundles.map(function(obj){
-                                for(var t= 0;t<self.displayHolder.length;t++){
+                           /* self.copyHolder = j.policybundles.map(function(obj){
+                                for(var t = 0;t<self.displayHolder.length;t++){
                                     if(self.displayHolder[t].benefitTypeId.value == obj.benefitTypeId.value){
                                         return self.displayHolder[t];
                                     }else{
@@ -362,6 +377,22 @@ export default {
                                                 "cityCatAndAllowances" :[]
                                         };
                                     }
+                                }
+                            }); */
+                           self.copyHolder =  j.policybundles.map(function(obj){
+                                var find = self.displayHolder.find(function(x){ return x.benefitTypeId.value === obj.benefitTypeId.value;})
+                                if(find !== undefined){
+                                    return find;
+                                }else{
+                                    return {
+                                                        "benefitTypeId": {
+                                                                "label": obj.benefitTypeId.label,
+                                                                "value": obj.benefitTypeId.value
+                                                            },
+                                                            "priority": "",
+                                                            "benefits": [],
+                                                            "cityCatAndAllowances" :[]
+                                                    };
                                 }
                             });
                             
@@ -406,9 +437,7 @@ export default {
               "companyId" : api.companyId ,
               "methType" : "edit",
               "policybundles" : self.copyHolder.filter(function(x){
-                  if(x.benefits.length > 0 && x.cityCatAndAllowances.length > 0){
-                      return x;
-                  }
+                  return x.benefits.length > 0 && x.cityCatAndAllowances.length > 0; 
               })
           };
           
