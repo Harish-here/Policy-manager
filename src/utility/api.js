@@ -1,4 +1,4 @@
-let forProd = true;//change to true when you built for production
+let forProd = false;//change to true when you built for production
 let id;
 if (forProd) {
     (function () {

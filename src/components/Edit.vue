@@ -352,11 +352,11 @@ export default {
                                  if(y.cityCatAndAllowances.length > 0){
                                      y.cityCatAndAllowances.map(function(r){
                                          if(r.limitSpent.includes('false')){
-                                             r['limitSpent'] = false;
+                                             r['limitSpent'] = true;
                                          }else{
-                                            r['limitSpent'] = true; 
+                                            r['limitSpent'] = false; 
                                          }
-                                     })
+                                     });
                                  }
                              });
                              //console.log(j.policybundles)
@@ -414,7 +414,7 @@ export default {
       reset: function(val,label,index){   
      //    this to reset the 
          var o = this.copyHolder[index].cityCatAndAllowances[label];
-         if(o.limitSpent == true){
+         if(!o.limitSpent){
              o.max = 0 ;
             o.min = 0;
             o.flex = "";
@@ -430,6 +430,8 @@ export default {
       sendEdit : function(){
           const self = this;
           let dos =true;
+          const has = Object.hasOwnProperty;
+          
           const dataToSend = {
               "benefitBundleId" : self.policyBundleId,
               "bundleName" : self.policyBundleName,
@@ -437,11 +439,28 @@ export default {
               "companyId" : api.companyId ,
               "methType" : "edit",
               "policybundles" : self.copyHolder.filter(function(x){
-                  return x.benefits.length > 0 && x.cityCatAndAllowances.length > 0; 
+                  return x.benefits.length > 0 || x.cityCatAndAllowances.length > 0; 
               })
           };
+        //   var d = dataToSend.policybundles;
+        //   //check for the citycaetgory = 0 and benefit bundle = 0 what if nothing selected
+        //   for(var c=0;c<d.length;c++){
+        //       if(d[c].benefits.length > 1 && d[c].cityCatAndAllowances.length === 0){
+        //           alert('Atleast one City category need to be in '+d[c].benefitTypeId.label);
+        //           return;
+        //       }
+        //   }
           
           if(self.policyBundleName != '' && self.policyBundleCode != ''){
+                //check for the citycaetgory = 0 and benefit bundle = 0 what if nothing selected
+                  var d = dataToSend.policybundles;
+                    //check for the citycaetgory = 0 and benefit bundle = 0 what if nothing selected
+                    for(var c=0;c < d.length; c++){
+                        if(d[c].benefits.length > 1 && d[c].cityCatAndAllowances.length === 0){
+                            alert('Atleast one City category need to be in '+d[c].benefitTypeId.label);
+                            return;
+                        }
+                    }
               if(dataToSend.policybundles.length > 0){
              // Bundle
              self.shows()
@@ -490,7 +509,8 @@ export default {
           });
           }
           
-      }
+      },
+      
   },
   created(){
       const self = this;

@@ -165,7 +165,7 @@ export default {
       reset: function(val,label,index){   
      //    this to reset the 
          var o = this.copyHolder[index].cityCatAndAllowances[label];
-         if(o.limitSpent === true){
+         if(!o.limitSpent){
              o.max = 0 ;
             o.min = 0;
             o.flex = "";
@@ -180,6 +180,7 @@ export default {
       },
       sendBundle : function(){
           const self = this;let dos = true;
+          
           var dataToSend = {
               "benefitBundleId" : "",
               "bundleName" : self.bundleName,
@@ -187,14 +188,23 @@ export default {
               "companyId" : api.companyId ,
               "methType" : "create",
               "policybundles" : self.copyHolder.filter(function(x){
-                  if(x.benefits.length > 0 && x.cityCatAndAllowances.length > 0){
-                      return x;
-                  }
-                  
+                  return (x.benefits.length > 0 || x.cityCatAndAllowances.length > 0)
               })
           };
+
         
         if(self.bundleName != '' && self.bundleCode != ''){
+            //check for the citycaetgory = 0 and benefit bundle = 0 what if nothing selected
+                  var d = dataToSend.policybundles;
+                  
+          //check for the citycaetgory = 0 and benefit bundle = 0 what if nothing selected
+          for(var c=0;c < d.length; c++){
+              console.log();
+              if(d[c].benefits.length > 1 && d[c].cityCatAndAllowances.length === 0){
+                  alert('Atleast one City category need to be in '+d[c].benefitTypeId.label);
+                  return;
+              }
+          }
             if(dataToSend.policybundles.length > 0){
                 self.shows()
             $.post(api.createPolicyBundle,(api.production) ? dataToSend : JSON.stringify(dataToSend)).done(function(res){
