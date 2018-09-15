@@ -2,26 +2,23 @@
   <div id='create' class=''>
       
     <div class='fl w100'>
-      <ul class='p5-10 o-gray'>
+      <ul id='create-box' class='fl p5-10 o-gray'>
             <li class='fl p5-10'>
-                <div class='p5-10 f10 pl-0'>Policy Bundle</div>
+                <div class=' pl-0'>Grade Policy Name</div>
                 <input name='policy bundle' type='text' class='p2-4 black b6' v-model='bundleName' />
             </li>
             <li class='fl p5-10 '>
-                <div class='p5-10 f10 pl-0'>Policy Code</div>
+                <div class=' pl-0'>Grade Policy Code</div>
                 <input name='policy bundle' type='text' class='p2-4 black' v-model='bundleCode' />
             </li> 
-            <li class='fl p5-10'>
-                <br/>
-                <button class='btn btn-primary btn-sm' @click='sendBundle'>Save Bundle</button>
-            </li>
+
         
       </ul>
     </div>
     <div class='fl w100 p5-10'>
-        <ul class='fl w100 b6 center cursor'>
+        <ul id='tab_policy' class='fl w100 b6 center cursor'>
             <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Accomodation"}' @click='activeTab = "Accomodation"'>Accomodation</li>
-            <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Per Diem"}' @click='activeTab = "Per Diem"'>Per Diem</li>
+            <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Allowance"}' @click='activeTab = "Allowance"'>Allowance</li>
             <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Conveyence"}' @click='activeTab = "Conveyence"'>Conveyence</li>
             <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Entertainment"}' @click='activeTab = "Entertainment"'>Entertainment</li>
         </ul>
@@ -31,14 +28,14 @@
                     <div class='panel-heading fl w100'>
                         <div class='panel-title fl w100'>
                             <div :href="'#collapselist'+j.benefitTypeId.value " class='fl w30 p5-10 f16'><b>{{ j.benefitTypeId.label }}</b></div>
-                            <select class='fr w10' v-model='copyHolder[index].priority'>
+                            <!-- <select class='fr w10' v-model='copyHolder[index].priority'>
                                     <option value='1'>1</option>
                                     <option value='2'>2</option>
                                     <option value='3'>3</option>
                                     <option value='4'>4</option>
                                     <option value='5'>5</option>
                             </select>
-                            <div class='fr p5-10 w15 al-right f12 b3'>Set Priority</div>
+                            <div class='fr p5-10 w15 al-right f12 b3'>Set Priority</div> -->
                         </div>
                     </div>
                     <div :id="'collapselist'+j.benefitTypeId.value" class='panel-collapse collapse in fl w100'>
@@ -46,11 +43,11 @@
                             <div class='fl w100'>
                                 <div class='fl w40 p5-10'>
                                     <div class='p5-10'>
-                                        <label class='b3'>Benifits</label>
+                                        <label class='b6'>Benefits</label>
                                         <v-select multiple v-model='copyHolder[index].benefits' :options='j.benefits'></v-select>
                                     </div>
                                     <div class='p5-10'>
-                                        <label class='b3'>City Category</label>
+                                        <label class='b6'>City Category</label>
                                         <v-select multiple v-model='copyHolder[index].cityCatAndAllowances' :options='j.cityCatAndAllowances'></v-select>
                                     </div>
                                 </div>
@@ -71,14 +68,14 @@
                                         <td class='w10 center'>
                                             <input :id='i.value' v-model='i.limitSpent' type='checkbox' @change='reset(i.value,ind,index)'  >
                                         </td><!-- @click='disableField(i.value)'-->
-                                        <td class='w25'>
-                                            <div class='p2-4 fl w100'> 
-                                                <span class='fl p5-10 f10'> Min </span>
-                                                <input class='fr w60' :id='i.value' v-model='i.min'  type='number' :disabled='i.limitSpent'>
+                                        <td class='w25' style='padding:1px;'>
+                                            <div class='p5-10 fl w100'> 
+                                                <span class='fl w30 p2-4'> Min </span>
+                                                <input class='fl w70' :id='i.value' v-model='i.min'  type='number' :disabled='i.limitSpent'>
                                             </div>
-                                            <div class='p2-4 fl w100'>
-                                                <span class='fl p5-10 f10'>Max </span>
-                                                <input class='fr w60'  :id='i.value' :value='i.limitSpent'  v-model='i.max' :min='i.min' type='number' :disabled='i.limitSpent'>
+                                            <div class='p5-10 fl w100'>
+                                                <span class='fl w30 p2-4'>Max </span>
+                                                <input class='fl w70'  :id='i.value' :value='i.limitSpent'  v-model='i.max' :min='i.min' type='number' :disabled='i.limitSpent'>
                                                 <span v-if=' Number(i.max) < Number(i.min) ' class='fl red f10'>Should be more than {{i.min}}</span>
                                             </div> 
                                         </td>
@@ -91,7 +88,7 @@
                                                 &nbsp;%
                                                 <input v-model='i.flex' class='fl w25' type='radio' value='2'  name='type' :disabled='i.limitSpent'>
                                             </div>
-                                            <div class='fl w80'>
+                                            <div class='fl w80 p2-4'>
                                                 <input v-model='i.flexAmt' class='fl w100' min='0' type='number' :disabled='i.flex == ""'>
                                             </div>
                                                 
@@ -119,7 +116,10 @@
             </div>
     </div>
     <div class='fl w100 p5-10 center'>
-            <button class='btn btn-primary btn-sm' v-if='policyBundles.hasOwnProperty("length") && policyBundles.length > 0' @click='sendBundle'>Save Bundle</button>
+            <button class='btn btn-primary btn-sm' v-if='policyBundles.hasOwnProperty("length") && policyBundles.length > 0' @click='sendBundle' :disabled='disableSave'>Save Bundle
+              <i v-if='disableSave' class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+            </button> 
+            <!-- <span v-if='Error' class='red'>Resolve the errors please</span> -->
     </div>  
   </div>
 </template>
@@ -136,18 +136,44 @@ export default {
           cityCategoryHolder:null,
           cityCategoryData : [],
           allow : [],
+          disableSave: false,
           benifitsHolder:[],
           priorityHolder:null,
           policyBundles:''  ,
           copyHolder:[],
-          activeTab:"Accomodation" 
+          activeTab:"Accomodation",
+          Error: false 
       }
   },
-//   watch : {
-//       'copyHolder' : function(val){
-//           console.log(val);
-//       }
-//   },
+  watch : {
+      copyHolder : {
+          handler:  function(val){
+            // console.log(val)
+            const self = this
+            if(val.length > 0){
+                val.forEach(el => {
+                    if(el.cityCatAndAllowances.length > 0){
+                        el.cityCatAndAllowances.forEach(x =>{
+                            if(x.limitSpent == 'false'){
+                                if(!(x.max > x.min)){
+                                    self.Error = true
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+          } ,
+          deep : true
+      }
+  },
+ computed: {
+     tabs(){
+         var o = this.policyBundles;
+
+         return o.map(x => x.benefitTypeId.label)
+     }
+ },
 
   methods:{
       fade: function(id,sec){
@@ -168,19 +194,25 @@ export default {
          if(!o.limitSpent){
              o.max = 0 ;
             o.min = 0;
-            o.flex = "";
+            o.flex = "1";
             o.flexAmt = 0;
+            if(o.starCat !== undefined){
+                o.starCat = '';
+            }
          }else{
             o.max = '' ;
             o.min = '';
             o.flex = "";
             o.flexAmt = '';
+            if(o.starCat !== undefined){
+                o.starCat = '';
+            }
          }
          
       },
       sendBundle : function(){
           const self = this;let dos = true;
-          
+          self.disableSave = true;
           var dataToSend = {
               "benefitBundleId" : "",
               "bundleName" : self.bundleName,
@@ -195,16 +227,32 @@ export default {
         
         if(self.bundleName != '' && self.bundleCode != ''){
             //check for the citycaetgory = 0 and benefit bundle = 0 what if nothing selected
-                  var d = dataToSend.policybundles;
+                  const d = dataToSend.policybundles;
                   
           //check for the citycaetgory = 0 and benefit bundle = 0 what if nothing selected
-          for(var c=0;c < d.length; c++){
-              console.log();
-              if(d[c].benefits.length > 1 && d[c].cityCatAndAllowances.length === 0){
-                  alert('Atleast one City category need to be in '+d[c].benefitTypeId.label);
-                  return;
-              }
-          }
+                for(var c=0;c < d.length; c++){
+                        
+                        if(d[c].benefits.length > 0 && d[c].cityCatAndAllowances.length === 0){
+                            alert('Atleast one City category need to be in '+d[c].benefitTypeId.label);
+                            self.disableSave = false;
+                            return;
+                        }
+
+                        if(d[c].benefitTypeId.value == '3' && d[c].cityCatAndAllowances.length > 0){
+                            //that is the value of accomadation
+                            for(var t=0;t < d[c].cityCatAndAllowances.length;t++){
+                                var p = d[c].cityCatAndAllowances ;
+                                
+                                if(!p[t].limitSpent && p[t].starCat == ''){
+                                    alert('Star need to mentioned in City category');
+                                        self.disableSave = false;
+                                        return;
+                                }
+                            }
+                            
+                        }
+                    }
+                    
             if(dataToSend.policybundles.length > 0){
                 self.shows()
             $.post(api.createPolicyBundle,(api.production) ? dataToSend : JSON.stringify(dataToSend)).done(function(res){
@@ -217,10 +265,13 @@ export default {
                         t.policybundles.map(function(x){ //set this to true which is default
                             x.cityCatAndAllowances.map(function(y){
                                     y['limitSpent'] = true;
-                                    y['min'] = 0;
-                                    y['max'] =0;
+                                    y['min'] = "";
+                                    y['max'] ="";
                                     y['flex'] = "";
                                     y['flexAmt'] = 0;
+                                    if(x.benefitTypeId.value == '3'){
+                                        y['starCat'] = '' ;//inserting star category for accomodation 
+                                    }
                             });
                         });
 
@@ -239,10 +290,12 @@ export default {
                             })
                         }
                         self.$store.commit('showAlert','s|Policy Bundle '+ self.bundleName +' is created..!');
+                        self.disableSave = false;
                     });
                 }
                 else{
                     self.$store.commit('showAlert','d|'+tt[1]);
+                    self.disableSave = true;
                 }
                 self.bundleName = '';
                 self.bundleCode = '';
@@ -255,12 +308,14 @@ export default {
                 
             });
             }else{
-                      alert('atleast one city category or bundle has to be there')
+                      alert('atleast one city category or bundle has to be there');
+                      self.disableSave = false;
                   }
              //URL to create bundle
                 
         }else{
-            alert("Name and Code is required")
+            alert("Name and Code is required");
+            self.disableSave = false;
         }
         
       },
@@ -276,10 +331,13 @@ export default {
                 t.policybundles.map(function(x){
                     x.cityCatAndAllowances.map(function(y){
                         y['limitSpent'] = true;
-                        y['min'] = 0;
-                        y['max'] =0;
+                        y['min'] = "";
+                        y['max'] ="";
                         y['flex'] = "";
                         y['flexAmt'] = 0;
+                         if(x.benefitTypeId.value == '3'){
+                                        y['starCat'] = '' ;//inserting star category for accomodation 
+                                    }
                     });
                 });
 

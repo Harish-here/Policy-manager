@@ -2,37 +2,41 @@
   <div id='policy' class='fl w100'>
     <div class='fl w20 p5-10'>
         <div class='m-top-25 p2-4'>
-            <button class='btn btn-info' @click="show('1')"><b>Create Policy Bundle </b></button>
+            <button class='btn btn-info' @click="show('1')"><b>Create Grade Policy </b></button>
         </div>
-        <div class='f16 m-top-10 m-bottom-10 p2-4' ><b style='font-size:13px;'>List of Bundles</b></div>
+        <div class='f16 m-top-10 m-bottom-10 p2-4' ><b>List of Policy</b></div>
         <ul id='sideList' class='cursor'>
             <li class='p10-20 al-left br-gray' v-for='i in policyBundleData' @click="getPolicyBundle(i.value)" :key='i.value' :id='"pol_"+i.value'><i class="fa fa-chevron-right f10" aria-hidden="true"></i> {{i.label}}</li>
-            <li class='p10-20 center gray f11' v-if='policyBundleData.length === 0' >No Policy Bundle</li>
+            <li class='p10-20 center gray' v-if='policyBundleData.length === 0' >No Policy Bundle</li>
         
         </ul>
     </div>
     <!-- <pre>{{copyHolder}}</pre> -->
     <div class='fl w80 p5-10' id='editPanel' v-if='showEdit'>
-                <ul class='fl w100 p5-10 o-gray'>
+                <ul id='create-box' class='fl p5-10 o-gray'>
                     <li class='fl p5-10 '>
-                        <div class='p5-10 f10 pl-0' for='policyName'>Policy Bundle</div>
+                        <div class='pl-0' for='policyName'>Grade Policy Name</div>
                         <input placeholder="Name" id='policyName' class='p2-4 f14 black b6' v-model='policyBundleName' />
                     </li>
                     <li class='fl p5-10'>
-                        <div class='p5-10 f10 pl-0' for='policyBundleCode'>Policy Code</div>
+                        <div class='pl-0' for='policyBundleCode'>Grade Policy Code</div>
                         <input id='policyBundleCode' class='p2-4 f14 black' v-model='policyBundleCode' />
                     </li>
                     <li class='fl p5-10'><br>
-                        <button class='btn btn-primary btn-sm' @click='sendEdit'>Save Changes</button>
-                        <button class='btn btn-danger btn-sm' @click="deleteBundle(policyBundleId)">Delete</button>
-                        <button class='btn btn-default btn-sm' @click='showDetailss'>Back</button>
+                        <div style='margin-top:3px;'>
+                            <button class='btn btn-primary btn-sm' @click='sendEdit' :disabled='disableSave'>Save 
+                                <i v-if='disableSave' class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+                            </button>
+                            <button class='btn btn-danger btn-sm' @click="deleteBundle(policyBundleId)" :disabled='disableSave'>Delete</button>
+                            <button class='btn btn-default btn-sm' @click='showDetailss'>Back</button>
+                        </div>
                         
                     </li>
                 </ul>
                 <div class='fl w100 p5-10'>
-                    <ul id='tab' class='fl w100 b6 center cursor'>
+                    <ul id='tab_policy' class='fl w100 b6 center cursor'>
                         <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Accomodation"}' @click='activeTab = "Accomodation"'>Accomodation</li>
-                        <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Per Diem"}' @click='activeTab = "Per Diem"'>Per Diem</li>
+                        <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Allowance"}' @click='activeTab = "Allowance"'>Allowance</li>
                         <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Conveyence"}' @click='activeTab = "Conveyence"'>Conveyence</li>
                         <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Entertainment"}' @click='activeTab = "Entertainment"'>Entertainment</li>
                     </ul>
@@ -43,25 +47,25 @@
                                 <div class='panel-title w100'>
                                     <div :href="'#collapse'+j.benefitTypeId.value " class='fl w30 p5-10 f14'><b>{{ j.benefitTypeId.label }}</b></div>
                                     
-                                        <select class='fr w10' v-model='copyHolder[index].priority'>
+                                        <!-- <select class='fr w10' v-model='copyHolder[index].priority'>
                                             <option value='1'>1</option>
                                             <option value='2'>2</option>
                                             <option value='3'>3</option>
                                             <option value='4'>4</option>
                                             <option value='5'>5</option>
                                         </select>
-                                        <div class='fr p5-10 w15 al-right f12 b3'>Set Priority</div>
+                                        <div class='fr p5-10 w15 al-right f12 b3'>Set Priority</div> -->
                                     </div>
                                 </div>
                                 <div :id="'collapse'+j.benefitTypeId.value" class='panel-collapse collapse in fl w100'>
                                         <div class='panel-body'>
                                                 <div class='fl w40 p5-10'>
                                                     <div class='p5-10'>
-                                                        <label class='b3'>Benifits</label>
+                                                        <label class='b6'>Benefits</label>
                                                         <v-select multiple v-model='copyHolder[index].benefits' :options='j.benefits'></v-select>
                                                     </div>
                                                     <div class='p5-10'>
-                                                        <label class='b3'>City Category</label>
+                                                        <label class='b6'>City Category</label>
                                                         <v-select multiple v-model='copyHolder[index].cityCatAndAllowances' :options='j.cityCatAndAllowances'></v-select>
                                                     </div>
                                                 </div>
@@ -80,14 +84,14 @@
                                                             <tr  v-for='(i,ind) in copyHolder[index].cityCatAndAllowances' :id='i.value' :key='i.value'>
                                                             <td class='w20'>{{i.label}}</td>
                                                             <td class='w10 center'><input :id='i.value' v-model='i.limitSpent' type='checkbox' @change='reset(i.value,ind,index)' ></td><!-- @click='disableField(i.value)'-->
-                                                            <td class='w25'>
-                                                            <div class='p2-4 fl w100'> 
-                                                                <span class='fl p5-10 f10'> Min</span>
-                                                                <input class='fr w60 al-right' :id='i.value' v-model='i.min'  type='number' :disabled='i.limitSpent'>
+                                                            <td class='w25' style='padding:1px;'>
+                                                            <div class='p5-10 fl w100'> 
+                                                                <span class='fl w30 p2-4'> Min</span>
+                                                                <input class='fl w70 al-right' :id='i.value' v-model='i.min'  type='number' :disabled='i.limitSpent'>
                                                             </div>
-                                                            <div class='p2-4 fl w100'>
-                                                                <span class='fl p5-10 f10'>Max </span>
-                                                                <input class='fr w60 al-right'  :id='i.value'  v-model='i.max' :min='i.min' type='number' :disabled='i.limitSpent'>
+                                                            <div class='p5-10 fl w100'>
+                                                                <span class='fl w30 p2-4'>Max </span>
+                                                                <input class='fl w70 al-right'  :id='i.value'  v-model='i.max' :min='i.min' type='number' :disabled='i.limitSpent'>
                                                                 <span v-if=' Number(i.max) < Number(i.min) ' class='fl red f10'>Should be more than {{i.min}}</span>
                                                             </div> 
                                                             </td>
@@ -100,7 +104,7 @@
                                                                     &nbsp;%
                                                                     <input v-model='i.flex' class='fl w25 ' type='radio' value='2'  name='type' :disabled='i.limitSpent'>
                                                                 </div>
-                                                                <div class='fl w80'>
+                                                                <div class='fl w80 p2-4'>
                                                                     <input v-model='i.flexAmt' class='fl w100 al-right' min='0' type='number' :disabled='i.limitSpent || i.flex == ""'>
                                                                 </div>
                                                                 
@@ -119,7 +123,7 @@
                                                     </table>
                                                 </div>
                                                 <div class='fl w60 p10-20 center gray' v-else>
-                                                    Add city category to configure policy
+                                                    Add city category to configure policy {{j.benefitTypeId.label}}
                                                 </div>    
                                                 
                                                 
@@ -131,24 +135,24 @@
                 </div>
       <!-- display the details of policy -->          
     <div class='fl w80 p5-10' id ='displayPanel' v-if='showDetails'>
-            <ul class='fl w100 p5-10 o-gray'>
+            <ul id='create-box' class='fl p5-10 o-gray'>
                 <li class='fl p5-10'>
-                    <div class='p5-10 f10 pl-0' for='policyName'>Policy Bundle</div>
+                    <div class='pl-0' for='policyName'>Grade Policy Name</div>
                     <input id='policyName' v-model='policyBundleName' class='p5-10 br-none bg-gray  f14 black b6' disabled/>
                 </li>
                 <li class='fl p5-10'>
-                    <div class='p5-10 f10 pl-0' for='policyBundleCode'>Policy Code</div>
+                    <div class='pl-0' for='policyBundleCode'>Grade Policy Code</div>
                     <input id='policyBundleCode' v-model='policyBundleCode' class='p5-10 br-none bg-gray f14 black' disabled/>
                 </li>
                 <li class='fl p5-10'>
                     <br/>
-                    <button class='btn btn-primary btn-sm' @click="show('3')"><i class="fa fa-pencil" aria-hidden="true"></i> Edit</button>
+                    <button style='margin-top:5px' class='btn btn-primary btn-sm' @click="show('3')"><i class="fa fa-pencil" aria-hidden="true"></i> Edit</button>
                 </li>
             </ul>
             <div class='fl w100 p5-10'>
-                    <ul id='tab' class='fl w100 b6 center cursor'>
+                    <ul id='tab_policy' class='fl w100 b6 center cursor'>
                         <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Accomodation"}' @click='activeTab = "Accomodation"'>Accomodation</li>
-                        <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Per Diem"}' @click='activeTab = "Per Diem"'>Per Diem</li>
+                        <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Allowance"}' @click='activeTab = "Allowance"'>Allowance</li>
                         <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Conveyence"}' @click='activeTab = "Conveyence"'>Conveyence</li>
                         <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Entertainment"}' @click='activeTab = "Entertainment"'>Entertainment</li>
                     </ul>
@@ -158,16 +162,16 @@
                         <div class='panel-heading fl w100'>
                             <div class='panel-title fl w100'>
                                 <div  class='fl w40 p5-10 f14'><b>{{ j.benefitTypeId.label }}</b></div>
-                                <div class='fr w40 p5-10 f14 al-right b3'>
+                                <!-- <div class='fr w40 p5-10 f14 al-right b3'>
                                     Priority - 
                                     {{displayHolder[index].priority}}
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                         <div class='panel-collapse collapse in fl w100'>
                             <div class='panel-body'>
                                     <div class='fl w20 p5-10' >
-                                        <div class='f12 gray b3'>Benefits</div>
+                                        <div class='f12 b6'>Benefits</div>
                                         <ul >
                                             <li v-for=' u in displayHolder[index].benefits' class='m-top-10 f12' :key='u.label'>{{u.label}}</li>
                                         </ul>
@@ -191,11 +195,11 @@
                                             </thead>
                                             <tbody>
                                                 <tr  v-for='i in displayHolder[index].cityCatAndAllowances' :id='i.value' :key='i.value'>
-                                                    <td class='blue f14'>{{i.label}}</td>
+                                                    <td class=''>{{i.label}}</td>
                                                     <td class='center'>{{ (i.limitSpent) ? 'Yes' : 'No' }}</td>
                                                     <td class='center'>{{ (!i.limitSpent) ? ('₹' + i.min) : '---' }} - {{ (!i.limitSpent) ? ('₹' + i.max) : '---'}}</td>
                                                     <td class='center'>{{ (!i.limitSpent) ? i.flexAmt : '---'}} {{ (!i.limitSpent) ?  (i.flex != 0) ? ( (i.flex==1) ? 'INR' : '%') :'' : '' }}</td>
-                                                    <td class='center'  v-if='j.benefitTypeId.label == "Accomodation"'>{{i.starCat}}</td>
+                                                    <td class='center'  v-if='j.benefitTypeId.label == "Accomodation"'>{{ (i.limitSpent) ? "--" : i.starCat}}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -213,7 +217,8 @@
         <div id='createPanel'  class='fl w80 p5-10' v-if='createPanelShow'>
             <List @refresh='getList'/>
         </div>
-    </transition>      
+    </transition>  
+    
  </div> 
    
      
@@ -241,6 +246,7 @@ export default {
            showDetails : false,
            createPanelShow : true,
            showEdit : false,
+           disableSave: false,
            activeTab:"Accomodation"
       }
   },
@@ -333,6 +339,7 @@ export default {
 
       getPolicyBundle : function(id){
             const self = this;
+            
             self.createPanelShow = false;
             self.siwtchTab(id);
             let h;
@@ -345,21 +352,26 @@ export default {
                          //self.copyHolder = h.policybundles;
                         
                             $.post(api.getModelPolicyBundle,{'companyId' : api.companyId }).done(function(dat){
-                                self.displayHolder = h.policybundles;//saved data
+                                
                              let j = JSON.parse(dat);
                             // console.log(j)
-                             j.policybundles.map(function(y){
+                             h.policybundles.map(function(y){
                                  if(y.cityCatAndAllowances.length > 0){
                                      y.cityCatAndAllowances.map(function(r){
-                                         if(r.limitSpent.includes('false')){
-                                             r['limitSpent'] = true;
-                                         }else{
-                                            r['limitSpent'] = false; 
-                                         }
+                                        //   r['limitSpent'] = Boolean(r['limitSpent']);
+                                        if(r['limitSpent'] == 'true'){
+                                            r['limitSpent'] = true;
+                                        }else{
+                                            r['limitSpent'] = false;
+                                        }
+                                        if(y.benefitTypeId.value == '3'){
+                                                r['starCat'] = '' ;//inserting star category for accomodation 
+                                            }
                                      });
                                  }
                              });
-                             //console.log(j.policybundles)
+                             self.displayHolder = h.policybundles;//saved data
+                            //  console.log(h.policybundles)
                              //parent data
                              self.policyBundle = j.policybundles;
                            /* self.copyHolder = j.policybundles.map(function(obj){
@@ -417,19 +429,27 @@ export default {
          if(!o.limitSpent){
              o.max = 0 ;
             o.min = 0;
-            o.flex = "";
+            o.flex = "1";
             o.flexAmt = 0;
+            if(o.starCat !== undefined){
+                o.starCat = '';
+            }
+            
          }else{
             o.max = '' ;
             o.min = '';
             o.flex = "";
             o.flexAmt = '';
+            if(o.starCat !== undefined){
+                o.starCat = '';
+            }
          }
          
       },
       sendEdit : function(){
           const self = this;
           let dos =true;
+          self.disableSave = true;
           const has = Object.hasOwnProperty;
           
           const dataToSend = {
@@ -456,10 +476,25 @@ export default {
                   var d = dataToSend.policybundles;
                     //check for the citycaetgory = 0 and benefit bundle = 0 what if nothing selected
                     for(var c=0;c < d.length; c++){
-                        if(d[c].benefits.length > 1 && d[c].cityCatAndAllowances.length === 0){
+                        
+                        if(d[c].benefits.length > 0 && d[c].cityCatAndAllowances.length === 0){
                             alert('Atleast one City category need to be in '+d[c].benefitTypeId.label);
+                            self.disableSave = false;
                             return;
                         }
+                        if(d[c].benefitTypeId.value == '3' && d[c].cityCatAndAllowances.length > 0){
+                            //that is the value of accomadation
+                            for(var t=0;t < d[c].cityCatAndAllowances.length;t++){
+                                var p = d[c].cityCatAndAllowances ;
+                                
+                                if(!p[t].limitSpent && p[t].starCat == ''){
+                                    alert('Star need to mentioned in City category');
+                                        self.disableSave = false;
+                                        return;
+                                }
+                            }
+                            
+                        }                        
                     }
               if(dataToSend.policybundles.length > 0){
              // Bundle
@@ -472,25 +507,32 @@ export default {
                     var dd = data.toString().split('|');
                     if(dd[0].indexOf('T') === 0){
                             self.$store.commit('showAlert','s|Policy Bundle updated successfully..!');
+                            
                         }else{
                             self.$store.commit('showAlert','o|'+dd[1]);
+                            
                         }
                         self.show('2');
+                        self.disableSave = false;
             });
             });
             }else{
-                alert('atleast one city category or bundle has to be there')
+                alert('atleast one city category or bundle has to be there');
+                self.disableSave = false;
             }
               
         }else{
             alert("Name and Code is required")
+            self.disableSave = false;
         }
 
       },
       deleteBundle : function(id){
           var self = this;
+          
           if(confirm("Are you sure you want to delete this Policy ?")){
-              self.shows()
+              self.shows();
+              self.disableSave = true;
               $.post(api.deletePolicyBundle,{ benefitBundleId : id }).done(function(data){
               
                   $.post(api.listPolicyBundle,{'companyId' : api.companyId }).done(function(res){
@@ -504,6 +546,7 @@ export default {
                             self.$store.commit('showAlert','d|Policy Bundle deleted successfully..!');
                         }
                         self.show('1');
+                        self.disableSave = false;
                     });
               
           });
@@ -523,7 +566,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 .form-control{
   border-radius : 0px;
 }
@@ -576,4 +619,15 @@ height: 400px;
 overflow-y: auto;
 overflow-x: hidden;
 }
+#create-box> li > input{
+    width:175px;
+}
+
+#create-box{
+    border: 1px solid aliceblue;
+    background-color: aliceblue;
+    border-radius: 5px;
+}
+
+
 </style>

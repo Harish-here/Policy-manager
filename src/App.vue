@@ -10,7 +10,7 @@
                   <button class='btn btn-primary btn-xs fr' data-toggle="modal" data-target="#myModal2"><span style='color:#fff !important;'><i class="fa fa-location-arrow" aria-hidden="true"></i> Manage City Category</span>
                   </button>
                 </li>
-                <li role="presentation" class='b3 f21 roboto brown'>Policy Bundle</li>
+                <li role="presentation" class='b3 f21 roboto brown'>Grade Policy </li>
             </ul>
             <hr class='fl w100'>
             <transition name='fade'>
@@ -292,7 +292,9 @@ export default {
 <style src='@/assets/basic.css'>
 
 /* bar customisation*/
-
+#myModal2{
+  left:calc(100% - 570px);
+}
 /*left bar*/
 /*******************************
 * MODAL AS LEFT/RIGHT SIDEBAR
