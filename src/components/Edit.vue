@@ -13,26 +13,28 @@
     </div>
     <!-- <pre>{{copyHolder}}</pre> -->
     <div class='fl w80 p5-10' id='editPanel' v-if='showEdit'>
-                <ul id='create-box' class='fl p5-10 o-gray'>
-                    <li class='fl p5-10 '>
-                        <div class='pl-0' for='policyName'>Grade Policy Name</div>
-                        <input placeholder="Name" id='policyName' class='p2-4 f14 black b6' v-model='policyBundleName' />
-                    </li>
-                    <li class='fl p5-10'>
-                        <div class='pl-0' for='policyBundleCode'>Grade Policy Code</div>
-                        <input id='policyBundleCode' class='p2-4 f14 black' v-model='policyBundleCode' />
-                    </li>
-                    <li class='fl p5-10'><br>
-                        <div style='margin-top:3px;'>
-                            <button class='btn btn-primary btn-sm' @click='sendEdit' :disabled='disableSave'>Save 
-                                <i v-if='disableSave' class="fa fa-spinner fa-spin" aria-hidden="true"></i>
-                            </button>
-                            <button class='btn btn-danger btn-sm' @click="deleteBundle(policyBundleId)" :disabled='disableSave'>Delete</button>
-                            <button class='btn btn-default btn-sm' @click='showDetailss'>Back</button>
-                        </div>
-                        
-                    </li>
-                </ul>
+                <div class='fl p5-10'>
+                    <ul id='create-box' class='fl p5-10 o-gray'>
+                        <li class='fl p5-10 '>
+                            <div class='pl-0' for='policyName'>Grade Policy Name</div>
+                            <input placeholder="Name" id='policyName' class='p2-4 f14 black b6' v-model='policyBundleName' />
+                        </li>
+                        <li class='fl p5-10'>
+                            <div class='pl-0' for='policyBundleCode'>Grade Policy Code</div>
+                            <input id='policyBundleCode' class='p2-4 f14 black' v-model='policyBundleCode' />
+                        </li>
+                        <li class='fl p5-10'><br>
+                            <div style='margin-top:3px;'>
+                                <button class='btn btn-primary btn-sm' @click='sendEdit' :disabled='disableSave'>Save 
+                                    <i v-if='disableSave' class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+                                </button>
+                                <button class='btn btn-danger btn-sm' @click="deleteBundle(policyBundleId)" :disabled='disableSave'>Delete</button>
+                                <button class='btn btn-default btn-sm' @click='showDetailss'>Back</button>
+                            </div>
+                            
+                        </li>
+                    </ul>
+                </div>
                 <div class='fl w100 p5-10'>
                     <ul id='tab_policy' class='fl w100 b6 center cursor'>
                         <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Accomodation"}' @click='activeTab = "Accomodation"'>Accomodation</li>
@@ -62,10 +64,17 @@
                                                 <div class='fl w40 p5-10'>
                                                     <div class='p5-10'>
                                                         <label class='b6'>Benefits</label>
-                                                        <v-select multiple v-model='copyHolder[index].benefits' :options='j.benefits'></v-select>
+                                                        <div v-if='j.benefitTypeId.value != "3"'>
+                                                            <v-select multiple v-model='copyHolder[index].benefits' :options='j.benefits'></v-select>
+                                                        </div>
+                                                        <div v-if='j.benefitTypeId.value == "3"' >
+                                                            <select v-model='copyHolder[index].benefits' class='w100 benefit-acc'>
+                                                                <option v-for='k in j.benefits' :value='k' :key='k.label'>{{ k.label}}</option>
+                                                            </select>
+                                                        </div>
                                                     </div>
                                                     <div class='p5-10'>
-                                                        <label class='b6'>City Category</label>
+                                                        <label class='b6'>City Category <sup style='color:red;'>*</sup></label>
                                                         <v-select multiple v-model='copyHolder[index].cityCatAndAllowances' :options='j.cityCatAndAllowances'></v-select>
                                                     </div>
                                                 </div>
@@ -77,7 +86,7 @@
                                                                 <th class='w10 center'>Unlimited</th>
                                                                 <th class='w25 center'>Price</th>
                                                                 <th class='w25'>Excess</th>
-                                                                <th class='w10 center'  v-if='j.benefitTypeId.label == "Accomodation"'>Star</th>
+                                                                <th class='w10 center'  v-if='j.benefitTypeId.label == "Accomodation"'>Star <sup style='color:red;'>*</sup> </th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -135,20 +144,22 @@
                 </div>
       <!-- display the details of policy -->          
     <div class='fl w80 p5-10' id ='displayPanel' v-if='showDetails'>
-            <ul id='create-box' class='fl p5-10 o-gray'>
-                <li class='fl p5-10'>
-                    <div class='pl-0' for='policyName'>Grade Policy Name</div>
-                    <input id='policyName' v-model='policyBundleName' class='p5-10 br-none bg-gray  f14 black b6' disabled/>
-                </li>
-                <li class='fl p5-10'>
-                    <div class='pl-0' for='policyBundleCode'>Grade Policy Code</div>
-                    <input id='policyBundleCode' v-model='policyBundleCode' class='p5-10 br-none bg-gray f14 black' disabled/>
-                </li>
-                <li class='fl p5-10'>
-                    <br/>
-                    <button style='margin-top:5px' class='btn btn-primary btn-sm' @click="show('3')"><i class="fa fa-pencil" aria-hidden="true"></i> Edit</button>
-                </li>
-            </ul>
+            <div class='fl p5-10'>
+                <ul id='create-box' class='fl p5-10 o-gray'>
+                    <li class='fl p5-10'>
+                        <div class='pl-0' for='policyName'>Grade Policy Name</div>
+                        <input id='policyName' v-model='policyBundleName' class='p5-10 br-none bg-gray  f14 black b6' disabled/>
+                    </li>
+                    <li class='fl p5-10'>
+                        <div class='pl-0' for='policyBundleCode'>Grade Policy Code</div>
+                        <input id='policyBundleCode' v-model='policyBundleCode' class='p5-10 br-none bg-gray f14 black' disabled/>
+                    </li>
+                    <li class='fl p5-10'>
+                        <br/>
+                        <button style='margin-top:5px' class='btn btn-primary btn-sm' @click="show('3')"><i class="fa fa-pencil" aria-hidden="true"></i> Edit</button>
+                    </li>
+                </ul>
+            </div>
             <div class='fl w100 p5-10'>
                     <ul id='tab_policy' class='fl w100 b6 center cursor'>
                         <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Accomodation"}' @click='activeTab = "Accomodation"'>Accomodation</li>
@@ -494,6 +505,21 @@ export default {
                                 }
                             }
                             
+                        }
+                        
+                        // to check max and min
+                        if(d[c].cityCatAndAllowances.length > 0){
+                            //that is the value of accomadation
+                            for(let t=0;t < d[c].cityCatAndAllowances.length;t++){
+                                let p = d[c].cityCatAndAllowances ;
+                                
+                                if(Number(p[t].min) >= Number(p[t].max)){
+                                    alert('Maximum amount should be greater than Minmum amount');
+                                        self.disableSave = false;
+                                        return;
+                                }
+                            }
+                            
                         }                        
                     }
               if(dataToSend.policybundles.length > 0){
@@ -627,6 +653,10 @@ overflow-x: hidden;
     border: 1px solid aliceblue;
     background-color: aliceblue;
     border-radius: 5px;
+}
+.benefit-acc{
+    padding: 5px;
+    border:  1px solid #cdcdcd;
 }
 
 

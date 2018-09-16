@@ -1,7 +1,7 @@
 <template>
   <div id='create' class=''>
       
-    <div class='fl w100'>
+    <div class='fl w100 p5-10'>
       <ul id='create-box' class='fl p5-10 o-gray'>
             <li class='fl p5-10'>
                 <div class=' pl-0'>Grade Policy Name</div>
@@ -11,8 +11,6 @@
                 <div class=' pl-0'>Grade Policy Code</div>
                 <input name='policy bundle' type='text' class='p2-4 black' v-model='bundleCode' />
             </li> 
-
-        
       </ul>
     </div>
     <div class='fl w100 p5-10'>
@@ -44,10 +42,17 @@
                                 <div class='fl w40 p5-10'>
                                     <div class='p5-10'>
                                         <label class='b6'>Benefits</label>
-                                        <v-select multiple v-model='copyHolder[index].benefits' :options='j.benefits'></v-select>
+                                        <div v-if='j.benefitTypeId.value != "3"'>
+                                            <v-select multiple v-model='copyHolder[index].benefits' :options='j.benefits'></v-select>
+                                        </div>
+                                        <div v-if='j.benefitTypeId.value == "3"' >
+                                            <select v-model='copyHolder[index].benefits' class='w100 benefit-acc'>
+                                                <option v-for='k in j.benefits' :value='k' :key='k.label'>{{ k.label}}</option>
+                                            </select>
+                                        </div>
                                     </div>
                                     <div class='p5-10'>
-                                        <label class='b6'>City Category</label>
+                                        <label class='b6'>City Category <sup style='color:red;'>*</sup></label>
                                         <v-select multiple v-model='copyHolder[index].cityCatAndAllowances' :options='j.cityCatAndAllowances'></v-select>
                                     </div>
                                 </div>
@@ -59,7 +64,7 @@
                                                 <th class='w10 center'>Unlimited</th>
                                                 <th class='w25 center'>Price</th>
                                                 <th class='w25'>Excess</th>
-                                                <th class='w10 center'  v-if='j.benefitTypeId.label == "Accomodation"'>Star</th>
+                                                <th class='w10 center'  v-if='j.benefitTypeId.label == "Accomodation"'>Star <sup style='color:red;'>*</sup> </th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -240,11 +245,25 @@ export default {
 
                         if(d[c].benefitTypeId.value == '3' && d[c].cityCatAndAllowances.length > 0){
                             //that is the value of accomadation
-                            for(var t=0;t < d[c].cityCatAndAllowances.length;t++){
-                                var p = d[c].cityCatAndAllowances ;
+                            for(let t=0;t < d[c].cityCatAndAllowances.length;t++){
+                                let p = d[c].cityCatAndAllowances ;
                                 
                                 if(!p[t].limitSpent && p[t].starCat == ''){
                                     alert('Star need to mentioned in City category');
+                                        self.disableSave = false;
+                                        return;
+                                }
+                            }
+                            
+                        }
+                        // to check max and min
+                        if(d[c].cityCatAndAllowances.length > 0){
+                            //that is the value of accomadation
+                            for(let t=0;t < d[c].cityCatAndAllowances.length;t++){
+                                let p = d[c].cityCatAndAllowances ;
+                                
+                                if(Number(p[t].min) >= Number(p[t].max)){
+                                    alert('Maximum amount should be greater than Minmum amount');
                                         self.disableSave = false;
                                         return;
                                 }
@@ -391,7 +410,6 @@ table{
 .form-control{
     height:24px !important;
 }
-
 
 
 </style>
