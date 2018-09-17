@@ -41,7 +41,7 @@
                             <div class='fl w100'>
                                 <div class='fl w40 p5-10'>
                                     <div class='p5-10'>
-                                        <label class='b6'>Benefits</label>
+                                        <label class='b6'>Benefits <sup style='color:red;' v-if='copyHolder[index].cityCatAndAllowances.length > 0'>*</sup></label>
                                         <div v-if='j.benefitTypeId.value != "3"'>
                                             <v-select multiple v-model='copyHolder[index].benefits' :options='j.benefits'></v-select>
                                         </div>
@@ -52,7 +52,10 @@
                                         </div>
                                     </div>
                                     <div class='p5-10'>
-                                        <label class='b6'>City Category <sup style='color:red;'>*</sup></label>
+                                        <label class='b6'>City Category 
+                                                            <sup v-if='j.benefitTypeId.value != "3" && copyHolder[index].benefits.length > 0' style='color:red;'>*</sup>
+                                                            <sup v-if='j.benefitTypeId.value == "3"  && copyHolder[index].benefits.hasOwnProperty("value")' style='color:red;'>*</sup>
+                                            </label>
                                         <v-select multiple v-model='copyHolder[index].cityCatAndAllowances' :options='j.cityCatAndAllowances'></v-select>
                                     </div>
                                 </div>
@@ -64,21 +67,21 @@
                                                 <th class='w10 center'>Unlimited</th>
                                                 <th class='w25 center'>Price</th>
                                                 <th class='w25'>Excess</th>
-                                                <th class='w10 center'  v-if='j.benefitTypeId.label == "Accomodation"'>Star <sup style='color:red;'>*</sup> </th>
+                                                <th class='w10 center'  v-if='j.benefitTypeId.value == "3"'>Star <sup style='color:red;'>*</sup> </th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                         <tr  v-for='(i,ind) in copyHolder[index].cityCatAndAllowances' :id='i.value' :key='i.value'>
                                         <td class='w20'>{{i.label}}</td>
                                         <td class='w10 center'>
-                                            <input :id='i.value' v-model='i.limitSpent' type='checkbox' @change='reset(i.value,ind,index)'  >
+                                            <input :id='i.value' v-model='i.limitSpent' type='checkbox' @change='reset(j.benefitTypeId.value,ind,index)'  >
                                         </td><!-- @click='disableField(i.value)'-->
                                         <td class='w25' style='padding:1px;'>
-                                            <div class='p5-10 fl w100'> 
+                                            <div class='p2-4 fl w100'> 
                                                 <span class='fl w30 p2-4'> Min </span>
                                                 <input class='fl w70' :id='i.value' v-model='i.min'  type='number' :disabled='i.limitSpent'>
                                             </div>
-                                            <div class='p5-10 fl w100'>
+                                            <div class='p2-4 fl w100'>
                                                 <span class='fl w30 p2-4'>Max </span>
                                                 <input class='fl w70'  :id='i.value' :value='i.limitSpent'  v-model='i.max' :min='i.min' type='number' :disabled='i.limitSpent'>
                                                 <span v-if=' Number(i.max) < Number(i.min) ' class='fl red f10'>Should be more than {{i.min}}</span>
@@ -126,6 +129,7 @@
             </button> 
             <!-- <span v-if='Error' class='red'>Resolve the errors please</span> -->
     </div>  
+<!-- <pre>{{copyHolder}}</pre> -->
   </div>
 </template>
 
@@ -195,13 +199,14 @@ export default {
       },
       reset: function(val,label,index){   
      //    this to reset the 
+     
          var o = this.copyHolder[index].cityCatAndAllowances[label];
          if(!o.limitSpent){
              o.max = 0 ;
             o.min = 0;
             o.flex = "1";
             o.flexAmt = 0;
-            if(o.starCat !== undefined){
+            if(val == '3'){
                 o.starCat = '';
             }
          }else{
@@ -209,7 +214,7 @@ export default {
             o.min = '';
             o.flex = "";
             o.flexAmt = '';
-            if(o.starCat !== undefined){
+            if(val == '3'){
                 o.starCat = '';
             }
          }
@@ -225,7 +230,7 @@ export default {
               "companyId" : api.companyId ,
               "methType" : "create",
               "policybundles" : self.copyHolder.filter(function(x){
-                  return (x.benefits.length > 0 || x.cityCatAndAllowances.length > 0)
+                  return (x.benefits.hasOwnProperty('value') || x.benefits.length > 0 || x.cityCatAndAllowances.length > 0)
               })
           };
 
@@ -233,12 +238,30 @@ export default {
         if(self.bundleName != '' && self.bundleCode != ''){
             //check for the citycaetgory = 0 and benefit bundle = 0 what if nothing selected
                   const d = dataToSend.policybundles;
+
+                    ///hack for multi select to single select
+                    let ind = d.findIndex(x => x.benefitTypeId.value == '3');
+                    if(ind >= 0){
+                        let temp = (d[ind].benefits.hasOwnProperty('value')) ? [d[ind].benefits] : [];
+                        d[ind].benefits =  JSON.parse(JSON.stringify(temp));
+                        // console.log(JSON.parse(JSON.stringify(temp)))
+                    }
                   
           //check for the citycaetgory = 0 and benefit bundle = 0 what if nothing selected
                 for(var c=0;c < d.length; c++){
                         
                         if(d[c].benefits.length > 0 && d[c].cityCatAndAllowances.length === 0){
-                            alert('Atleast one City category need to be in '+d[c].benefitTypeId.label);
+                            if(d[c].benefitTypeId.value == '3'){
+                                let temp = d[c].benefits[0];
+                                d[c].benefits = JSON.parse(JSON.stringify(temp));
+                            }
+                            alert('At least one City Category must be selected in '+d[c].benefitTypeId.label);
+                            self.disableSave = false;
+                            return;
+                        }
+                        if(d[c].benefits.length === 0 && d[c].cityCatAndAllowances.length > 0){
+                            
+                            alert('At least one Benefit must be selected in '+d[c].benefitTypeId.label);
                             self.disableSave = false;
                             return;
                         }
@@ -262,7 +285,7 @@ export default {
                             for(let t=0;t < d[c].cityCatAndAllowances.length;t++){
                                 let p = d[c].cityCatAndAllowances ;
                                 
-                                if(Number(p[t].min) >= Number(p[t].max)){
+                                if(!p[t].limitSpent && (Number(p[t].min) >= Number(p[t].max))){
                                     alert('Maximum amount should be greater than Minmum amount');
                                         self.disableSave = false;
                                         return;
@@ -270,7 +293,11 @@ export default {
                             }
                             
                         }
+                        
+
                     }
+            
+                // return;
                     
             if(dataToSend.policybundles.length > 0){
                 self.shows()
@@ -355,13 +382,13 @@ export default {
                         y['flex'] = "";
                         y['flexAmt'] = 0;
                          if(x.benefitTypeId.value == '3'){
-                                        y['starCat'] = '' ;//inserting star category for accomodation 
-                                    }
+                                y['starCat'] = '' ;//inserting star category for accomodation 
+                            }
                     });
                 });
 
             self.policyBundles = t.policybundles;
-            var ss = self.policyBundles;
+            var ss = JSON.parse(JSON.stringify(self.policyBundles));
             //creating a copy to have a holder for v-model
            for(var i=0;i<self.policyBundles.length;i++){
                self.copyHolder.push({

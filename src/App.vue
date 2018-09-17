@@ -32,7 +32,7 @@
 
                         <div class="modal-body" style='display:flex' >
                           <div class='' style="flex:.5 0 0;">
-                                <h5 class='center p5-10 b3'><b>City Category List</b></h5>
+                                <h5 class='p5-10 b6'>City Category List</h5>
                                 <ul>
                                   <li  class='p10-20 cursor br-bt' v-for='i in cityCategoryData' @click='sendId(i.value)' :key='i.value' ><i class="fa fa-chevron-right f10" aria-hidden="true"></i> <b>{{i.label}}</b></li>
                                 </ul>
@@ -189,7 +189,7 @@ export default {
             },
       create : function(){
             var self = this;let datas;
-            if(self.cityCategoryHolder != null && self.cityHolder != null && self.cityHolder.length > 0){
+            if(self.cityCategoryHolder != null && self.cityHolder != null && self.cityHolder.length > 0 && self.cityCategoryHolder != '' && self.cityCategoryHolder != ' ' ){
               self.btnState('createBtn','adding...',1);
               if(api.production){
                 datas = {'companyId' : api.companyId,'cityCat' : {'label':self.cityCategoryHolder,'value' : ''},'cities' : self.cityHolder};
