@@ -234,6 +234,7 @@ select:disabled{
 /* tr th:first-child { border:none;border-left:2px solid #f7f7f7;}
 tr th{ border-left: 2px solid #f7f7f7;}
 tr th:last-child { border:none;border-right:2px solid #e7e7e7;} */
+/* bar customisation*/
 #myModal2{
-	left:calc(100%-570px);
+	left: calc(100% - 570px);
   }

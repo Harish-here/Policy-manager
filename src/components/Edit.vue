@@ -1,10 +1,10 @@
 <template>
   <div id='policy' class='fl w100'>
     <div class='fl w20 p5-10'>
-        <div class='m-top-25 p2-4'>
+        <!-- <div class='m-top-25 p2-4'>
             <button class='btn btn-info' @click="show('1')"><b>Create Grade Policy </b></button>
-        </div>
-        <div class='f16 m-top-10 m-bottom-10 p2-4' ><b>List of Policy</b></div>
+        </div> -->
+        <div class='f16  m-bottom-10 p2-4' ><b>List of Policy</b></div>
         <ul id='sideList' class='cursor'>
             <li class='p10-20 al-left br-gray' v-for='i in policyBundleData' @click="getPolicyBundle(i.value)" :class='{"active-list" : i.value == activeListId}' :key='i.value' :id='"pol_"+i.value'><i class="fa fa-chevron-right f10" aria-hidden="true"></i> {{i.label}}</li>
             <li class='p10-20 center gray' v-if='policyBundleData.length === 0' >No Policy Bundle</li>
@@ -25,11 +25,19 @@
                         </li>
                         <li class='fl p5-10'><br>
                             <div style='margin-top:3px;'>
-                                <button class='btn btn-primary btn-sm' @click='sendEdit' :disabled='disableSave'>Save 
+                                <button class='btn btn-primary btn-sm' @click='sendEdit' :disabled='disableSave'>
+                                    <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                                    Save
                                     <i v-if='disableSave' class="fa fa-spinner fa-spin" aria-hidden="true"></i>
                                 </button>
-                                <button class='btn btn-danger btn-sm' @click="deleteBundle(policyBundleId)" :disabled='disableSave'>Delete</button>
-                                <button class='btn btn-default btn-sm' @click='showDetailss'>Back</button>
+                                <button class='btn btn-danger btn-sm' @click="deleteBundle(policyBundleId)" :disabled='disableSave'>
+                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                    Delete
+                                </button>
+                                <button class='btn btn-default btn-sm' @click='showDetailss' :disabled='disableSave'>
+                                    <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                                    Back
+                                </button>
                             </div>
                             
                         </li>
@@ -39,7 +47,7 @@
                     <ul id='tab_policy' class='fl w100 b6 center cursor'>
                         <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Accomodation"}' @click='activeTab = "Accomodation"'>Accomodation</li>
                         <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Allowance"}' @click='activeTab = "Allowance"'>Allowance</li>
-                        <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Conveyence"}' @click='activeTab = "Conveyence"'>Conveyence</li>
+                        <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Conveyance"}' @click='activeTab = "Conveyance"'>Conveyance</li>
                         <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Entertainment"}' @click='activeTab = "Entertainment"'>Entertainment</li>
                     </ul>
                 </div>
@@ -63,20 +71,23 @@
                                         <div class='panel-body'>
                                                 <div class='fl w40 p5-10'>
                                                     <div class='p5-10'>
-                                                        <label class='b6'>Benefits <sup style='color:red;' v-if='copyHolder[index].cityCatAndAllowances.length > 0'>*</sup></label>
+                                                        <label class='b6'>Benefits 
+                                                            <!-- <sup style='color:red;' v-if='copyHolder[index].cityCatAndAllowances.length > 0'>*</sup> -->
+                                                        </label>
                                                         <div v-if='j.benefitTypeId.value != "3"'>
                                                             <v-select multiple v-model='copyHolder[index].benefits' :options='j.benefits'></v-select>
                                                         </div>
                                                         <div v-if='j.benefitTypeId.value == "3"' >
-                                                            <select v-model='copyHolder[index].benefits' class='w100 benefit-acc'>
+                                                            <!-- <select v-model='singleSelect' class='w100 benefit-acc'>
                                                                 <option v-for='k in j.benefits' :value='k' :key='k.label'>{{ k.label}}</option>
-                                                            </select>
+                                                            </select> -->
+                                                            <v-select v-model='singleSelect' :options='j.benefits'></v-select>
                                                         </div>
                                                     </div>
                                                     <div class='p5-10'>
                                                         <label class='b6'>City Category
-                                                            <sup v-if='j.benefitTypeId.value != "3" && copyHolder[index].benefits.length > 0' style='color:red;'>*</sup>
-                                                            <sup v-if='j.benefitTypeId.value == "3" && copyHolder[index].benefits.hasOwnProperty("value")' style='color:red;'>*</sup>
+                                                            <!-- <sup v-if='j.benefitTypeId.value != "3" && copyHolder[index].benefits.length > 0' style='color:red;'>*</sup>
+                                                            <sup v-if='j.benefitTypeId.value == "3" && copyHolder[index].benefits.hasOwnProperty("value")' style='color:red;'>*</sup> -->
                                                         </label>
                                                         <v-select multiple v-model='copyHolder[index].cityCatAndAllowances' :options='j.cityCatAndAllowances'></v-select>
                                                     </div>
@@ -110,14 +121,14 @@
                                                             <td class='w25 center'>
                                                                 <div class=' fl w40 p2-4'>
                                                                     &nbsp;Flat
-                                                                    <input v-model='i.flex' class='fl w25' name='type' type='radio' value='1' :disabled='i.limitSpent'>
+                                                                    <input v-model='i.flex' class='fl w25' type='radio' value='1' :name='"type_"+ind+j.benefitTypeId.value+i.label' :disabled='i.limitSpent'>
                                                                 </div>
                                                                 <div class='fl w40 p2-4'>
                                                                     &nbsp;%
-                                                                    <input v-model='i.flex' class='fl w25 ' type='radio' value='2'  name='type' :disabled='i.limitSpent'>
+                                                                    <input v-model='i.flex' class='fl w25 ' type='radio' value='2'  :name='"type_"+ind+j.benefitTypeId.value+i.label' :disabled='i.limitSpent'>
                                                                 </div>
                                                                 <div class='fl w80 p2-4'>
-                                                                    <input v-model='i.flexAmt' class='fl w100 al-right' min='0' type='number' :disabled='i.limitSpent || i.flex == ""'>
+                                                                    <input v-model='i.flexAmt' class='fl w100 al-right' min='0' type='number' :disabled='i.limitSpent'>
                                                                 </div>
                                                                 
                                                             </td>
@@ -160,6 +171,7 @@
                     <li class='fl p5-10'>
                         <br/>
                         <button style='margin-top:5px' class='btn btn-primary btn-sm' @click="show('3')"><i class="fa fa-pencil" aria-hidden="true"></i> Edit</button>
+                        <button style='margin-top:5px' class='btn btn-primary btn-sm' @click="show('1')"><i class="fa fa-chevron-left" aria-hidden="true"></i> Back</button>
                     </li>
                 </ul>
             </div>
@@ -167,7 +179,7 @@
                     <ul id='tab_policy' class='fl w100 b6 center cursor'>
                         <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Accomodation"}' @click='activeTab = "Accomodation"'>Accomodation</li>
                         <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Allowance"}' @click='activeTab = "Allowance"'>Allowance</li>
-                        <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Conveyence"}' @click='activeTab = "Conveyence"'>Conveyence</li>
+                        <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Conveyance"}' @click='activeTab = "Conveyance"'>Conveyance</li>
                         <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Entertainment"}' @click='activeTab = "Entertainment"'>Entertainment</li>
                     </ul>
             </div>
@@ -186,11 +198,11 @@
                             <div class='panel-body'>
                                     <div class='fl w20 p5-10' >
                                         <div class='f12 b6'>Benefits</div>
-                                        <ul v-if='j.benefitTypeId.value != "3"'>
+                                        <ul v-if='displayHolder[index].benefits.length > 0'>
                                             <li v-for=' u in displayHolder[index].benefits' class='m-top-10 f12' :key='u.label'>{{u.label}}</li>
                                         </ul>
                                         <ul v-else>
-                                            <li class='m-top-10 f12'>{{j.benefits.label}}</li>
+                                            <li class='m-top-10 centet f12'>No Benefits Selected</li>
                                         </ul>
                                     </div>
                                     <!--<div class='col-md-6'>
@@ -200,7 +212,7 @@
                                         </ul>
                                     </div> -->
                                     <div class='fl w80 p5-10' style='border-left:2px solid #ddd;'>    
-                                        <table class='table'>
+                                        <table class='table' v-if='displayHolder[index].cityCatAndAllowances.length > 0'>
                                             <thead>
                                                 <tr>
                                                     <th class='w20'>City Category</th>
@@ -220,20 +232,23 @@
                                                 </tr>
                                             </tbody>
                                         </table>
+                                        <div class='fl w100 p5-10 center gray' v-else>
+                                            No City Category Selected
+                                        </div>
                                     </div>
                             </div>
                         </div>
                 </div>
             </div>
     </div>
-    <!-- <pre>{{ copyHolder }}</pre> -->
     <div class='fl w80 p5-10 center'  v-if='showDetails'>
         {{ (displayHolder !== null && displayHolder.map(x => x.benefitTypeId.label).includes(activeTab)) ? "" : `No ${activeTab} Policy Available` }}
     </div>
 
     <transition name='fade'>
         <div id='createPanel'  class='fl w80 p5-10' v-if='createPanelShow'>
-            <List @refresh='getList'/>
+      
+            <List @refresh='getList' :getFresh='toRefresh' @doneRefresh='resetFresh'/>
         </div>
     </transition>  
     
@@ -251,6 +266,13 @@ import api from '../utility/api'
 Vue.component('List', List);
 export default {
   name: 'Edit',
+  props : {
+      toRefresh :{
+          type: Boolean,
+          default: false
+      }
+  },
+
   data(){
       return {
            policyBundleHolder : null,
@@ -267,6 +289,7 @@ export default {
            disableSave: false,
            activeTab:"Accomodation",
            activeListId: "",
+           singleSelect: ''
       }
   },
 
@@ -313,17 +336,56 @@ export default {
 
       }
   },
+  
+ watch : {
+     singleSelect : function(val){
+        //  console.log(val);
+         for(let r= 0;r< this.copyHolder.length;r++){
+             let o = this.copyHolder;
+             if(o[r].benefitTypeId.value == '3' && o[r].benefits.length > 0){
+                 o[r].benefits.pop();
+                 o[r].benefits.push(val)
+             }
+             if(o[r].benefitTypeId.value == '3' && o[r].benefits.length == 0){
+                 o[r].benefits.push(val)
+             }
+         }
+
+        for(let r= 0;r< this.displayHolder.length;r++){
+             let o = this.displayHolder;
+             if(o[r].benefitTypeId.value == '3' && o[r].benefits.length > 0){
+                 o[r].benefits.pop();
+                 o[r].benefits.push(val)
+             }
+             if(o[r].benefitTypeId.value == '3' && o[r].benefits.length == 0){
+                 o[r].benefits.push(val)
+             }
+         }
+     },
+   toRefresh: function(val){
+          console.log(val);
+          if(val){
+              //set the value to true and emit the event
+
+
+              
+          }
+      }
+ },
   methods:{
       show : function(num){
           const self = this;
           switch(num){
-              case '1' : self.createPanelShow = true;self.showEdit =false;self.showDetails = false;break;
+              case '1' : self.createPanelShow = true;self.showEdit =false;self.showDetails = false;self.activeListId ='';break;
               case '2' : self.createPanelShow = false;self.showEdit =false;self.showDetails = true;break;
               case '3' : self.createPanelShow = false;self.showEdit =true;self.showDetails = false;break;
           }
       },
       returnYN : function(s){
           return (s.toString().indexOf('f') === 0) ? 'No' : 'Yes';
+      },
+      resetFresh: function(){
+          this.$emit('refreshDone');//runs when child inform that it done refreshing and it inform to its parent
       },
       shows : function(){
         if(api.production){
@@ -358,6 +420,7 @@ export default {
 
       getPolicyBundle : function(id){
             const self = this;
+            self.activeTab = "Accomodation";
             self.activeListId = id;
             self.createPanelShow = false;
             self.siwtchTab(id);
@@ -375,15 +438,18 @@ export default {
                              let j = JSON.parse(dat);
                             // console.log(j)
                              h.policybundles.map(function(y){
-                                 if(y.benefitTypeId.value == '3'){
-                                     let temp = y.benefits[0];
-                                     y.benefits = {...temp};
-                                 }
-                                 if(y.hasOwnProperty('y.cityCatAndAllowances') && y.cityCatAndAllowances.length > 0){
+                                 
+                                 if(y.cityCatAndAllowances.length > 0){
                                      y.cityCatAndAllowances.map(function(r){
                                         //   r['limitSpent'] = Boolean(r['limitSpent']);
                                         if(r['limitSpent'] == 'true'){
-                                            r['limitSpent'] = true;
+                                            
+                                            r.limitSpent = true;
+                                            r.min = r.min || 0;
+                                            r.max = r.max || 0;
+                                            r.flex = r.flex || "1";
+                                            r.flexAmt = r.flexAmt || 0;
+                                            r.starCat = r.starCat || '0' ;
                                         }else{
                                             r['limitSpent'] = false;
                                         }
@@ -391,10 +457,30 @@ export default {
                                      });
                                  }
                              });
-                             self.displayHolder = JSON.parse(JSON.stringify(h.policybundles));//saved data
+                             let find = h.policybundles.findIndex(x => {
+                                 return x.benefitTypeId.value == '3'
+                             })
+                             //set the valu for the single select
+                             self.singleSelect = (find >= 0) ? h.policybundles[find].benefits[0]: '';
+
+                            //  self.displayHolder = JSON.parse(JSON.stringify(h.policybundles));//saved data
+                             self.displayHolder = h.policybundles;
                             //  console.log(h.policybundles)
                              //parent data
-                             self.policyBundle = JSON.parse(JSON.stringify(j.policybundles));
+                            //  self.policyBundle = JSON.parse(JSON.stringify(j.policybundles));//not a refference copying
+
+                            j.policybundles.map(function(x){
+                                    x.cityCatAndAllowances.map(function(y){
+                                        y.limitSpent = true;
+                                        y.min = y.min || 0;
+                                        y.max = y.max || 0;
+                                        y.flex = y.flex || "1";
+                                        y.flexAmt = y.flexAmt || 0;
+                                        y.starCat = y.starCat || '0' ;//inserting star category for accomodation 
+                                            
+                                    });
+                                });
+                            self.policyBundle = j.policybundles;//refference copying
                            /* self.copyHolder = j.policybundles.map(function(obj){
                                 for(var t = 0;t<self.displayHolder.length;t++){
                                     if(self.displayHolder[t].benefitTypeId.value == obj.benefitTypeId.value){
@@ -412,7 +498,7 @@ export default {
                                     }
                                 }
                             }); */
-                           let copyTemp =  j.policybundles.map(function(obj){
+                           self.copyHolder =  j.policybundles.map(function(obj){
                                 var find = self.displayHolder.find(function(x){ return x.benefitTypeId.value === obj.benefitTypeId.value;})
                                 if(find !== undefined){
                                     return find;
@@ -428,7 +514,8 @@ export default {
                                                     };
                                 }
                             });
-                            self.copyHolder = JSON.parse(JSON.stringify(copyTemp));
+                            // self.copyHolder = JSON.parse(JSON.stringify(copyTemp));
+                            // self.copyHolder = copyTemp;
                              self.policyBundleName = h.bundleName;
                             self.policyBundleCode = h.bundleCode;
                             self.policyBundleId = h.benefitBundleId;
@@ -453,18 +540,18 @@ export default {
             o.min = 0;
             o.flex = "1";
             o.flexAmt = 0;
-            if(val == '3'){
-                o.starCat = '';
-            }
+            
+                o.starCat = '0';
+            
             
          }else{
-            o.max = '' ;
-            o.min = '';
-            o.flex = "";
-            o.flexAmt = '';
-            if(val == '3'){
-                o.starCat = '';
-            }
+            o.max = 0 ;
+            o.min = 0;
+            o.flex = "1";
+            o.flexAmt = 0;
+            
+                o.starCat = '0';
+            
          }
          
       },
@@ -497,20 +584,17 @@ export default {
                 //check for the citycaetgory = 0 and benefit bundle = 0 what if nothing selected
                   var d = dataToSend.policybundles;
                     ///hack for multi select to single select
-                    let ind = d.findIndex(x => x.benefitTypeId.value == '3');
-                    if(ind >= 0){
-                        let temp = (d[ind].benefits.hasOwnProperty('value')) ? [d[ind].benefits] : [];
-                        d[ind].benefits =  JSON.parse(JSON.stringify(temp));
-                        // console.log(JSON.parse(JSON.stringify(temp)))
-                    }
+                    // let ind = d.findIndex(x => x.benefitTypeId.value == '3');
+                    // if(ind >= 0){
+                    //     let temp = (d[ind].benefits.hasOwnProperty('value')) ? [d[ind].benefits] : [];
+                    //     d[ind].benefits =  JSON.parse(JSON.stringify(temp));
+                    //     // console.log(JSON.parse(JSON.stringify(temp)))
+                    // }
                     //check for the citycaetgory = 0 and benefit bundle = 0 what if nothing selected
                     for(var c=0;c < d.length; c++){
                         
                         if(d[c].benefits.length > 0 && d[c].cityCatAndAllowances.length === 0){
-                                if(d[c].benefitTypeId.value == '3'){
-                                    let temp = d[c].benefits[0];
-                                    d[c].benefits = JSON.parse(JSON.stringify(temp));
-                                }
+                                
                             alert('At least one City Category must be selected in '+d[c].benefitTypeId.label);
                             self.disableSave = false;
                             return;
@@ -526,7 +610,7 @@ export default {
                             for(var t=0;t < d[c].cityCatAndAllowances.length;t++){
                                 var p = d[c].cityCatAndAllowances ;
                                 
-                                if(!p[t].limitSpent && p[t].starCat == ''){
+                                if(!p[t].limitSpent && p[t].starCat == '0'){
                                     alert('Star need to mentioned in City category');
                                         self.disableSave = false;
                                         return;
@@ -557,21 +641,33 @@ export default {
              // Bundle
              self.shows()
             $.post(api.updatePolicyBundle,(api.production) ? dataToSend : JSON.stringify(dataToSend)).done(function(data){
-                 $.post(api.listPolicyBundle,{'companyId' : api.companyId }).done(function(res){//get refreshed bundle
-                    self.policyBundleData = JSON.parse(res)
-                    self.policyBundleHolder = null;
-                    self.showDetails = false;
-                    var dd = data.toString().split('|');
-                    if(dd[0].indexOf('T') === 0){
+                    if(data.includes('|')){
+                        var dd = data.split('|');
+                    
+                        if(dd[0].indexOf('T') === 0){
+                            self.getPolicyBundle(self.policyBundleId);
                             self.$store.commit('showAlert','s|Policy Bundle updated successfully..!');
+                            $.post(api.listPolicyBundle,{'companyId' : api.companyId }).done(function(res){//get refreshed bundle
+                                self.policyBundleData = JSON.parse(res);
+                                
+                                self.policyBundleHolder = null;
+                                self.showDetails = false;
+                                self.show('2');
+                                self.disableSave = false;
+                                self.singleSelect = '';
+                            });
                             
                         }else{
                             self.$store.commit('showAlert','o|'+dd[1]);
+                            self.disableSave = false;
                             
                         }
-                        self.show('2');
+                    }else{
+                        self.$store.commit('showAlert','d|Error in updating the policy');
                         self.disableSave = false;
-            });
+                    }
+                    
+            
             });
             }else{
                 alert('atleast one city category or bundle has to be there');
@@ -591,20 +687,25 @@ export default {
               self.shows();
               self.disableSave = true;
               $.post(api.deletePolicyBundle,{ benefitBundleId : id }).done(function(data){
-              
-                  $.post(api.listPolicyBundle,{'companyId' : api.companyId }).done(function(res){
-                        self.showEdit = false;
-                        self.policyBundleData = JSON.parse(res)
+                    if(data.includes('|')){
                         var dd = data.toString().split('|');
                         if(dd[0].indexOf('T') === 0){
                             self.$store.commit('showAlert','d|Policy Bundle deleted successfully..!');
+                            $.post(api.listPolicyBundle,{'companyId' : api.companyId }).done(function(res){
+                                self.showEdit = false;
+                                self.policyBundleData = JSON.parse(res)
+                                self.show('1');
+                                self.disableSave = false;
+                            });
                         }else{
-                           // self.$store.commit('showAlert','o|'+dd[1]); temporary move to show case delete msg
+                            // self.$store.commit('showAlert','o|'+dd[1]); temporary move to show case delete msg
                             self.$store.commit('showAlert','d|Policy Bundle deleted successfully..!');
                         }
-                        self.show('1');
-                        self.disableSave = false;
-                    });
+                    }else{
+                        self.$store.commit('showAlert','d|Error in deleting the policy');
+                    }
+
+                  
               
           });
           }

@@ -16,7 +16,7 @@
             <transition name='fade'>
               <div class='fl w100 p10-20'>
                   <!-- <router-view></router-view> -->
-                  <Add/>
+                  <Add :toRefresh='tellRefresh' @refreshDone='resetRefresh' />
                 </div>
             </transition>
              
@@ -27,12 +27,12 @@
                         <div class="modal-header">
                           <button type="button" class="close fl" style='width:5%;' data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><i class="fa fa-times fa-2" aria-hidden="true" style='font-size:18px;'></i></span></button>
                           <h4 class="modal-title fl w60" id="myModalLabel2" style="margin-top:-4px">City Category</h4>
-                          <div class='btn btn-info btn-xs center fl w25' @click="clean" style='margin-right:10px;'>Create City Category</div>
+                          
                         </div>
 
                         <div class="modal-body" style='display:flex' >
                           <div class='' style="flex:.5 0 0;">
-                                <h5 class='p5-10 b6'>City Category List</h5>
+                                <div class='p5-10 b6'>City Category List</div>
                                 <ul>
                                   <li  class='p10-20 cursor br-bt' v-for='i in cityCategoryData' @click='sendId(i.value)' :key='i.value' ><i class="fa fa-chevron-right f10" aria-hidden="true"></i> <b>{{i.label}}</b></li>
                                 </ul>
@@ -46,9 +46,12 @@
                                 <label>Assign City</label>
                                 <v-select  multiple v-model='cityHolder' :options='cityData'></v-select>
                                 <div class='p10-20 center'>
-                                  <button v-show='!showEdit' type='button' id='createBtn' class='btn btn-primary btn-sm' @click='create'>Add</button>
-                                  <button v-show='showEdit' type='button' id='editBtn' class='btn btn-primary btn-sm' @click='edit'>Update</button>
-                                  <button v-show='showEdit' type='button'  id='editBtn' class='btn btn-danger btn-sm' @click="deleteCityCat(cityCategoryId)">Delete</button>
+                                  <button v-show='!showEdit' type='button' id='createBtn' class='btn btn-primary btn-sm' @click='create'>
+                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                    Add</button>
+                                  <button v-show='showEdit' type='button' id='editBtn' class='btn btn-primary btn-sm' @click='edit'><i class="fa fa-floppy-o" aria-hidden="true"></i> Update</button>
+                                  <button v-show='showEdit' type='button'  id='editBtn' class='btn btn-danger btn-sm' @click="deleteCityCat(cityCategoryId)"><i class="fa fa-trash" aria-hidden="true"></i> Delete</button>
+                                  <button v-show='showEdit' class='btn btn-default btn-sm' @click="clean"><i class="fa fa-chevron-left" aria-hidden="true"></i> Back</button>
                                 </div>
                               </div>
                           </div>
@@ -77,6 +80,7 @@ export default {
           msg : null,
           optionData : [],
           cityData:[],
+          tellRefresh: false,
           departmentData:[],
           departmentHolder : '',
           cityCategoryHolder : null,
@@ -161,6 +165,9 @@ export default {
    },
 
     methods:{
+          resetRefresh: function(){
+            this.tellRefresh = false;
+          },
           btnState : function(id,text,type){
             if(type === 1){
               $('#'+id).html(''+text+'...').attr('disabled','disabled');
@@ -204,7 +211,7 @@ export default {
                 $.post(api.listCityCat,{'companyId' : api.companyId ,'methodType' :'list' }).done(function(data){
                 self.cityCategoryData = JSON.parse(data);//respo refresh the list
                 self.showEdit = false;
-              
+                  self.tellRefresh = true;//to tell the childrens to refresh the city category
                 self.cityHolder = null;
                 self.btnState('createBtn','create',0);
                 //self.fade('createInfo',3);
@@ -243,6 +250,7 @@ export default {
                 self.cityCategoryData = JSON.parse(datas);//respo refresh the list
                 self.cityCategoryId = self.cityCategoryHolder = null;
                 self.cityHolder = [];
+                self.tellRefresh = true;
                 self.preCityHolder  = [];
                 self.showEdit = false;
                 if(res.indexOf('f') === 0){
@@ -291,10 +299,7 @@ export default {
 
 <style src='@/assets/basic.css'>
 
-/* bar customisation*/
-#myModal2{
-  left:calc(100% - 570px);
-}
+
 /*left bar*/
 /*******************************
 * MODAL AS LEFT/RIGHT SIDEBAR
