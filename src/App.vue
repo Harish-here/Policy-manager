@@ -31,10 +31,13 @@
                         </div>
 
                         <div class="modal-body" style='display:flex' >
-                          <div class='' style="flex:.5 0 0;">
+                          <div class='' style="flex:.7 0 0;">
                                 <div class='p5-10 b6'>City Category List</div>
-                                <ul>
-                                  <li  class='p10-20 cursor br-bt' v-for='i in cityCategoryData' @click='sendId(i.value)' :key='i.value' ><i class="fa fa-chevron-right f10" aria-hidden="true"></i> <b>{{i.label}}</b></li>
+                                <ul style='height:400px;overflow-y:auto;'>
+                                  <li  class='p10-20 cursor br-bt' v-for='i in cityCategoryData' @click='sendId(i.value)' :key='i.value'
+                                      :class='{"active-list" : i.value == activeCityCat}'>
+                                    <i class="fa fa-chevron-right f10" aria-hidden="true"></i> <b>{{i.label}}</b>
+                                  </li>
                                 </ul>
                           </div>
                           <div id='createSpace' v-show='createShow' class=' p10-20' style="flex:1 0 0;">
@@ -93,7 +96,8 @@ export default {
           remCities :[],
           preCityHolder : [],
           cityCategoryId: null,
-          dataReturn : null
+          dataReturn : null,
+          activeCityCat : ''
       }
   },
   components : {Add},
@@ -193,6 +197,7 @@ export default {
               self.createShow = true ;self.showEdit = false;
               self.cityCategoryHolder = null;
               self.cityHolder = null;
+              self.activeCityCat = '';
             },
       create : function(){
             var self = this;let datas;
@@ -213,6 +218,7 @@ export default {
                 self.showEdit = false;
                   self.tellRefresh = true;//to tell the childrens to refresh the city category
                 self.cityHolder = null;
+                self.activeCityCat = '';
                 self.btnState('createBtn','create',0);
                 //self.fade('createInfo',3);
                 self.$store.commit('showAlert','s|City Category \"'+ self.cityCategoryHolder +'\" is Created..!')
@@ -222,14 +228,21 @@ export default {
                 });
               
             }else{
-              alert('City Category Name cannot be Empty')
+              if(self.cityHolder !== null && self.cityHolder.length !== 0){
+                alert('City Category Name cannot be Empty')
+              }else{
+                alert('Atleast one city need to be in a Category ')
+              }
+              
             }
           },
           sendId : function(obj){
               var self = this;
               self.showEdit = true;
-              self.show()
+              self.show();
+              
               $.post(api.listCityCatDetails,{'cityCatId' : obj }).done(function(data){
+                self.activeCityCat = obj;
                 self.dataReturn = JSON.parse(data);//response
                 self.cityCategoryId = self.dataReturn.cityCat.value; //setting the id here
                 self.cityCategoryHolder = self.dataReturn.cityCat.label;
@@ -249,6 +262,7 @@ export default {
               $.post(api.listCityCat,{'companyId' : api.companyId ,'methodType' :'list' }).done(function(datas){
                 self.cityCategoryData = JSON.parse(datas);//respo refresh the list
                 self.cityCategoryId = self.cityCategoryHolder = null;
+                self.activeCityCat = '';
                 self.cityHolder = [];
                 self.tellRefresh = true;
                 self.preCityHolder  = [];
@@ -281,6 +295,7 @@ export default {
                     self.cityCategoryData = JSON.parse(res);//response
                     self.cityCategoryId = null;
                     self.cityCategoryHolder = null;
+                    self.activeCityCat = '';
                     self.cityHolder = [];
                     self.preCityHolder  = [];
                     self.remCities  = [];

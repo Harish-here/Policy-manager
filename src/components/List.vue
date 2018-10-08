@@ -25,7 +25,7 @@
             <div class='panel panel-default fl w100'  :id="index">
                     <div class='panel-heading fl w100'>
                         <div class='panel-title fl w100'>
-                            <div :href="'#collapselist'+j.benefitTypeId.value " class='fl w30 p5-10 f16'><b>{{ j.benefitTypeId.label }}</b></div>
+                            <div class='fl w30 p5-10 f16'>{{ j.benefitTypeId.label }}</div>
                             <!-- <select class='fr w10' v-model='copyHolder[index].priority'>
                                     <option value='1'>1</option>
                                     <option value='2'>2</option>
@@ -116,7 +116,7 @@
                                     </table>
                                 </div>
                                 <div class='fl w60 p10-20 center gray m-top-25' v-else>
-                                            Add city category to configure <b>{{j.benefitTypeId.label}}</b> policy 
+                                            Add city category to configure {{j.benefitTypeId.label}} policy 
                                 </div> 
                             </div>  
                             

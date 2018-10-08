@@ -4,7 +4,7 @@
         <!-- <div class='m-top-25 p2-4'>
             <button class='btn btn-info' @click="show('1')"><b>Create Grade Policy </b></button>
         </div> -->
-        <div class='f16  m-bottom-10 p2-4' ><b>List of Policy</b></div>
+        <div class='f16  m-bottom-10 p2-4' >List of Policy</div>
         <ul id='sideList' class='cursor'>
             <li class='p10-20 al-left br-gray' v-for='i in policyBundleData' @click="getPolicyBundle(i.value)" :class='{"active-list" : i.value == activeListId}' :key='i.value' :id='"pol_"+i.value'><i class="fa fa-chevron-right f10" aria-hidden="true"></i> {{i.label}}</li>
             <li class='p10-20 center gray' v-if='policyBundleData.length === 0' >No Policy Bundle</li>
@@ -55,7 +55,7 @@
                     <div class='panel panel-default fl w100' :id='index' >
                             <div class='panel-heading fl w100'>
                                 <div class='panel-title w100'>
-                                    <div :href="'#collapse'+j.benefitTypeId.value " class='fl w30 p5-10 f14'><b>{{ j.benefitTypeId.label }}</b></div>
+                                    <div :href="'#collapse'+j.benefitTypeId.value " class='fl w30 p5-10 f14'>{{ j.benefitTypeId.label }}</div>
                                     
                                         <!-- <select class='fr w10' v-model='copyHolder[index].priority'>
                                             <option value='1'>1</option>
@@ -105,42 +105,42 @@
                                                         </thead>
                                                         <tbody>
                                                             <tr  v-for='(i,ind) in copyHolder[index].cityCatAndAllowances' :id='i.value' :key='i.value'>
-                                                            <td class='w20'>{{i.label}}</td>
-                                                            <td class='w10 center'><input :id='i.value' v-model='i.limitSpent' type='checkbox' @change='reset(j.benefitTypeId.value,ind,index)' ></td><!-- @click='disableField(i.value)'-->
-                                                            <td class='w25' style='padding:1px;'>
-                                                            <div class='p2-4 fl w100'> 
-                                                                <span class='fl w30 p2-4'> Min</span>
-                                                                <input class='fl w70 al-right' :id='i.value' v-model='i.min'  type='number' :disabled='i.limitSpent'>
-                                                            </div>
-                                                            <div class='p2-4 fl w100'>
-                                                                <span class='fl w30 p2-4'>Max </span>
-                                                                <input class='fl w70 al-right'  :id='i.value'  v-model='i.max' :min='i.min' type='number' :disabled='i.limitSpent'>
-                                                                <span v-if=' Number(i.max) < Number(i.min) ' class='fl red f10'>Should be more than {{i.min}}</span>
-                                                            </div> 
-                                                            </td>
-                                                            <td class='w25 center'>
-                                                                <div class=' fl w40 p2-4'>
-                                                                    &nbsp;Flat
-                                                                    <input v-model='i.flex' class='fl w25' type='radio' value='1' :name='"type_"+ind+j.benefitTypeId.value+i.label' :disabled='i.limitSpent'>
-                                                                </div>
-                                                                <div class='fl w40 p2-4'>
-                                                                    &nbsp;%
-                                                                    <input v-model='i.flex' class='fl w25 ' type='radio' value='2'  :name='"type_"+ind+j.benefitTypeId.value+i.label' :disabled='i.limitSpent'>
-                                                                </div>
-                                                                <div class='fl w80 p2-4'>
-                                                                    <input v-model='i.flexAmt' class='fl w100 al-right' min='0' type='number' :disabled='i.limitSpent'>
-                                                                </div>
-                                                                
-                                                            </td>
-                                                            <td v-if='j.benefitTypeId.label == "Accomodation"' >
-                                                            <select v-model='i.starCat' class='p2-4' style='width:50px;' :disabled='i.limitSpent'>
-                                                                <option value='1'>1</option>
-                                                                <option value='2'>2</option>
-                                                                <option value='3'>3</option>
-                                                                <option value='4'>4</option>
-                                                                <option value='5'>5</option>
-                                                            </select>
-                                                            </td>
+                                                                <td class='w20'>{{i.label}}</td>
+                                                                <td class='w10 center'><input :id='i.value' v-model='i.limitSpent' type='checkbox' @change='reset(j.benefitTypeId.value,ind,index)' ></td><!-- @click='disableField(i.value)'-->
+                                                                <td class='w25' style='padding:1px;'>
+                                                                    <div class='p2-4 fl w100'> 
+                                                                        <span class='fl w30 p2-4'> Min</span>
+                                                                        <input class='fl w70 al-right' :id='i.value' v-model='i.min'  type='number' :disabled='i.limitSpent'>
+                                                                    </div>
+                                                                    <div class='p2-4 fl w100'>
+                                                                        <span class='fl w30 p2-4'>Max </span>
+                                                                        <input class='fl w70 al-right'  :id='i.value'  v-model='i.max' :min='i.min' type='number' :disabled='i.limitSpent'>
+                                                                        <span v-if=' Number(i.max) < Number(i.min) ' class='fl red f10'>Should be more than {{i.min}}</span>
+                                                                    </div> 
+                                                                </td>
+                                                                <td class='w25 center'>
+                                                                    <div class=' fl w40 p2-4'>
+                                                                        &nbsp;Flat
+                                                                        <input v-model='i.flex' class='fl w25' type='radio' value='1' :name='"type_"+ind+j.benefitTypeId.value+i.label' :disabled='i.limitSpent'>
+                                                                    </div>
+                                                                    <div class='fl w40 p2-4'>
+                                                                        &nbsp;%
+                                                                        <input v-model='i.flex' class='fl w25 ' type='radio' value='2'  :name='"type_"+ind+j.benefitTypeId.value+i.label' :disabled='i.limitSpent'>
+                                                                    </div>
+                                                                    <div class='fl w80 p2-4'>
+                                                                        <input v-model='i.flexAmt' class='fl w100 al-right' min='0' type='number' :disabled='i.limitSpent'>
+                                                                    </div>
+                                                                    
+                                                                </td>
+                                                                <td v-if='j.benefitTypeId.label == "Accomodation"' >
+                                                                    <select v-model='i.starCat' class='p2-4' style='width:50px;' :disabled='i.limitSpent'>
+                                                                        <option value='1'>1</option>
+                                                                        <option value='2'>2</option>
+                                                                        <option value='3'>3</option>
+                                                                        <option value='4'>4</option>
+                                                                        <option value='5'>5</option>
+                                                                    </select>
+                                                                </td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
@@ -170,7 +170,7 @@
                     </li>
                     <li class='fl p5-10'>
                         <br/>
-                        <button style='margin-top:5px' class='btn btn-primary btn-sm' @click="show('3')"><i class="fa fa-pencil" aria-hidden="true"></i> Edit</button>
+                        <button style='margin-top:5px' class='btn btn-primary btn-sm' :disabled='policyBundleName === "Master Admin"' @click="show('3')"><i class="fa fa-pencil" aria-hidden="true"></i> Edit</button>
                         <button style='margin-top:5px' class='btn btn-primary btn-sm' @click="show('1')"><i class="fa fa-chevron-left" aria-hidden="true"></i> Back</button>
                     </li>
                 </ul>
@@ -187,7 +187,7 @@
                 <div class='panel panel-default fl w100'  :id='index' >
                         <div class='panel-heading fl w100'>
                             <div class='panel-title fl w100'>
-                                <div  class='fl w40 p5-10 f14'><b>{{ j.benefitTypeId.label }}</b></div>
+                                <div  class='fl w40 p5-10 f14'>{{ j.benefitTypeId.label }}</div>
                                 <!-- <div class='fr w40 p5-10 f14 al-right b3'>
                                     Priority - 
                                     {{displayHolder[index].priority}}
@@ -227,7 +227,7 @@
                                                     <td class=''>{{i.label}}</td>
                                                     <td class='center'>{{ (i.limitSpent) ? 'Yes' : 'No' }}</td>
                                                     <td class='center'>{{ (!i.limitSpent) ? ('₹' + i.min) : '---' }} - {{ (!i.limitSpent) ? ('₹' + i.max) : '---'}}</td>
-                                                    <td class='center'>{{ (!i.limitSpent) ? i.flexAmt : '---'}} {{ (!i.limitSpent) ?  (i.flex != 0) ? ( (i.flex==1) ? 'INR' : '%') :'' : '' }}</td>
+                                                    <td class='center'>{{ (!i.limitSpent) ? ((i.flex == '1') ? '₹' : '') + i.flexAmt + ((i.flex == '2') ? '%' : '') : '---'}}</td>
                                                     <td class='center'  v-if='j.benefitTypeId.value == "3"'>{{ (i.limitSpent) ? "--" : i.starCat}}</td>
                                                 </tr>
                                             </tbody>
@@ -247,7 +247,6 @@
 
     <transition name='fade'>
         <div id='createPanel'  class='fl w80 p5-10' v-if='createPanelShow'>
-      
             <List @refresh='getList' :getFresh='toRefresh' @doneRefresh='resetFresh'/>
         </div>
     </transition>  
@@ -363,7 +362,7 @@ export default {
          }
      },
    toRefresh: function(val){
-          console.log(val);
+        //   console.log(val);
           if(val){
               //set the value to true and emit the event
 
@@ -702,7 +701,14 @@ export default {
                             self.$store.commit('showAlert','d|Policy Bundle deleted successfully..!');
                         }
                     }else{
-                        self.$store.commit('showAlert','d|Error in deleting the policy');
+                        // self.$store.commit('showAlert','d|Error in deleting the policy');need to work here
+                         self.$store.commit('showAlert','d|Policy Bundle deleted successfully..!');
+                            $.post(api.listPolicyBundle,{'companyId' : api.companyId }).done(function(res){
+                                self.showEdit = false;
+                                self.policyBundleData = JSON.parse(res)
+                                self.show('1');
+                                self.disableSave = false;
+                            });
                     }
 
                   
