@@ -57,61 +57,83 @@
                                                             <!-- <sup v-if='j.benefitTypeId.value != "3" && copyHolder[index].benefits.length > 0' style='color:red;'>*</sup>
                                                             <sup v-if='j.benefitTypeId.value == "3"  && copyHolder[index].benefits.hasOwnProperty("value")' style='color:red;'>*</sup> -->
                                             </label>
-                                        <v-select multiple v-model='copyHolder[index].cityCatAndAllowances' :options='j.cityCatAndAllowances'></v-select>
+                                        <v-select v-if='j.benefitTypeId.value == "3"' multiple v-model='copyHolder[index].cityCatAndAllowances' :options='j.cityCatAndAllowances'></v-select>
+                                        <!--this is to make the option for other policies from accomodation -->
+                                        <v-select v-else multiple v-model='copyHolder[index].cityCatAndAllowances' :options='j.cityCatAndAllowances.filter(y => CityCat.indexOf(y.value) > -1)'></v-select>
                                     </div>
                                 </div>
                                 <div v-if='copyHolder[index].cityCatAndAllowances.length > 0' class='fl w60 p5-10'>
                                     <table  class='table'>
                                         <thead>
-                                            <tr>
+                                            <tr v-if='j.benefitTypeId.value == "3"'>
                                                 <th class='w20'>City Category</th>
                                                 <th class='w10 center'>Unlimited</th>
                                                 <th class='w25 center'>Price</th>
                                                 <th class='w25'>Excess</th>
-                                                <th class='w10 center'  v-if='j.benefitTypeId.value == "3"'>Star <sup style='color:red;'>*</sup> </th>
+                                                <th class='w10 center'>Star <sup style='color:red;'>*</sup> </th>
                                             </tr>
+                                            <tr v-else>
+                                                <th class='w20'>City Category</th>
+                                                <th class='w10 center'>Unlimited</th>
+                                                <th class='w25 center'>Entitlement Per Day</th>
+                                            </tr>                                            
                                         </thead>
-                                        <tbody>
-                                        <tr  v-for='(i,ind) in copyHolder[index].cityCatAndAllowances' :id='i.value' :key='i.value'>
-                                        <td class='w20'>{{i.label}}</td>
-                                        <td class='w10 center'>
-                                            <input :id='i.value' v-model='i.limitSpent' type='checkbox'>
-                                        </td><!-- @click='disableField(i.value)'-->
-                                        <td class='w25' style='padding:1px;'>
-                                            <div class='p2-4 fl w100'> 
-                                                <span class='fl w30 p2-4'> Min </span>
-                                                <input class='fl w70' :id='i.value' v-model='i.min'  type='number' :disabled='i.limitSpent'>
-                                            </div>
-                                            <div class='p2-4 fl w100'>
-                                                <span class='fl w30 p2-4'>Max </span>
-                                                <input class='fl w70'  :id='i.value' :value='i.limitSpent'  v-model='i.max' :min='i.min' type='number' :disabled='i.limitSpent'>
-                                                <span v-if=' Number(i.max) < Number(i.min) ' class='fl red f10'>Should be more than {{i.min}}</span>
-                                            </div> 
-                                        </td>
-                                        <td class='w25 center'>
-                                            <div class=' fl w40 p2-4'>
-                                                &nbsp;Flat
-                                                <input v-model='i.flex' class='fl w25' :name='"type_"+ind+j.benefitTypeId.value+i.label' type='radio' value='1' :disabled='i.limitSpent'>
-                                            </div>
-                                            <div class='fl w40 p2-4'>
-                                                &nbsp;%
-                                                <input v-model='i.flex' class='fl w25' type='radio' value='2'  :name='"type_"+ind+j.benefitTypeId.value+i.label' :disabled='i.limitSpent'>
-                                            </div>
-                                            <div class='fl w80 p2-4'>
-                                                <input v-model='i.flexAmt' class='fl w100' min='0' type='number' :disabled='i.limitSpent'>
-                                            </div>
-                                                
-                                            </td>
-                                        <td v-if='j.benefitTypeId.label == "Accomodation"' >
-                                        <select v-model='i.starCat' class='p2-4' style='width:50px;' :disabled='i.limitSpent'>
-                                            <option value='1'>1</option>
-                                            <option value='2'>2</option>
-                                            <option value='3'>3</option>
-                                            <option value='4'>4</option>
-                                            <option value='5'>5</option>
-                                        </select>
-                                        </td>
-                                        </tr>
+                                        <tbody v-if='j.benefitTypeId.value == "3"'>
+                                            <tr  v-for='(i,ind) in copyHolder[index].cityCatAndAllowances' :id='i.value' :key='i.value'>
+                                                <td class='w20'>{{i.label}}</td>
+                                                <td class='w10 center'>
+                                                    <input :id='i.value' v-model='i.limitSpent' type='checkbox'>
+                                                </td><!-- @click='disableField(i.value)'-->
+                                                <td class='w25' style='padding:1px;'>
+                                                    <div class='p2-4 fl w100'> 
+                                                        <span class='fl w30 p2-4'> Min </span>
+                                                        <input class='fl w70' :id='i.value' v-model='i.min'  type='number' :disabled='i.limitSpent'>
+                                                    </div>
+                                                    <div class='p2-4 fl w100'>
+                                                        <span class='fl w30 p2-4'>Max </span>
+                                                        <input class='fl w70'  :id='i.value' :value='i.limitSpent'  v-model='i.max' :min='i.min' type='number' :disabled='i.limitSpent'>
+                                                        <span v-if=' Number(i.max) < Number(i.min) ' class='fl red f10'>Should be more than {{i.min}}</span>
+                                                    </div> 
+                                                </td>
+                                                <td class='w25 center'>
+                                                    <div class=' fl w40 p2-4'>
+                                                        &nbsp;Flat
+                                                        <input v-model='i.flex' class='fl w25' :name='"type_"+ind+j.benefitTypeId.value+i.label' type='radio' value='1' :disabled='i.limitSpent'>
+                                                    </div>
+                                                    <div class='fl w40 p2-4'>
+                                                        &nbsp;%
+                                                        <input v-model='i.flex' class='fl w25' type='radio' value='2'  :name='"type_"+ind+j.benefitTypeId.value+i.label' :disabled='i.limitSpent'>
+                                                    </div>
+                                                    <div class='fl w80 p2-4'>
+                                                        <input v-model='i.flexAmt' class='fl w100' min='0' type='number' :disabled='i.limitSpent'>
+                                                    </div>
+                                                        
+                                                    </td>
+                                                <td v-if='j.benefitTypeId.label == "Accomodation"' >
+                                                <select v-model='i.starCat' class='p2-4' style='width:75px;' :disabled='i.limitSpent'>
+                                                    <option value='1'>1</option>
+                                                    <option value='2'>Upto 2</option>
+                                                    <option value='3'>Upto 3</option>
+                                                    <option value='4'>Upto 4</option>
+                                                    <option value='5'>Upto 5</option>
+                                                </select>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <tbody v-else>
+                                            <tr  v-for='i in copyHolder[index].cityCatAndAllowances' :id='i.value' :key='i.value'>
+                                                <td class='w20'>{{i.label}}</td>
+                                                <td class='w10 center'>
+                                                    <input :id='i.value' v-model='i.limitSpent' type='checkbox'>
+                                                </td><!-- @click='disableField(i.value)'-->
+                                                <td class='w25' style='padding:1px;'>
+                                                    <div class='p2-4 fl w100'>
+                                                        <span class='fl w30 p2-4'> </span>
+                                                        <input class='fl w70 p2-4'  :id='i.value' :value='i.limitSpent'  v-model='i.max' :min='i.min' type='number' :disabled='i.limitSpent'>
+                                                        <!-- <span v-if=' Number(i.max) < Number(i.min) ' class='fl red f10'>Should be more than {{i.min}}</span> -->
+                                                    </div> 
+                                                </td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -165,8 +187,14 @@ export default {
  computed: {
      tabs(){
          var o = this.policyBundles;
-
          return o.map(x => x.benefitTypeId.label)
+     },
+     CityCat(){
+         //this is hold the selecetd city category of the accomodtion
+         return this.copyHolder
+         .find(x => x.benefitTypeId.value == '3')
+         .cityCatAndAllowances
+         .map(y => y.value)
      }
  },
 

@@ -17,6 +17,7 @@ export default {
     listCityCatDetails: (forProd) ? prodPath + "/listCityCatDetails" : localPath + "/citymapping/list",
     creatCityCat: (forProd) ? prodPath + "/createCityCat" : localPath + "/cityCatMap",
     listCity: (forProd) ? prodPath + "/listCities" : localPath + "/listCity",
+    listCityCatList: (forProd) ? prodPath + "/cityList" : localPath + "/listCity",
     deleteCityCat: (forProd) ? prodPath + "/deleteCityCat" : localPath + "/citycategory",
     updateCityCat: (forProd) ? prodPath + "/updateCityCat" : localPath + "/cityCatMap/edit",
     listPolicyBundle: (forProd) ? prodPath + "/listPolicyBundle" : localPath + "/listBenefitBundle",

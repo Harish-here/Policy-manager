@@ -47,7 +47,7 @@
                               </div>
                               <div class='form-group'>
                                 <label>Assign City</label>
-                                <v-select  multiple v-model='cityHolder' :options='cityData'></v-select>
+                                <v-select  multiple v-model='cityHolder' :options='cityData.filter(x => cityDataCat.indexOf(x.value) === -1)'></v-select>
                                 <div class='p10-20 center'>
                                   <button v-show='!showEdit' type='button' id='createBtn' class='btn btn-primary btn-sm' @click='create'>
                                     <i class="fa fa-plus" aria-hidden="true"></i>
@@ -97,7 +97,8 @@ export default {
           preCityHolder : [],
           cityCategoryId: null,
           dataReturn : null,
-          activeCityCat : ''
+          activeCityCat : '',
+          cityDataCat: []
       }
   },
   components : {Add},
@@ -148,7 +149,15 @@ export default {
              });
             self.show()
              $.get(api.listCity).done(function(res){
-                self.cityData = JSON.parse(res)
+                self.cityData = JSON.parse(res).sort(function(a,b){
+                   return a.label > b.label
+                });
+             }).fail(function(err){
+               console.log(err)
+             });
+             $.get(api.listCityCatList).done(function(res){
+               let temp = JSON.parse(res);
+                self.cityDataCat = temp.map(x => x.value);
              }).fail(function(err){
                console.log(err)
              });
@@ -223,7 +232,8 @@ export default {
                 //self.fade('createInfo',3);
                 self.$store.commit('showAlert','s|City Category \"'+ self.cityCategoryHolder +'\" is Created..!')
                 self.cityCategoryHolder = null;
-                $('#createBtn').html('add')
+                $('#createBtn').html('add');
+                location.reload();
                 });
                 });
               
