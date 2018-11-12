@@ -5,12 +5,12 @@
                 {{label}}
               </div>
             </transition>
-            <ul class='fl w100 p20-40 al-left bg-gray'>
+            <ul class='fl w100 p20-40 al-left bg-gray' id='pageTitle'>
                 <li>
                   <button class='btn btn-primary btn-xs fr' data-toggle="modal" data-target="#myModal2"><span style='color:#fff !important;'><i class="fa fa-location-arrow" aria-hidden="true"></i> Manage City Category</span>
                   </button>
                 </li>
-                <li role="presentation" class='b3 f21 roboto brown'>Grade Policy </li>
+                <li role="presentation" class='b3 f21'>Grade Policy </li>
             </ul>
             <hr class='fl w100'>
             <transition name='fade'>
@@ -47,13 +47,13 @@
                               </div>
                               <div class='form-group'>
                                 <label>Assign City</label>
-                                <v-select  multiple v-model='cityHolder' :options='cityData.filter(x => cityDataCat.indexOf(x.value) === -1)'></v-select>
-                                <div class='p10-20 center'>
+                                <v-select maxHeight='250px'  multiple v-model='cityHolder' :options='cityData.filter(x => CompCit.indexOf(x.value) == -1)'></v-select>
+                                <div class='pa2 flex justify-around'>
                                   <button v-show='!showEdit' type='button' id='createBtn' class='btn btn-primary btn-sm' @click='create'>
                                     <i class="fa fa-plus" aria-hidden="true"></i>
                                     Add</button>
-                                  <button v-show='showEdit' type='button' id='editBtn' class='btn btn-primary btn-sm' @click='edit'><i class="fa fa-floppy-o" aria-hidden="true"></i> Update</button>
                                   <button v-show='showEdit' type='button'  id='editBtn' class='btn btn-danger btn-sm' @click="deleteCityCat(cityCategoryId)"><i class="fa fa-trash" aria-hidden="true"></i> Delete</button>
+                                  <button v-show='showEdit' type='button' id='editBtn' class='btn btn-primary btn-sm' @click='edit'><i class="fa fa-floppy-o" aria-hidden="true"></i> Update</button>
                                   <button v-show='showEdit' class='btn btn-default btn-sm' @click="clean"><i class="fa fa-chevron-left" aria-hidden="true"></i> Back</button>
                                 </div>
                               </div>
@@ -71,7 +71,7 @@
 <script>
 import Vue from 'vue'
 import vSelect from 'vue-select'
-import _ from 'lodash/collection'
+// import _ from 'lodash/collection'
 import api from '@/utility/api' 
 import Add from '@/components/Edit'
 Vue.component('v-select', vSelect)
@@ -98,49 +98,12 @@ export default {
           cityCategoryId: null,
           dataReturn : null,
           activeCityCat : '',
-          cityDataCat: []
+          cityDataCat: [],
+          activeId: [],
+          activeCityVal:[]
       }
   },
   components : {Add},
-  watch : {
-    cityHolder : function(){
-      const self= this;
-      let dif = 0;let put;
-    _.forEach(self.preCityHolder,function(value){
-        for(let i in self.cityHolder){
-          if(self.cityHolder[i].value == value.value ){
-            put = false;
-            break;
-          }else{
-            put= true;
-          }
-        }
-        //push here
-        
-        if(put){
-          if(self.remCities.length > 0){
-              for(var u in self.remCities){//checking it is availabel alreadu in removecities
-                if(self.remCities[u].value == value.value){
-                  dif = 1;
-                  break;
-                }else{
-                  continue;
-                }
-              }
-              if(!dif){
-                self.remCities.push(value);
-              }
-              }else{
-                self.remCities.push(value);
-              }
-        }
-     
-    });
-      
-
-    }
-  },
-
    created(){
      var self = this;
   
@@ -150,14 +113,16 @@ export default {
             self.show()
              $.get(api.listCity).done(function(res){
                 self.cityData = JSON.parse(res).sort(function(a,b){
-                   return a.label > b.label
+                   var textA = a.label.toUpperCase();
+                    var textB = b.label.toUpperCase();
+                    return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
                 });
              }).fail(function(err){
                console.log(err)
              });
              $.get(api.listCityCatList).done(function(res){
                let temp = JSON.parse(res);
-                self.cityDataCat = temp.map(x => x.value);
+                self.cityDataCat = temp.map(x => x.value)
              }).fail(function(err){
                console.log(err)
              });
@@ -167,6 +132,19 @@ export default {
      showAlert(){
        const self = this;
        return self.$store.state.alt
+     },
+     SelectedId(){
+       if(this.activeId.length > 0){
+        return this.activeId;
+       }else{
+         return []
+       }
+     },
+     CompCit(){
+       const self = this;
+       return this.cityDataCat.filter(x => {
+         return self.SelectedId.indexOf(x) === -1
+       });
      },
      classs(){
        const self = this;
@@ -189,6 +167,15 @@ export default {
             }
 
           },
+          getCityCat: function(){
+            const self = this;
+            $.get(api.listCityCatList).done(function(res){
+               let temp = JSON.parse(res);
+                self.cityDataCat = temp.map(x => x.value)
+             }).fail(function(err){
+               console.log(err)
+             });
+          },
           show : function(){
             if(api.production){
               setProgress(2);
@@ -205,8 +192,9 @@ export default {
               const self = this;
               self.createShow = true ;self.showEdit = false;
               self.cityCategoryHolder = null;
-              self.cityHolder = null;
+              self.cityHolder = [];
               self.activeCityCat = '';
+              self.activeId = [];
             },
       create : function(){
             var self = this;let datas;
@@ -222,18 +210,19 @@ export default {
               self.show()
               $.post(api.creatCityCat,datas).done(function(data){
                 //  self.dataReturn = JSON.parse(data);//response
-                $.post(api.listCityCat,{'companyId' : api.companyId ,'methodType' :'list' }).done(function(data){
-                self.cityCategoryData = JSON.parse(data);//respo refresh the list
-                self.showEdit = false;
-                  self.tellRefresh = true;//to tell the childrens to refresh the city category
-                self.cityHolder = null;
-                self.activeCityCat = '';
-                self.btnState('createBtn','create',0);
-                //self.fade('createInfo',3);
-                self.$store.commit('showAlert','s|City Category \"'+ self.cityCategoryHolder +'\" is Created..!')
-                self.cityCategoryHolder = null;
-                $('#createBtn').html('add');
-                location.reload();
+                  $.post(api.listCityCat,{'companyId' : api.companyId ,'methodType' :'list' }).done(function(data){
+                  self.cityCategoryData = JSON.parse(data);//respo refresh the list
+                  self.showEdit = false;
+                    self.tellRefresh = true;//to tell the childrens to refresh the city category
+                  self.cityHolder = [];
+                  self.activeCityCat = '';
+                  self.btnState('createBtn','create',0);
+                  //self.fade('createInfo',3);
+                  self.getCityCat();
+                  self.$store.commit('showAlert','s|City Category \"'+ self.cityCategoryHolder +'\" is Created..!')
+                  self.cityCategoryHolder = null;
+                  $('#createBtn').html('add');
+                  // location.reload();
                 });
                 });
               
@@ -250,13 +239,14 @@ export default {
               var self = this;
               self.showEdit = true;
               self.show();
-              
+              self.activeId = []
               $.post(api.listCityCatDetails,{'cityCatId' : obj }).done(function(data){
                 self.activeCityCat = obj;
                 self.dataReturn = JSON.parse(data);//response
                 self.cityCategoryId = self.dataReturn.cityCat.value; //setting the id here
                 self.cityCategoryHolder = self.dataReturn.cityCat.label;
                 self.cityHolder =  self.dataReturn.cities;
+                self.activeId = self.dataReturn.cities.map(x => x.value);
                 self.preCityHolder = [...self.cityHolder];
                 self.createShow = true;
                 });
@@ -267,7 +257,7 @@ export default {
               $.post(api.deleteCityCat,{'cityCatId' : id,'methodType':'delete'}).done(function(data){ //url for delte 
               //http://www.hobse.com/demo/index.php/customer/customer/policy/deleteCityCat
               var res = data
-          
+              self.activeId = []
               self.show()
               $.post(api.listCityCat,{'companyId' : api.companyId ,'methodType' :'list' }).done(function(datas){
                 self.cityCategoryData = JSON.parse(datas);//respo refresh the list
@@ -279,11 +269,14 @@ export default {
                 self.showEdit = false;
                 if(res.indexOf('f') === 0){
                 self.fade('deleteNotInfo',3)
+                
                   self.$store.commit('showAlert','d|Sorry can\'t Delete this city Category because it is associated with some policy bundle !!!')
                 }else{
+                  self.activeId = [];
                   // self.fade('deleteInfo',4);
                   self.$store.commit('showAlert','d|City Category is Deleted..!')
                 }
+                self.getCityCat();
                 });
                 
               });
@@ -291,8 +284,13 @@ export default {
           },
 
           edit : function(){
-            const self = this;let toSend
+            const self = this;let toSend;
             self.btnState('editBtn','changing',1);
+            //write the edit suace here
+            self.remCities = self.preCityHolder.filter(x => {
+              return self.cityHolder.map(y => y.value).indexOf(x.value) == -1
+            });
+            // console.log(self.remCities);
             if(api.production){
               toSend ={ cityCat : { label : self.cityCategoryHolder, value : self.cityCategoryId },cities : self.cityHolder,remCities : self.remCities,companyId : api.companyId} ;
             }else{
@@ -310,8 +308,10 @@ export default {
                     self.preCityHolder  = [];
                     self.remCities  = [];
                     self.showEdit = false;
-              self.btnState('editBtn','Update',0);
-              self.$store.commit('showAlert','o|City Category updated..!')
+                    self.activeId = [];
+                    self.btnState('editBtn','Update',0);
+                    self.getCityCat();
+                    self.$store.commit('showAlert','o|City Category updated..!')
                 });
                 
               });

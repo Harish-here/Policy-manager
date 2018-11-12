@@ -75,13 +75,13 @@
                                                             <!-- <sup style='color:red;' v-if='copyHolder[index].cityCatAndAllowances.length > 0'>*</sup> -->
                                                         </label>
                                                         <div v-if='j.benefitTypeId.value != "3"'>
-                                                            <v-select multiple v-model='copyHolder[index].benefits' :options='j.benefits'></v-select>
+                                                            <v-select maxHeight='250px' multiple v-model='copyHolder[index].benefits' :options='j.benefits'></v-select>
                                                         </div>
                                                         <div v-if='j.benefitTypeId.value == "3"' >
                                                             <!-- <select v-model='singleSelect' class='w100 benefit-acc'>
                                                                 <option v-for='k in j.benefits' :value='k' :key='k.label'>{{ k.label}}</option>
                                                             </select> -->
-                                                            <v-select v-model='singleSelect' :options='j.benefits'></v-select>
+                                                            <v-select maxHeight='250px' v-model='singleSelect' :options='j.benefits'></v-select>
                                                         </div>
                                                     </div>
                                                     <div class='p5-10'>
@@ -89,9 +89,9 @@
                                                             <!-- <sup v-if='j.benefitTypeId.value != "3" && copyHolder[index].benefits.length > 0' style='color:red;'>*</sup>
                                                             <sup v-if='j.benefitTypeId.value == "3" && copyHolder[index].benefits.hasOwnProperty("value")' style='color:red;'>*</sup> -->
                                                         </label>
-                                        <v-select v-if='j.benefitTypeId.value == "3"' multiple v-model='copyHolder[index].cityCatAndAllowances' :options='j.cityCatAndAllowances'></v-select>
+                                        <v-select maxHeight='250px' v-if='j.benefitTypeId.value == "3"' multiple v-model='copyHolder[index].cityCatAndAllowances' :options='j.cityCatAndAllowances'></v-select>
                                         <!--this is to make the option for other policies from accomodation -->
-                                        <v-select v-else multiple v-model='copyHolder[index].cityCatAndAllowances' :options='j.cityCatAndAllowances.filter(y => CityCat.indexOf(y.value) > -1)'></v-select>
+                                        <v-select maxHeight='250px' v-else multiple v-model='copyHolder[index].cityCatAndAllowances' :options='j.cityCatAndAllowances.filter(y => CityCat.indexOf(y.value) > -1)'></v-select>
                                                     </div>
                                                 </div>
                                                 <div class='fl w60 p5-10' v-if='copyHolder[index].cityCatAndAllowances.length > 0'>                                   
@@ -167,7 +167,7 @@
                                                     </table>
                                                 </div>
                                                 <div class='fl w60 p10-20 center gray' v-else>
-                                                    Add city category to configure policy {{j.benefitTypeId.label}}
+                                                    Ensure City Categoy is configured before you cnfigure your {{j.benefitTypeId.label}} Policy
                                                 </div>    
                                                 
                                                 
@@ -192,7 +192,7 @@
                     <li class='fl p5-10'>
                         <br/>
                         <button style='margin-top:5px' class='btn btn-primary btn-sm' :disabled='policyBundleName === "Master Admin"' @click="show('3')"><i class="fa fa-pencil" aria-hidden="true"></i> Edit</button>
-                        <button style='margin-top:5px' class='btn btn-primary btn-sm' @click="show('1')"><i class="fa fa-chevron-left" aria-hidden="true"></i> Back</button>
+                        <button style='margin-top:5px' class='btn btn-default btn-sm' @click="show('1')"><i class="fa fa-chevron-left" aria-hidden="true"></i> Back</button>
                     </li>
                 </ul>
             </div>
@@ -254,7 +254,7 @@
                                                     <td class='center'>{{ (i.limitSpent) ? 'Yes' : 'No' }}</td>
                                                     <td class='center'>{{ (!i.limitSpent) ? ('₹' + i.min) : '---' }} - {{ (!i.limitSpent) ? ('₹' + i.max) : '---'}}</td>
                                                     <td class='center'>{{ (!i.limitSpent) ? ((i.flex == '1') ? '₹' : '') + i.flexAmt + ((i.flex == '2') ? '%' : '') : '---'}}</td>
-                                                    <td class='center'  v-if='j.benefitTypeId.value == "3"'>{{ (i.limitSpent) ? "--" : i.starCat}}</td>
+                                                    <td class='center'  v-if='j.benefitTypeId.value == "3"'>{{ (i.limitSpent) ? "--" : ((Number(i.starCat) > 1) ? 'upto ' + i.starCat : i.starCat)}}</td>
                                                 </tr>
                                             </tbody>
                                             <tbody v-else>

@@ -19,14 +19,20 @@ const store = new Vuex.Store({
   mutations: {
     showAlert(state,str){
       var data = str.split('|');
-      state.label = data[1];
-      (data[0] === 's') ? state.class = 'bg-green' : (data[0] === 'd') ? state.class = 'bg-red' : state.class = 'bg-orange' ;
-      state.alt = true;
-      setTimeout(function(){
-        state.alt = false;
-        state.label = "";
-        state.class='bg-green';
-      },2000);
+      // state.label = data[1];
+      // (data[0] === 's') ? state.class = 'bg-green' : (data[0] === 'd') ? state.class = 'bg-red' : state.class = 'bg-orange' ;
+      // state.alt = true;
+      // setTimeout(function(){
+      //   state.alt = false;
+      //   state.label = "";
+      //   state.class='bg-green';
+      // },2000);
+      switch(data[0]){
+        case 's': alertify.success(data[1]);break;
+        case 'd': alertify.error(data[1]);break;
+        default : alert(data[1]);break;
+
+      }
     }
   }
 })
