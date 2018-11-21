@@ -1,46 +1,40 @@
 <template>
-  <div id='create' class=''>
+  <div id='create' class='fl  w100'>
       
-    <div class='fl w100 p5-10'>
-      <ul id='create-box' class='fl p5-10 o-gray'>
-            <li class='fl p5-10'>
-                <div class=' pl-0'>Grade Policy Name</div>
-                <input name='policy bundle' type='text' class='p2-4 black b6' v-model='bundleName' />
+    <div class='fl w100'>
+      <ul id='create-box' class='fl o-gray w100 mb20' style=''>
+            <li class='fl w100 b6 black mb20' style='padding-left:5px;'>Grade Policy Configuration</li>
+            <li class='fl w50 p5-10'>
+                <div class=''>Name</div>
+                <input name='policy bundle' type='text' class='pa10 black  w100' v-model='bundleName' />
             </li>
-            <li class='fl p5-10 '>
-                <div class=' pl-0'>Grade Policy Code</div>
-                <input name='policy bundle' type='text' class='p2-4 black' v-model='bundleCode' />
+            <li class='fl w50 p5-10 '>
+                <div class=''>Code</div>
+                <input name='policy bundle' type='text' class='pa10 black' v-model='bundleCode' />
             </li> 
       </ul>
     </div>
-    <div class='fl w100 p5-10'>
-        <ul id='tab_policy' class='fl w100 b6 center cursor'>
-            <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Accomodation"}' @click='activeTab = "Accomodation"'>Accomodation</li>
-            <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Allowance"}' @click='activeTab = "Allowance"'>Allowance</li>
-            <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Conveyance"}' @click='activeTab = "Conveyance"'>Conveyance</li>
-            <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Entertainment"}' @click='activeTab = "Entertainment"'>Entertainment</li>
+    <div class='fl w100'>
+        <ul id='tab_policy' class='fl w100 b6 center'>
+            <li class='fl w50 p5-10' :class='{"br-active":activeTab === "Accomodation"}' @click='activeTab = "Accomodation"'>Accomodation</li>
+            <li class='fl w50 p5-10' :class='{"br-active":activeTab === "Allowance"}' @click='activeTab = "Allowance"'>Allowance</li>
+            <!-- <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Conveyance"}' @click='activeTab = "Conveyance"'>Conveyance</li>
+            <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Entertainment"}' @click='activeTab = "Entertainment"'>Entertainment</li> -->
         </ul>
     </div>
-    <div class='fl w100 p5-10' v-for='(j,index) in policyBundles' :key='index' :class='{"dbNo":j.benefitTypeId.label !== activeTab}'>
+    <div class='fl w100' v-for='(j,index) in policyBundles' :key='index' :class='{"dbNo":j.benefitTypeId.label !== activeTab}'>
             <div class='panel panel-default fl w100'  :id="index">
-                    <div class='panel-heading fl w100'>
+                    <!-- <div class='panel-heading fl w100'>
                         <div class='panel-title fl w100'>
                             <div class='fl w30 p5-10 f16'>{{ j.benefitTypeId.label }}</div>
-                            <!-- <select class='fr w10' v-model='copyHolder[index].priority'>
-                                    <option value='1'>1</option>
-                                    <option value='2'>2</option>
-                                    <option value='3'>3</option>
-                                    <option value='4'>4</option>
-                                    <option value='5'>5</option>
-                            </select>
-                            <div class='fr p5-10 w15 al-right f12 b3'>Set Priority</div> -->
+                           
                         </div>
-                    </div>
+                    </div> -->
                     <div :id="'collapselist'+j.benefitTypeId.value" class='panel-collapse collapse in fl w100'>
                         <div class='panel-body'>
                             <div class='fl w100'>
-                                <div class='fl w40 p5-10'>
-                                    <div class='p5-10'>
+                                <div class='fl w70'>
+                                    <div class='pa10'>
                                         <label class='b6'>Benefits <!--<sup style='color:red;' v-if='copyHolder[index].cityCatAndAllowances.length > 0'>*</sup> --></label>
                                         <div v-if='j.benefitTypeId.value != "3"'>
                                             <v-select maxHeight='250px' multiple v-model='copyHolder[index].benefits' :options='j.benefits'></v-select>
@@ -52,7 +46,7 @@
                                             <v-select maxHeight='250px' v-model='singleSelect' :options='j.benefits'></v-select>
                                         </div>
                                     </div>
-                                    <div class='p5-10'>
+                                    <div class='pa10'>
                                         <label class='b6'>City Category 
                                                             <!-- <sup v-if='j.benefitTypeId.value != "3" && copyHolder[index].benefits.length > 0' style='color:red;'>*</sup>
                                                             <sup v-if='j.benefitTypeId.value == "3"  && copyHolder[index].benefits.hasOwnProperty("value")' style='color:red;'>*</sup> -->
@@ -62,15 +56,15 @@
                                         <v-select maxHeight='250px' v-else multiple v-model='copyHolder[index].cityCatAndAllowances' :options='j.cityCatAndAllowances.filter(y => CityCat.indexOf(y.value) > -1)'></v-select>
                                     </div>
                                 </div>
-                                <div v-if='copyHolder[index].cityCatAndAllowances.length > 0' class='fl w60 p5-10'>
+                                <div v-if='copyHolder[index].cityCatAndAllowances.length > 0' class='fl w100 p5-10'>
                                     <table  class='table'>
                                         <thead>
                                             <tr v-if='j.benefitTypeId.value == "3"'>
                                                 <th class='w20'>City Category</th>
                                                 <th class='w10 center'>Unlimited</th>
-                                                <th class='w25 center'>Price</th>
-                                                <th class='w25'>Excess</th>
                                                 <th class='w10 center'>Star <sup style='color:red;'>*</sup> </th>
+                                                <th class='w25 center'>Price</th>
+                                                <th class='w25'>Excess</th>        
                                             </tr>
                                             <tr v-else>
                                                 <th class='w20'>City Category</th>
@@ -84,6 +78,15 @@
                                                 <td class='w10 center'>
                                                     <input :id='i.value' v-model='i.limitSpent' type='checkbox'>
                                                 </td><!-- @click='disableField(i.value)'-->
+                                                <td v-if='j.benefitTypeId.label == "Accomodation"' >
+                                                    <select v-model='i.starCat' class='p2-4' style='width:75px;' :disabled='i.limitSpent'>
+                                                        <option value='1'>1</option>
+                                                        <option value='2'>Upto 2</option>
+                                                        <option value='3'>Upto 3</option>
+                                                        <option value='4'>Upto 4</option>
+                                                        <option value='5'>Upto 5</option>
+                                                    </select>
+                                                </td>
                                                 <td class='w25' style='padding:1px;'>
                                                     <div class='p2-4 fl w100'> 
                                                         <span class='fl w30 p2-4'> Min </span>
@@ -108,16 +111,8 @@
                                                         <input v-model='i.flexAmt' class='fl w100' min='0' type='number' :disabled='i.limitSpent'>
                                                     </div>
                                                         
-                                                    </td>
-                                                <td v-if='j.benefitTypeId.label == "Accomodation"' >
-                                                <select v-model='i.starCat' class='p2-4' style='width:75px;' :disabled='i.limitSpent'>
-                                                    <option value='1'>1</option>
-                                                    <option value='2'>Upto 2</option>
-                                                    <option value='3'>Upto 3</option>
-                                                    <option value='4'>Upto 4</option>
-                                                    <option value='5'>Upto 5</option>
-                                                </select>
                                                 </td>
+                                                
                                             </tr>
                                         </tbody>
                                         <tbody v-else>
@@ -137,8 +132,8 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class='fl w60 p10-20 center m-top-25' v-else>
-                                            Ensure City Categoy is configured before you cnfigure your {{j.benefitTypeId.label}} Policy 
+                                <div class='fl w100 p5-10 center m-top-25' v-else>
+                                            Ensure City Categoy is configured before you configure your {{j.benefitTypeId.label}} Policy 
                                 </div> 
                             </div>  
                             
@@ -146,7 +141,7 @@
                     </div>
             </div>
     </div>
-    <div class='fl w100 p5-10 center'>
+    <div class='fl w100 p5-10'>
             <button class='btn btn-primary btn-sm' v-if='policyBundles.hasOwnProperty("length") && policyBundles.length > 0' @click='sendBundle' :disabled='disableSave'>Create Policy
               <i v-if='disableSave' class="fa fa-spinner fa-spin" aria-hidden="true"></i>
             </button> 
@@ -468,16 +463,16 @@ export default {
     margin-bottom: 20px;
     background-color: rgb(255, 255, 255);
     box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 1px;
-    border-width: 1px;
+    /* border-width: 1px; */
     border-style: solid;
     border-color: transparent;
     border-image: initial;
     height: auto !important;
 }
-.panel-default {
+/* .panel-default {
     border-color: rgb(221, 221, 221);
     border:1px solid #ddd !important
-}
+} */
 .panel-heading{
     background-color:#ddd;
     padding : 5px 10px !important;

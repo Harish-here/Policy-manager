@@ -1,288 +1,330 @@
 <template>
   <div id='policy' class='fl w100'>
-    <div class='fl w20 p5-10'>
-        <!-- <div class='m-top-25 p2-4'>
-            <button class='btn btn-info' @click="show('1')"><b>Create Grade Policy </b></button>
-        </div> -->
-        <div class='f16  m-bottom-10 p2-4' >List of Policy</div>
-        <ul id='sideList' class='cursor'>
-            <li class='p10-20 al-left br-gray' v-for='i in policyBundleData' @click="getPolicyBundle(i.value)" :class='{"active-list" : i.value == activeListId}' :key='i.value' :id='"pol_"+i.value'><i class="fa fa-chevron-right f10" aria-hidden="true"></i> {{i.label}}</li>
-            <li class='p10-20 center gray' v-if='policyBundleData.length === 0' >No Policy Bundle</li>
-        
+    <div class='fl br-right' style='width:16%;height:100%;background:ghostwhite;'>
+        <div class='menu-heads'>Grade Policy</div>
+        <ul id='sidemenu'>
+            <li @click='show("1")' class='centering' :class='{"act-": showEdit || showDetails || createPanelShow}'>
+                <span class='center'>
+                    Grade Policy
+                </span>
+            </li>
+            
+        </ul>
+        <div class='menu-heads'>City Group</div>
+        <ul id='sidemenu'>
+            <li @click='show("4")' class='centering' :class='{"act-": showCity}'>
+                 <span class='center'>
+                    
+                    City Group
+                </span>
+            </li>
         </ul>
     </div>
-    <!-- <pre>{{copyHolder}}</pre> -->
-    <div class='fl w80 p5-10' id='editPanel' v-if='showEdit'>
-                <div class='fl p5-10'>
-                    <ul id='create-box' class='fl p5-10 o-gray'>
-                        <li class='fl p5-10 '>
-                            <div class='pl-0' for='policyName'>Grade Policy Name</div>
-                            <input placeholder="Name" id='policyName' class='p2-4 f14 black b6' v-model='policyBundleName' />
-                        </li>
-                        <li class='fl p5-10'>
-                            <div class='pl-0' for='policyBundleCode'>Grade Policy Code</div>
-                            <input id='policyBundleCode' class='p2-4 f14 black' v-model='policyBundleCode' />
-                        </li>
-                        <li class='fl p5-10'><br>
-                            <div style='margin-top:3px;'>
-                                <button class='btn btn-primary btn-sm' @click='sendEdit' :disabled='disableSave'>
-                                    <i class="fa fa-floppy-o" aria-hidden="true"></i>
-                                    Save
-                                    <i v-if='disableSave' class="fa fa-spinner fa-spin" aria-hidden="true"></i>
-                                </button>
-                                <button class='btn btn-danger btn-sm' @click="deleteBundle(policyBundleId)" :disabled='disableSave'>
-                                    <i class="fa fa-trash" aria-hidden="true"></i>
-                                    Delete
-                                </button>
-                                <button class='btn btn-default btn-sm' @click='showDetailss' :disabled='disableSave'>
-                                    <i class="fa fa-chevron-left" aria-hidden="true"></i>
-                                    Back
-                                </button>
-                            </div>
+    <!-- show display or edit -->
+    <div v-if='!showCity'>
+        <div class='fl p-15-top pa-lr br-right' style='width:34%;'>
+            <!-- <div class='m-top-25 p2-4'>
+                <button class='btn btn-info' @click="show('1')"><b>Create Grade Policy </b></button>
+            </div> -->
+            <div class='roboto black mb25' style='font-size:18px;'>Grade Policy</div>
+            <div class='centering mb25' style='' @click="show('1')">Add Grade Policy</div>
+            <div class='f14 p2-4 b6 br-btm' >List of Policies</div>
+            
+            <ul id='sideList' class=''>
+                <!-- <li class='p10-20 center act-' v-if='policyBundleData.length === 0' >Add policy</li> -->
+                <li class='p10-20' style='overflow:hidden' v-for='i in policyBundleData' 
+                   :class='{"active-list" : i.value == activeListId,"al-left": i.value != activeListId}' :key='i.value'>
+                   <div class='flex items-center'>
+                    <div class='w75 cursor' @click="getPolicyBundle(i.value,'view')" style='overflow-wrap: break-word;'> {{i.label}}</div>
+                    <div class='w25 al-right'>
+                       <span v-if='i.label !== "Master Admin"' class="btn btn-default btn-xs action-btn" @click='getPolicyBundle(i.value,"edit")'><i class="fa fa-pencil" aria-hidden="true"></i></span>
+                       <span class="btn btn-default btn-xs action-btn" @click="getPolicyBundle(i.value,'view')"><i class="fa fa-eye" aria-hidden="true"></i></span>
+                   </div>
+                   </div>
+                </li>
+                <li class='p10-20 center gray' v-if='policyBundleData.length === 0' >No Grade Policy</li>
+            
+            </ul>
+        </div>
+        <div class='fl w50 p-15-top pa-lr br-right' id='editPanel' v-if='showEdit'>
+                    <div class='fl p5-10'>
+                        <ul id='create-box' class='fl o-gray mb20'>
+                            <li class='fl w100 b6 black mb20' style='padding-left:5px;'>
+                                <div class='fl w50'>Grade Policy Configuration</div>
+                                <div class='fr w50 al-right'>
+                                    <button class='btn btn-primary btn-xs' @click='sendEdit' :disabled='disableSave'>
+                                        <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                                        Save
+                                        <i v-if='disableSave' class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+                                    </button>
+                                    <button class='btn btn-danger btn-xs' @click="deleteBundle(policyBundleId)" :disabled='disableSave'>
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                        Delete
+                                    </button>
+                                    <!-- <button class='btn btn-default btn-xs' @click='show("1")' :disabled='disableSave'>
+                                        <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                                        Back
+                                    </button> -->
+                                </div>                                
+                            </li>
+                            <li class='fl w50 p5-10 '>
+                                <div class='' for='policyName'> Name</div>
+                                <input placeholder="Name" id='policyName' class='pa10 f14 black b6' v-model='policyBundleName' />
+                            </li>
+                            <li class='fl w50 p5-10'>
+                                <div class='' for='policyBundleCode'>Code</div>
+                                <input id='policyBundleCode' class='pa10 f14 black' v-model='policyBundleCode' />
+                            </li>
                             
+                        </ul>
+                    </div>
+                    <div class='fl w100 p5-10'>
+                        <ul id='tab_policy' class='fl w100 b6 center cursor'>
+                            <li class='fl w50 p5-10' :class='{"br-active":activeTab === "Accomodation"}' @click='activeTab = "Accomodation"'>Accomodation</li>
+                            <li class='fl w50 p5-10' :class='{"br-active":activeTab === "Allowance"}' @click='activeTab = "Allowance"'>Allowance</li>
+                            <!-- <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Conveyance"}' @click='activeTab = "Conveyance"'>Conveyance</li>
+                            <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Entertainment"}' @click='activeTab = "Entertainment"'>Entertainment</li> -->
+                        </ul>
+                    </div>
+                    <div  v-for='(j,index) in policyBundle' class='fl w100 p5-10' :key='index' :class='{"dbNo":j.benefitTypeId.label !== activeTab}'>
+                        <div class='panel panel-default fl w100' :id='index' >
+                                <!-- <div class='panel-heading fl w100'>
+                                     <div class='panel-title w100'>
+                                        <div :href="'#collapse'+j.benefitTypeId.value " class='fl w30 p5-10 f14'>{{ j.benefitTypeId.label }}</div>
+                                        
+                                        </div>
+                                    </div> --> 
+                                    <div :id="'collapse'+j.benefitTypeId.value" class='panel-collapse collapse in fl w100'>
+                                            <div class='panel-body'>
+                                                    <div class='fl w70'>
+                                                        <div class='pa10'>
+                                                            <label class='b6'>Benefits 
+                                                                <!-- <sup style='color:red;' v-if='copyHolder[index].cityCatAndAllowances.length > 0'>*</sup> -->
+                                                            </label>
+                                                            <div v-if='j.benefitTypeId.value != "3"'>
+                                                                <v-select maxHeight='250px' multiple v-model='copyHolder[index].benefits' :options='j.benefits'></v-select>
+                                                            </div>
+                                                            <div v-if='j.benefitTypeId.value == "3"' >
+                                                                <!-- <select v-model='singleSelect' class='w100 benefit-acc'>
+                                                                    <option v-for='k in j.benefits' :value='k' :key='k.label'>{{ k.label}}</option>
+                                                                </select> -->
+                                                                <v-select maxHeight='250px' v-model='singleSelect' :options='j.benefits'></v-select>
+                                                            </div>
+                                                        </div>
+                                                        <div class='pa10'>
+                                                            <label class='b6'>City Category
+                                                                <!-- <sup v-if='j.benefitTypeId.value != "3" && copyHolder[index].benefits.length > 0' style='color:red;'>*</sup>
+                                                                <sup v-if='j.benefitTypeId.value == "3" && copyHolder[index].benefits.hasOwnProperty("value")' style='color:red;'>*</sup> -->
+                                                            </label>
+                                            <v-select maxHeight='250px' v-if='j.benefitTypeId.value == "3"' multiple v-model='copyHolder[index].cityCatAndAllowances' :options='j.cityCatAndAllowances'></v-select>
+                                            <!--this is to make the option for other policies from accomodation -->
+                                            <v-select maxHeight='250px' v-else multiple v-model='copyHolder[index].cityCatAndAllowances' :options='j.cityCatAndAllowances.filter(y => CityCat.indexOf(y.value) > -1)'></v-select>
+                                                        </div>
+                                                    </div>
+                                                    <div class='fl w100 p5-10' v-if='copyHolder[index].cityCatAndAllowances.length > 0'>                                   
+                                                        <table v-if='copyHolder[index].cityCatAndAllowances.length > 0' class='table'>
+                                                            <thead>
+                                                                <tr v-if='j.benefitTypeId.value == "3"'>
+                                                                    <th class='w25'>City Category</th>
+                                                                    <th class='w15 center'>Unlimited</th>
+                                                                    <th class='w10 center'>Star <sup style='color:red;'>*</sup> </th>
+                                                                    <th class='w20 center'>Price</th>
+                                                                    <th class='w20'>Excess</th>
+                                                                    
+                                                                </tr>
+                                                                <tr v-else>
+                                                                    <th class='w20'>City Category</th>
+                                                                    <th class='w10 center'>Unlimited</th>
+                                                                    <th class='w25 center'>Entitlement Per Day</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody v-if='j.benefitTypeId.value == "3"'>
+                                                                <tr  v-for='(i,ind) in copyHolder[index].cityCatAndAllowances' :id='i.value' :key='i.value'>
+                                                                    <td class='w20'>{{i.label}}</td>
+                                                                    <td class='w10 center'><input :id='i.value' v-model='i.limitSpent' type='checkbox' @change='reset(j.benefitTypeId.value,ind,index)' ></td><!-- @click='disableField(i.value)'-->
+                                                                    <td v-if='j.benefitTypeId.label == "Accomodation"' >
+                                                                        <select v-model='i.starCat' class='p2-4' style='width:75px;' :disabled='i.limitSpent'>
+                                                                            <option value='1'>1</option>
+                                                                            <option value='2'>Upto 2</option>
+                                                                            <option value='3'>Upto 3</option>
+                                                                            <option value='4'>Upto 4</option>
+                                                                            <option value='5'>Upto 5</option>
+                                                                        </select>
+                                                                    </td>                                                                    
+                                                                    <td class='w25' style='padding:1px;'>
+                                                                        <div class='p2-4 fl w100'> 
+                                                                            <span class='fl w30 p2-4'> Min</span>
+                                                                            <input class='fl w70 al-right' :id='i.value' v-model='i.min'  type='number' :disabled='i.limitSpent'>
+                                                                        </div>
+                                                                        <div class='p2-4 fl w100'>
+                                                                            <span class='fl w30 p2-4'>Max </span>
+                                                                            <input class='fl w70 al-right'  :id='i.value'  v-model='i.max' :min='i.min' type='number' :disabled='i.limitSpent'>
+                                                                            <span v-if=' Number(i.max) < Number(i.min) ' class='fl red f10'>Should be more than {{i.min}}</span>
+                                                                        </div> 
+                                                                    </td>
+                                                                    <td class='w25 center'>
+                                                                        <div class=' fl w40 p2-4'>
+                                                                            &nbsp;Flat
+                                                                            <input v-model='i.flex' class='fl w25' type='radio' value='1' :name='"type_"+ind+j.benefitTypeId.value+i.label' :disabled='i.limitSpent'>
+                                                                        </div>
+                                                                        <div class='fl w40 p2-4'>
+                                                                            &nbsp;%
+                                                                            <input v-model='i.flex' class='fl w25 ' type='radio' value='2'  :name='"type_"+ind+j.benefitTypeId.value+i.label' :disabled='i.limitSpent'>
+                                                                        </div>
+                                                                        <div class='fl w80 p2-4'>
+                                                                            <input v-model='i.flexAmt' class='fl w100 al-right' min='0' type='number' :disabled='i.limitSpent'>
+                                                                        </div>
+                                                                        
+                                                                    </td>
+
+                                                                </tr>
+                                                            </tbody>
+                                                            <tbody v-else>
+                                                                <tr  v-for='i in copyHolder[index].cityCatAndAllowances' :id='i.value' :key='i.value'>
+                                                                    <td class='w20'>{{i.label}}</td>
+                                                                    <td class='w10 center'>
+                                                                        <input :id='i.value' v-model='i.limitSpent' type='checkbox'>
+                                                                    </td><!-- @click='disableField(i.value)'-->
+                                                                    <td class='w25' style='padding:1px;'>
+                                                                        <div class='p2-4 fl w100 center'>
+                                                                            <span class='fl w30 p2-4'> </span>
+                                                                            <input class='fl w70 p2-4'  :id='i.value' :value='i.limitSpent'  v-model='i.max'  type='number' :disabled='i.limitSpent'>
+                                                                        </div> 
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>                                                        
+                                                        </table>
+                                                    </div>
+                                                    <div class='fl w60 p10-20 center gray' v-else>
+                                                        Ensure City Categoy is configured before you configure your {{j.benefitTypeId.label}} Policy
+                                                    </div>    
+                                                    
+                                                    
+                                            </div>
+                                            
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+        <!-- display the details of policy -->          
+        <div class='fl w50 p-15-top pa-lr br-right' id ='displayPanel' v-if='showDetails'>
+                <div class='fl w100 p5-10'>
+                    <ul id='create-box' class='fl w100 o-gray'>
+                        <li class='fl w100 b6 f16 mb20' style='padding-left:5px;'>{{policyBundleName}}<small> - (code: {{policyBundleCode}})</small></li>
+                        <!-- <li class='fl w50 p5-10'>
+                            <div class='' for='policyName'>Name</div>
+                            <input id='policyName' v-model='policyBundleName' class='p5-10 br-none bg-gray  f14 black b6' disabled/>
                         </li>
+                        <li class='fl w50 p5-10'>
+                            <div class='' for='policyBundleCode'> Code</div>
+                            <input id='policyBundleCode' v-model='policyBundleCode' class='p5-10 br-none bg-gray f14 black' disabled/>
+                        </li> -->
+                        <!-- <li class='fl w100 p5-10'>
+                            <br/>
+                            <button style='margin-top:5px' class='btn btn-primary btn-xs' :disabled='policyBundleName === "Master Admin"' @click="show('3')"><i class="fa fa-pencil" aria-hidden="true"></i> Edit</button>
+                            <button style='margin-top:5px' class='btn btn-default btn-xs' @click="show('1')"><i class="fa fa-chevron-left" aria-hidden="true"></i> Back</button>
+                        </li> -->
                     </ul>
                 </div>
                 <div class='fl w100 p5-10'>
-                    <ul id='tab_policy' class='fl w100 b6 center cursor'>
-                        <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Accomodation"}' @click='activeTab = "Accomodation"'>Accomodation</li>
-                        <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Allowance"}' @click='activeTab = "Allowance"'>Allowance</li>
-                        <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Conveyance"}' @click='activeTab = "Conveyance"'>Conveyance</li>
-                        <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Entertainment"}' @click='activeTab = "Entertainment"'>Entertainment</li>
-                    </ul>
+                        <ul id='tab_policy' class='fl w100 b6 center'>
+                            <li class='fl w50 p5-10' :class='{"br-active":activeTab === "Accomodation"}' @click='activeTab = "Accomodation"'>Accomodation</li>
+                            <li class='fl w50 p5-10' :class='{"br-active":activeTab === "Allowance"}' @click='activeTab = "Allowance"'>Allowance</li>
+                            <!-- <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Conveyance"}' @click='activeTab = "Conveyance"'>Conveyance</li>
+                            <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Entertainment"}' @click='activeTab = "Entertainment"'>Entertainment</li> -->
+                        </ul>
                 </div>
-                <div  v-for='(j,index) in policyBundle' class='fl w100 p5-10' :key='index' :class='{"dbNo":j.benefitTypeId.label !== activeTab}'>
-                    <div class='panel panel-default fl w100' :id='index' >
-                            <div class='panel-heading fl w100'>
-                                <div class='panel-title w100'>
-                                    <div :href="'#collapse'+j.benefitTypeId.value " class='fl w30 p5-10 f14'>{{ j.benefitTypeId.label }}</div>
-                                    
-                                        <!-- <select class='fr w10' v-model='copyHolder[index].priority'>
-                                            <option value='1'>1</option>
-                                            <option value='2'>2</option>
-                                            <option value='3'>3</option>
-                                            <option value='4'>4</option>
-                                            <option value='5'>5</option>
-                                        </select>
-                                        <div class='fr p5-10 w15 al-right f12 b3'>Set Priority</div> -->
+                <div class='fl w100 p5-10' v-for='(j,index) in displayHolder' :key='index' :class='{"dbNo":j.benefitTypeId.label !== activeTab}'>
+                    <div class='panel panel-default fl w100'  :id='index' >
+                            <div class='panel-heading fl w100 mb20'>
+                                <div class='panel-title fl w100'>
+                                    <!-- <div class='fl p5-10 f14'>
+                                        {{ j.benefitTypeId.label }}
+                                    </div> -->
+                                    <!-- <div class='fr w40 p5-10 f14 al-right b3'>
+                                        Priority - 
+                                        {{displayHolder[index].priority}}
+                                    </div> -->
+                                    <div class='fl p5-10'>
+                                        <ul class='flex' v-if='displayHolder[index].benefits.length > 0'>
+                                                    <li v-for=' u in displayHolder[index].benefits' :key='u.label'>{{u.label}} <i class="fa fa-check-circle" aria-hidden="true"></i></li>
+                                        </ul>
                                     </div>
                                 </div>
-                                <div :id="'collapse'+j.benefitTypeId.value" class='panel-collapse collapse in fl w100'>
-                                        <div class='panel-body'>
-                                                <div class='fl w40 p5-10'>
-                                                    <div class='p5-10'>
-                                                        <label class='b6'>Benefits 
-                                                            <!-- <sup style='color:red;' v-if='copyHolder[index].cityCatAndAllowances.length > 0'>*</sup> -->
-                                                        </label>
-                                                        <div v-if='j.benefitTypeId.value != "3"'>
-                                                            <v-select maxHeight='250px' multiple v-model='copyHolder[index].benefits' :options='j.benefits'></v-select>
-                                                        </div>
-                                                        <div v-if='j.benefitTypeId.value == "3"' >
-                                                            <!-- <select v-model='singleSelect' class='w100 benefit-acc'>
-                                                                <option v-for='k in j.benefits' :value='k' :key='k.label'>{{ k.label}}</option>
-                                                            </select> -->
-                                                            <v-select maxHeight='250px' v-model='singleSelect' :options='j.benefits'></v-select>
-                                                        </div>
-                                                    </div>
-                                                    <div class='p5-10'>
-                                                        <label class='b6'>City Category
-                                                            <!-- <sup v-if='j.benefitTypeId.value != "3" && copyHolder[index].benefits.length > 0' style='color:red;'>*</sup>
-                                                            <sup v-if='j.benefitTypeId.value == "3" && copyHolder[index].benefits.hasOwnProperty("value")' style='color:red;'>*</sup> -->
-                                                        </label>
-                                        <v-select maxHeight='250px' v-if='j.benefitTypeId.value == "3"' multiple v-model='copyHolder[index].cityCatAndAllowances' :options='j.cityCatAndAllowances'></v-select>
-                                        <!--this is to make the option for other policies from accomodation -->
-                                        <v-select maxHeight='250px' v-else multiple v-model='copyHolder[index].cityCatAndAllowances' :options='j.cityCatAndAllowances.filter(y => CityCat.indexOf(y.value) > -1)'></v-select>
-                                                    </div>
-                                                </div>
-                                                <div class='fl w60 p5-10' v-if='copyHolder[index].cityCatAndAllowances.length > 0'>                                   
-                                                    <table v-if='copyHolder[index].cityCatAndAllowances.length > 0' class='table'>
-                                                        <thead>
-                                                            <tr v-if='j.benefitTypeId.value == "3"'>
-                                                                <th class='w20'>City Category</th>
-                                                                <th class='w10 center'>Unlimited</th>
-                                                                <th class='w25 center'>Price</th>
-                                                                <th class='w25'>Excess</th>
-                                                                <th class='w10 center'>Star <sup style='color:red;'>*</sup> </th>
-                                                            </tr>
-                                                            <tr v-else>
-                                                                <th class='w20'>City Category</th>
-                                                                <th class='w10 center'>Unlimited</th>
-                                                                <th class='w25 center'>Entitlement Per Day</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody v-if='j.benefitTypeId.value == "3"'>
-                                                            <tr  v-for='(i,ind) in copyHolder[index].cityCatAndAllowances' :id='i.value' :key='i.value'>
-                                                                <td class='w20'>{{i.label}}</td>
-                                                                <td class='w10 center'><input :id='i.value' v-model='i.limitSpent' type='checkbox' @change='reset(j.benefitTypeId.value,ind,index)' ></td><!-- @click='disableField(i.value)'-->
-                                                                <td class='w25' style='padding:1px;'>
-                                                                    <div class='p2-4 fl w100'> 
-                                                                        <span class='fl w30 p2-4'> Min</span>
-                                                                        <input class='fl w70 al-right' :id='i.value' v-model='i.min'  type='number' :disabled='i.limitSpent'>
-                                                                    </div>
-                                                                    <div class='p2-4 fl w100'>
-                                                                        <span class='fl w30 p2-4'>Max </span>
-                                                                        <input class='fl w70 al-right'  :id='i.value'  v-model='i.max' :min='i.min' type='number' :disabled='i.limitSpent'>
-                                                                        <span v-if=' Number(i.max) < Number(i.min) ' class='fl red f10'>Should be more than {{i.min}}</span>
-                                                                    </div> 
-                                                                </td>
-                                                                <td class='w25 center'>
-                                                                    <div class=' fl w40 p2-4'>
-                                                                        &nbsp;Flat
-                                                                        <input v-model='i.flex' class='fl w25' type='radio' value='1' :name='"type_"+ind+j.benefitTypeId.value+i.label' :disabled='i.limitSpent'>
-                                                                    </div>
-                                                                    <div class='fl w40 p2-4'>
-                                                                        &nbsp;%
-                                                                        <input v-model='i.flex' class='fl w25 ' type='radio' value='2'  :name='"type_"+ind+j.benefitTypeId.value+i.label' :disabled='i.limitSpent'>
-                                                                    </div>
-                                                                    <div class='fl w80 p2-4'>
-                                                                        <input v-model='i.flexAmt' class='fl w100 al-right' min='0' type='number' :disabled='i.limitSpent'>
-                                                                    </div>
-                                                                    
-                                                                </td>
-                                                                <td v-if='j.benefitTypeId.label == "Accomodation"' >
-                                                                    <select v-model='i.starCat' class='p2-4' style='width:75px;' :disabled='i.limitSpent'>
-                                                                        <option value='1'>1</option>
-                                                                        <option value='2'>Upto 2</option>
-                                                                        <option value='3'>Upto 3</option>
-                                                                        <option value='4'>Upto 4</option>
-                                                                        <option value='5'>Upto 5</option>
-                                                                    </select>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                        <tbody v-else>
-                                                            <tr  v-for='i in copyHolder[index].cityCatAndAllowances' :id='i.value' :key='i.value'>
-                                                                <td class='w20'>{{i.label}}</td>
-                                                                <td class='w10 center'>
-                                                                    <input :id='i.value' v-model='i.limitSpent' type='checkbox'>
-                                                                </td><!-- @click='disableField(i.value)'-->
-                                                                <td class='w25' style='padding:1px;'>
-                                                                    <div class='p2-4 fl w100 center'>
-                                                                        <span class='fl w30 p2-4'> </span>
-                                                                        <input class='fl w70 p2-4'  :id='i.value' :value='i.limitSpent'  v-model='i.max'  type='number' :disabled='i.limitSpent'>
-                                                                    </div> 
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>                                                        
-                                                    </table>
-                                                </div>
-                                                <div class='fl w60 p10-20 center gray' v-else>
-                                                    Ensure City Categoy is configured before you cnfigure your {{j.benefitTypeId.label}} Policy
-                                                </div>    
-                                                
-                                                
+                            </div>
+                            <div class='panel-collapse collapse in fl w100'>
+                                <div class='panel-body'>
+                                        <!-- <div class='fl w20 p5-10' >
+                                            <div class='f12 b6'>Benefits</div>
+                                            
+                                            <ul>
+                                                <li class='m-top-10 centet f12'>No Benefits Selected</li>
+                                            </ul>
+                                        </div> -->
+                                        <!--<div class='col-md-6'>
+                                            <h4>City Category</h4>
+                                            <ul class='list-inline'>
+                                            <li v-for=' u in displayHolder[index].cityCatAndAllowances' class='list-inline-item'>{{u.label}}</li>
+                                            </ul>
+                                        </div> -->
+                                        <div class='fl w100 p5-10'>    
+                                            <table class='table' v-if='displayHolder[index].cityCatAndAllowances.length > 0'>
+                                                <thead>
+                                                    <tr v-if='j.benefitTypeId.value == "3"'>
+                                                        <th class='w25'>City Category</th>
+                                                        <th class='w15 center'>Unlimited</th>
+                                                        <th class='w10 center' >Star</th>
+                                                        <th class='w15 center'> Price (Min - Max)</th>
+                                                        <th class='w10 center'>Excess</th>
+                                                        
+                                                    </tr>
+                                                    <tr v-else>
+                                                        <th class='w20'>City Category</th>
+                                                        <th class='w10 center'>Unlimited</th>
+                                                        <th class='w25 center'>Entitlement Per Day</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody v-if='j.benefitTypeId.value == "3"'>
+                                                    <tr  v-for='i in displayHolder[index].cityCatAndAllowances' :id='i.value' :key='i.value'>
+                                                        <td class=''>{{i.label}}</td>
+                                                        <td class='center'>{{ (i.limitSpent) ? 'Yes' : 'No' }}</td>
+                                                        <td class='center'  v-if='j.benefitTypeId.value == "3"'>{{ (i.limitSpent) ? "--" : ((Number(i.starCat) > 1) ? 'upto ' + i.starCat : i.starCat)}}</td>
+                                                        <td class='center' >{{ (!i.limitSpent) ? ( i.min) : '---' }} - {{ (!i.limitSpent) ? (i.max) : '---'}}</td>
+                                                        <td class='center' :class='{"cur" :(i.flex == "1") }'>{{ (!i.limitSpent) ? ((i.flex == '1') ? '' : '') + i.flexAmt + ((i.flex == '2') ? '%' : '') : '---'}}</td>
+                                                        
+                                                    </tr>
+                                                </tbody>
+                                                <tbody v-else>
+                                                    <tr  v-for='i in displayHolder[index].cityCatAndAllowances' :id='i.value' :key='i.value'>
+                                                        <td class=''>{{i.label}}</td>
+                                                        <td class='center'>{{ (i.limitSpent) ? 'Yes' : 'No' }}</td>
+                                                        <td class='center cur'>{{ (!i.limitSpent) ? '' + i.max : '---'}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <div class='fl w100 p5-10 center gray' v-else>
+                                                No City Category Selected
+                                            </div>
                                         </div>
-                                        
                                 </div>
                             </div>
                     </div>
                 </div>
-      <!-- display the details of policy -->          
-    <div class='fl w80 p5-10' id ='displayPanel' v-if='showDetails'>
-            <div class='fl p5-10'>
-                <ul id='create-box' class='fl p5-10 o-gray'>
-                    <li class='fl p5-10'>
-                        <div class='pl-0' for='policyName'>Grade Policy Name</div>
-                        <input id='policyName' v-model='policyBundleName' class='p5-10 br-none bg-gray  f14 black b6' disabled/>
-                    </li>
-                    <li class='fl p5-10'>
-                        <div class='pl-0' for='policyBundleCode'>Grade Policy Code</div>
-                        <input id='policyBundleCode' v-model='policyBundleCode' class='p5-10 br-none bg-gray f14 black' disabled/>
-                    </li>
-                    <li class='fl p5-10'>
-                        <br/>
-                        <button style='margin-top:5px' class='btn btn-primary btn-sm' :disabled='policyBundleName === "Master Admin"' @click="show('3')"><i class="fa fa-pencil" aria-hidden="true"></i> Edit</button>
-                        <button style='margin-top:5px' class='btn btn-default btn-sm' @click="show('1')"><i class="fa fa-chevron-left" aria-hidden="true"></i> Back</button>
-                    </li>
-                </ul>
-            </div>
-            <div class='fl w100 p5-10'>
-                    <ul id='tab_policy' class='fl w100 b6 center cursor'>
-                        <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Accomodation"}' @click='activeTab = "Accomodation"'>Accomodation</li>
-                        <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Allowance"}' @click='activeTab = "Allowance"'>Allowance</li>
-                        <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Conveyance"}' @click='activeTab = "Conveyance"'>Conveyance</li>
-                        <li class='fl w20 p5-10' :class='{"br-active":activeTab === "Entertainment"}' @click='activeTab = "Entertainment"'>Entertainment</li>
-                    </ul>
-            </div>
-            <div class='fl w100 p5-10' v-for='(j,index) in displayHolder' :key='index' :class='{"dbNo":j.benefitTypeId.label !== activeTab}'>
-                <div class='panel panel-default fl w100'  :id='index' >
-                        <div class='panel-heading fl w100'>
-                            <div class='panel-title fl w100'>
-                                <div  class='fl w40 p5-10 f14'>{{ j.benefitTypeId.label }}</div>
-                                <!-- <div class='fr w40 p5-10 f14 al-right b3'>
-                                    Priority - 
-                                    {{displayHolder[index].priority}}
-                                </div> -->
-                            </div>
-                        </div>
-                        <div class='panel-collapse collapse in fl w100'>
-                            <div class='panel-body'>
-                                    <div class='fl w20 p5-10' >
-                                        <div class='f12 b6'>Benefits</div>
-                                        <ul v-if='displayHolder[index].benefits.length > 0'>
-                                            <li v-for=' u in displayHolder[index].benefits' class='m-top-10 f12' :key='u.label'>{{u.label}}</li>
-                                        </ul>
-                                        <ul v-else>
-                                            <li class='m-top-10 centet f12'>No Benefits Selected</li>
-                                        </ul>
-                                    </div>
-                                    <!--<div class='col-md-6'>
-                                        <h4>City Category</h4>
-                                        <ul class='list-inline'>
-                                        <li v-for=' u in displayHolder[index].cityCatAndAllowances' class='list-inline-item'>{{u.label}}</li>
-                                        </ul>
-                                    </div> -->
-                                    <div class='fl w80 p5-10' style='border-left:2px solid #ddd;'>    
-                                        <table class='table' v-if='displayHolder[index].cityCatAndAllowances.length > 0'>
-                                            <thead>
-                                                <tr v-if='j.benefitTypeId.value == "3"'>
-                                                    <th class='w20'>City Category</th>
-                                                    <th class='w10 center'>Unlimited</th>
-                                                    <th class='w20 center'> Price (Min - Max)</th>
-                                                    <th class='w15 center'>Excess</th>
-                                                    <th class='w10 center' >Star</th>
-                                                </tr>
-                                                <tr v-else>
-                                                    <th class='w20'>City Category</th>
-                                                    <th class='w10 center'>Unlimited</th>
-                                                    <th class='w25 center'>Entitlement Per Day</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody v-if='j.benefitTypeId.value == "3"'>
-                                                <tr  v-for='i in displayHolder[index].cityCatAndAllowances' :id='i.value' :key='i.value'>
-                                                    <td class=''>{{i.label}}</td>
-                                                    <td class='center'>{{ (i.limitSpent) ? 'Yes' : 'No' }}</td>
-                                                    <td class='center'>{{ (!i.limitSpent) ? ('₹' + i.min) : '---' }} - {{ (!i.limitSpent) ? ('₹' + i.max) : '---'}}</td>
-                                                    <td class='center'>{{ (!i.limitSpent) ? ((i.flex == '1') ? '₹' : '') + i.flexAmt + ((i.flex == '2') ? '%' : '') : '---'}}</td>
-                                                    <td class='center'  v-if='j.benefitTypeId.value == "3"'>{{ (i.limitSpent) ? "--" : ((Number(i.starCat) > 1) ? 'upto ' + i.starCat : i.starCat)}}</td>
-                                                </tr>
-                                            </tbody>
-                                            <tbody v-else>
-                                                <tr  v-for='i in displayHolder[index].cityCatAndAllowances' :id='i.value' :key='i.value'>
-                                                    <td class=''>{{i.label}}</td>
-                                                    <td class='center'>{{ (i.limitSpent) ? 'Yes' : 'No' }}</td>
-                                                    <td class='center'>{{ (!i.limitSpent) ? '₹' + i.max : '---'}}</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                        <div class='fl w100 p5-10 center gray' v-else>
-                                            No City Category Selected
-                                        </div>
-                                    </div>
-                            </div>
-                        </div>
-                </div>
-            </div>
-    </div>
-    <div class='fl w80 p5-10 center'  v-if='showDetails'>
-        {{ (displayHolder !== null && displayHolder.map(x => x.benefitTypeId.label).includes(activeTab)) ? "" : `No ${activeTab} Policy Available` }}
-    </div>
-
-    <transition name='fade'>
-        <div id='createPanel'  class='fl w80 p5-10' v-if='createPanelShow'>
-            <List @refresh='getList' :getFresh='toRefresh' @doneRefresh='resetFresh'/>
         </div>
-    </transition>  
+        <div class='fl w50  center'  v-if='showDetails'>
+            {{ (displayHolder !== null && displayHolder.map(x => x.benefitTypeId.label).includes(activeTab)) ? "" : `No ${activeTab} Policy Available` }}
+        </div>
+    </div>
+    <!--Create panel -->
+    <div id='createPanel'  class='fl w50 p-15-top pa-lr' v-if='createPanelShow'>
+        <List @refresh='getList' :getFresh='toRefresh' @doneRefresh='resetFresh'/>
+    </div>
+    <!-- City Group -->
+    <div class='fl w80' v-if='showCity'>
+        <Add/>
+    </div>
+    
+
     
  </div> 
    
@@ -294,6 +336,7 @@
 import Vue from 'vue'
 import List from '@/components/List'
 import api from '../utility/api'
+import Add from '@/components/Add'
 
 Vue.component('List', List);
 export default {
@@ -321,11 +364,36 @@ export default {
            disableSave: false,
            activeTab:"Accomodation",
            activeListId: "",
-           singleSelect: ''
+           singleSelect: '',
+           showCity: false
       }
   },
-
-  components : { List },
+  directives: {
+    money:{
+      inserted:function(el){
+        var str = el.innerHTML;
+        var output,
+            decm = "";
+        if(str.includes('.')){
+          decm ='.' + str.split('.')[1];
+          str = str.split('.')[0];
+        }
+          if( !isNaN(str) && str.toString().length >= 4 ){
+            output = str.split('').reverse().map((x,i)=>{
+              if(i >1 && i%2 !== 0){
+                return  x  + ','
+              }else{
+                return x
+              }
+            }).reverse().join('');
+          }else{
+            output = str
+          }
+          el.innerHTML = '₹' + output + decm;
+        }
+    }
+  },
+  components : { List, Add },
   computed : {
       sample(){
           const self = this;
@@ -415,9 +483,10 @@ export default {
       show : function(num){
           const self = this;
           switch(num){
-              case '1' : self.createPanelShow = true;self.showEdit =false;self.showDetails = false;self.activeListId ='';break;
-              case '2' : self.createPanelShow = false;self.showEdit =false;self.showDetails = true;break;
-              case '3' : self.createPanelShow = false;self.showEdit =true;self.showDetails = false;break;
+              case '1' : self.createPanelShow = true;self.showEdit =false;self.showDetails = false;self.activeListId ='';self.showCity = false;break;
+              case '2' : self.createPanelShow = false;self.showEdit =false;self.showDetails = true;self.showCity = false;break;
+              case '3' : self.createPanelShow = false;self.showEdit =true;self.showDetails = false;self.showCity = false;break;
+              case '4' : self.createPanelShow = false;self.showEdit = false;self.showDetails = false;self.showCity = true;break;
           }
       },
       returnYN : function(s){
@@ -457,7 +526,7 @@ export default {
           self.showDetails = true;
       },
 
-      getPolicyBundle : function(id){
+      getPolicyBundle : function(id,type){
             const self = this;
             self.activeTab = "Accomodation";
             self.activeListId = id;
@@ -558,7 +627,12 @@ export default {
                              self.policyBundleName = h.bundleName;
                             self.policyBundleCode = h.bundleCode;
                             self.policyBundleId = h.benefitBundleId;
-                            self.showDetails = true;
+                           
+                                if(type === 'view'){
+                                    self.showDetails = true;
+                                }else{
+                                    self.show('3')
+                                }
                             });
                             
                         
@@ -594,6 +668,7 @@ export default {
          }
          
       },
+      
       sendEdit : function(){
           const self = this;
           let dos =true;
@@ -786,30 +861,33 @@ table{
     margin-bottom: 20px;
     background-color: rgb(255, 255, 255);
     box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 1px;
-    border-width: 1px;
+    
     border-style: solid;
     border-color: transparent;
     border-image: initial;
     height: auto !important;
 }
-.panel-default {
+/* .panel-default {
     border-color: rgb(221, 221, 221);
     border:1px solid #ddd !important
-}
+} */
 .panel-heading{
     background-color:#ddd;
     padding : 5px 10px !important;
     height : auto !important;
 }
-.cursor li:hover{
+#sideList > li:hover{
     background-color:#f7f7f7;
-    border: 1px solid #ddd;
+    /* border: 1px solid #ddd; */
 }
-.cursor li{
+#sideList > li{
+    border-bottom: 1px solid #ddd;
+}
+/* .cursor li{
     border: 1px solid #ddd;
     margin: 2px 2px;
     border-radius: 2px;
-}
+} */
 .act{
    background-color:#f7f7f7;
     border: 1px solid #ddd;  
@@ -824,12 +902,12 @@ overflow-y: auto;
 overflow-x: hidden;
 }
 #create-box> li > input{
-    width:175px;
+    width:100%;
 }
 
 #create-box{
-    border: 1px solid aliceblue;
-    background-color: aliceblue;
+    /* border: 1px solid ghostwhite;
+    background-color: ghostwhite; */
     border-radius: 5px;
 }
 .benefit-acc{
@@ -845,5 +923,35 @@ sup{
     top:0;
     font-size: 18px;
 }
-
+#sidemenu{
+    padding:10px;
+}
+.centering:hover{
+    cursor: pointer;
+}
+.centering{
+    width: 100%;
+    background-color: white;
+    color: #000;
+    font-size: 12px;
+    font-weight: 400;
+    border: 1px solid #ddd;
+    text-align: center;
+    text-shadow: none;
+    padding: 6px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+.act-{
+    color:white;
+    background-color: #467eae;
+}
+.menu-heads{
+    padding: 5px 15px;
+    color: #000;
+    font-weight: 500;
+    background-color: #efefef;
+    border-bottom: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+}
 </style>

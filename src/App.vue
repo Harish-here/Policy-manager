@@ -1,69 +1,69 @@
 <template>
   <div id="app">
-            <transition name='fade'>
-              <div class='p5-10 white b6 w100 center' v-if='showAlert' style='position:fixed;top:0;z-index:7000' :class='classs'>
-                {{label}}
-              </div>
-            </transition>
-            <ul class='fl w100 p20-40 al-left bg-gray' id='pageTitle'>
-                <li>
-                  <button class='btn btn-primary btn-xs fr' data-toggle="modal" data-target="#myModal2"><span style='color:#fff !important;'><i class="fa fa-location-arrow" aria-hidden="true"></i> Manage City Category</span>
-                  </button>
-                </li>
-                <li role="presentation" class='b3 f21'>Grade Policy </li>
-            </ul>
-            <hr class='fl w100'>
-            <transition name='fade'>
-              <div class='fl w100 p10-20'>
-                  <!-- <router-view></router-view> -->
-                  <Add :toRefresh='tellRefresh' @refreshDone='resetRefresh' />
+    <transition name='fade'>
+      <div class='p5-10 white b6 w100 center' v-if='showAlert' style='position:fixed;top:0;z-index:7000' :class='classs'>
+        {{label}}
+      </div>
+    </transition>
+    <ul class='fl w100 p20-40 al-left bg-gray' id='pageTitle'>
+        <!-- <li>
+          <button class='btn btn-primary btn-xs fr' data-toggle="modal" data-target="#myModal2"><span style='color:#fff !important;'><i class="fa fa-location-arrow" aria-hidden="true"></i> Manage City Category</span>
+          </button>
+        </li> -->
+        <li role="presentation" class='b3 f21'>Grade Policy </li>
+    </ul>
+    <hr class='fl w100'>
+    <transition name='fade'>
+      <div class='fl w100'>
+          <!-- <router-view></router-view> -->
+          <Add :toRefresh='tellRefresh' @refreshDone='resetRefresh' />
+        </div>
+    </transition>
+      
+    <div class="modal right fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
+        <div class="modal-dialog" role="document">
+              <div class="modal-content">
+
+                <div class="modal-header">
+                  <button type="button" class="close fl" style='width:5%;' data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><i class="fa fa-times fa-2" aria-hidden="true" style='font-size:18px;'></i></span></button>
+                  <h4 class="modal-title fl w60" id="myModalLabel2" style="margin-top:-4px">City Category</h4>
+                  
                 </div>
-            </transition>
-             
-            <div class="modal right fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
-                <div class="modal-dialog" role="document">
-                      <div class="modal-content">
 
-                        <div class="modal-header">
-                          <button type="button" class="close fl" style='width:5%;' data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><i class="fa fa-times fa-2" aria-hidden="true" style='font-size:18px;'></i></span></button>
-                          <h4 class="modal-title fl w60" id="myModalLabel2" style="margin-top:-4px">City Category</h4>
-                          
+                <div class="modal-body" style='display:flex' >
+                  <div class='' style="flex:.7 0 0;">
+                        <div class='p5-10 b6'>City Category List</div>
+                        <ul style='height:400px;overflow-y:auto;'>
+                          <li  class='p10-20 cursor br-bt' v-for='i in cityCategoryData' @click='sendId(i.value)' :key='i.value'
+                              :class='{"active-list" : i.value == activeCityCat}'>
+                            <i class="fa fa-chevron-right f10" aria-hidden="true"></i> <b>{{i.label}}</b>
+                          </li>
+                        </ul>
+                  </div>
+                  <div id='createSpace' v-show='createShow' class=' p10-20' style="flex:1 0 0;">
+                      <div class='form-group'>
+                        <label>Category</label><br>
+                        <input class='form-control input-sm cus' type='text' name='cityCategory' value="" v-model='cityCategoryHolder'/>
+                      </div>
+                      <div class='form-group'>
+                        <label>Assign City</label>
+                        <v-select maxHeight='250px'  multiple v-model='cityHolder' :options='cityData.filter(x => CompCit.indexOf(x.value) == -1)'></v-select>
+                        <div class='pa2 flex justify-around'>
+                          <button v-show='!showEdit' type='button' id='createBtn' class='btn btn-primary btn-sm' @click='create'>
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                            Add</button>
+                          <button v-show='showEdit' type='button'  id='editBtn' class='btn btn-danger btn-sm' @click="deleteCityCat(cityCategoryId)"><i class="fa fa-trash" aria-hidden="true"></i> Delete</button>
+                          <button v-show='showEdit' type='button' id='editBtn' class='btn btn-primary btn-sm' @click='edit'><i class="fa fa-floppy-o" aria-hidden="true"></i> Update</button>
+                          <button v-show='showEdit' class='btn btn-default btn-sm' @click="clean"><i class="fa fa-chevron-left" aria-hidden="true"></i> Back</button>
                         </div>
+                      </div>
+                  </div>
+                  
+                </div>
 
-                        <div class="modal-body" style='display:flex' >
-                          <div class='' style="flex:.7 0 0;">
-                                <div class='p5-10 b6'>City Category List</div>
-                                <ul style='height:400px;overflow-y:auto;'>
-                                  <li  class='p10-20 cursor br-bt' v-for='i in cityCategoryData' @click='sendId(i.value)' :key='i.value'
-                                      :class='{"active-list" : i.value == activeCityCat}'>
-                                    <i class="fa fa-chevron-right f10" aria-hidden="true"></i> <b>{{i.label}}</b>
-                                  </li>
-                                </ul>
-                          </div>
-                          <div id='createSpace' v-show='createShow' class=' p10-20' style="flex:1 0 0;">
-                              <div class='form-group'>
-                                <label>Category</label><br>
-                                <input class='form-control input-sm cus' type='text' name='cityCategory' value="" v-model='cityCategoryHolder'/>
-                              </div>
-                              <div class='form-group'>
-                                <label>Assign City</label>
-                                <v-select maxHeight='250px'  multiple v-model='cityHolder' :options='cityData.filter(x => CompCit.indexOf(x.value) == -1)'></v-select>
-                                <div class='pa2 flex justify-around'>
-                                  <button v-show='!showEdit' type='button' id='createBtn' class='btn btn-primary btn-sm' @click='create'>
-                                    <i class="fa fa-plus" aria-hidden="true"></i>
-                                    Add</button>
-                                  <button v-show='showEdit' type='button'  id='editBtn' class='btn btn-danger btn-sm' @click="deleteCityCat(cityCategoryId)"><i class="fa fa-trash" aria-hidden="true"></i> Delete</button>
-                                  <button v-show='showEdit' type='button' id='editBtn' class='btn btn-primary btn-sm' @click='edit'><i class="fa fa-floppy-o" aria-hidden="true"></i> Update</button>
-                                  <button v-show='showEdit' class='btn btn-default btn-sm' @click="clean"><i class="fa fa-chevron-left" aria-hidden="true"></i> Back</button>
-                                </div>
-                              </div>
-                          </div>
-                          
-                        </div>
-
-                      </div><!-- modal-content -->
-                </div><!-- modal-dialog -->
-	         </div><!-- modal -->
+              </div><!-- modal-content -->
+        </div><!-- modal-dialog -->
+    </div><!-- modal -->
           
   </div>
 </template>

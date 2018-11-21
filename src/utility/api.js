@@ -2,14 +2,14 @@ let forProd = true;//change to true when you built for production
 let id;
 if (forProd) {
     (function () {
-        $.get('http://www.hobse.com/demo/index.php/customer/policy/companyId').done(function (data) {
+        $.get(global_base_url + '/policy/companyId').done(function (data) {
             var temp = JSON.parse(data);
             var id = temp.companyId;
         });
     })();
 }
 
-const prodPath = "http://www.hobse.com/demo/index.php/customer/policy";
+const prodPath = global_base_url+"/policy";
 const localPath = "http://localhost:8800";
 
 export default {
