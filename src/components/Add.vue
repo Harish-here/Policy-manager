@@ -16,7 +16,7 @@
                       </div>
                     </div>                    
                   </li>
-                  <li class='p10-20 center gray' style='border:1px solid #ddd;' v-if='cityCategoryData.length === 0' >No City Category</li>
+                  <li class='p10-20 center' style='border:1px solid #ddd;' v-if='cityCategoryData.length === 0' >No City Category</li>
                 </ul>
           </div>
         <div style='display:flex' class='w60 p-15-top pa-lr'>

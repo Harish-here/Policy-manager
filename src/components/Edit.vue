@@ -3,7 +3,7 @@
     <div class='fl br-right' style='width:16%;height:100%;background:ghostwhite;'>
         <div class='menu-heads'>Grade Policy</div>
         <ul id='sidemenu'>
-            <li @click='show("1")' class='centering' :class='{"act-": showEdit || showDetails || createPanelShow}'>
+            <li @click='show("1")' class='centering' :class='{"act-": !showCity}'>
                 <span class='center'>
                     Grade Policy
                 </span>
@@ -42,7 +42,7 @@
                    </div>
                    </div>
                 </li>
-                <li class='p10-20 center gray' v-if='policyBundleData.length === 0' >No Grade Policy</li>
+                <li class='p10-20 center' v-if='policyBundleData.length === 0' >No Grade Policy</li>
             
             </ul>
         </div>
@@ -289,16 +289,18 @@
                                                         <td class=''>{{i.label}}</td>
                                                         <td class='center'>{{ (i.limitSpent) ? 'Yes' : 'No' }}</td>
                                                         <td class='center'  v-if='j.benefitTypeId.value == "3"'>{{ (i.limitSpent) ? "--" : ((Number(i.starCat) > 1) ? 'upto ' + i.starCat : i.starCat)}}</td>
-                                                        <td class='center' >{{ (!i.limitSpent) ? ( i.min) : '---' }} - {{ (!i.limitSpent) ? (i.max) : '---'}}</td>
-                                                        <td class='center' :class='{"cur" :(i.flex == "1") }'>{{ (!i.limitSpent) ? ((i.flex == '1') ? '' : '') + i.flexAmt + ((i.flex == '2') ? '%' : '') : '---'}}</td>
-                                                        
+                                                        <td class='center' v-if="!i.limitSpent"><span v-money>{{ i.min }}</span> - <span v-money>{{ i.max }}</span></td>
+                                                        <td class="center" v-else> -- - --</td>
+                                                        <td class='center' v-if='i.flex != "1"'>{{ (!i.limitSpent) ? ((i.flex == '1') ? '' : '') + i.flexAmt + ((i.flex == '2') ? '%' : '') : '---'}}</td>
+                                                        <td class="center" v-money v-else>{{ i.flexAmt }}</td>
                                                     </tr>
                                                 </tbody>
                                                 <tbody v-else>
                                                     <tr  v-for='i in displayHolder[index].cityCatAndAllowances' :id='i.value' :key='i.value'>
                                                         <td class=''>{{i.label}}</td>
                                                         <td class='center'>{{ (i.limitSpent) ? 'Yes' : 'No' }}</td>
-                                                        <td class='center cur'>{{ (!i.limitSpent) ? '' + i.max : '---'}}</td>
+                                                        <td class='center cur' v-if='!i.limitSpent' v-money>{{ i.max }}</td>
+                                                        <td class="center" v-else>---</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -316,7 +318,7 @@
         </div>
     </div>
     <!--Create panel -->
-    <div id='createPanel'  class='fl w50 p-15-top pa-lr' v-if='createPanelShow'>
+    <div id='createPanel'  class='fl w50 p-15-top pa-lr' v-if='createPanelShow && !showCity'>
         <List @refresh='getList' :getFresh='toRefresh' @doneRefresh='resetFresh'/>
     </div>
     <!-- City Group -->
@@ -445,6 +447,13 @@ export default {
   },
   
  watch : {
+    //  showCity:function(val){
+    //      if(val){
+    //          this.CreateHistory('policy');
+    //      }else{
+    //          this.CreateHistory('city');
+    //      }
+    //  },
      singleSelect : function(val){
         //  console.log(val);
          for(let r= 0;r< this.copyHolder.length;r++){
@@ -483,10 +492,10 @@ export default {
       show : function(num){
           const self = this;
           switch(num){
-              case '1' : self.createPanelShow = true;self.showEdit =false;self.showDetails = false;self.activeListId ='';self.showCity = false;break;
+              case '1' : self.createPanelShow = true;self.showEdit =false;self.showDetails = false;self.activeListId ='';self.showCity = false;self.CreateHistory('grade');break;
               case '2' : self.createPanelShow = false;self.showEdit =false;self.showDetails = true;self.showCity = false;break;
               case '3' : self.createPanelShow = false;self.showEdit =true;self.showDetails = false;self.showCity = false;break;
-              case '4' : self.createPanelShow = false;self.showEdit = false;self.showDetails = false;self.showCity = true;break;
+              case '4' : self.createPanelShow = false;self.showEdit = false;self.showDetails = false;self.showCity = true;self.CreateHistory('city');break;
           }
       },
       returnYN : function(s){
@@ -644,6 +653,13 @@ export default {
                 alert('Select a policy Bundle')
             }
       },
+      CreateHistory: function(type){
+          const self = this;
+          let url  = location.href.split('/').filter(x => x != 'grade' && x != 'city').join('/');
+          
+          history.pushState({liveRoute: type},'Page'+type,url+'/'+type);
+
+        },
       reset: function(val,label,index){   
      //    this to reset the 
      
@@ -836,7 +852,15 @@ export default {
   },
   created(){
       const self = this;
-      self.shows()
+      self.shows();
+     let arr = location.href.split('/');
+     let type = (arr[arr.length -1 ] == 'city') ? 'city' : 'grade';//get last element
+     if(type == 'grade'){
+         this.showCity = false;
+     }else{
+           this.showCity = true;
+     }
+     this.CreateHistory(type);
     $.post(api.listPolicyBundle,{'companyId' : api.companyId }).done(function(res){
         self.policyBundleData = JSON.parse(res)
     });
