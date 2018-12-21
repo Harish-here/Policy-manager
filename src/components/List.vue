@@ -3,13 +3,15 @@
       
     <div class='fl w100'>
       <ul id='create-box' class='fl o-gray w100 mb20' style=''>
-            <li class='fl w100 b6 black mb20' style='padding-left:5px;'>Grade Policy Configuration</li>
+            <li class='fl w100 b6 black mb20' style='padding-left:5px;' v-if='bundleName.length === 0'>Grade Policy Configuration</li>
+             <li class='fl w100 b6 f16 mb20' style='padding-left:5px;' v-else>{{bundleName}}<small> - (code: {{bundleCode}})</small></li>
+
             <li class='fl w50 p5-10'>
-                <div class=''>Name</div>
+                <div class=''>Name <sup class='b6'>*</sup></div>
                 <input name='policy bundle' type='text' class='pa10 black  w100' v-model='bundleName' />
             </li>
             <li class='fl w50 p5-10 '>
-                <div class=''>Code</div>
+                <div class=''>Code <sup class='b6'>*</sup></div>
                 <input name='policy bundle' type='text' class='pa10 black' v-model='bundleCode' />
             </li> 
       </ul>
@@ -47,7 +49,7 @@
                                         </div>
                                     </div>
                                     <div class='pa10'>
-                                        <label class='b6'>City Category 
+                                        <label class='b6'>City Group 
                                                             <!-- <sup v-if='j.benefitTypeId.value != "3" && copyHolder[index].benefits.length > 0' style='color:red;'>*</sup>
                                                             <sup v-if='j.benefitTypeId.value == "3"  && copyHolder[index].benefits.hasOwnProperty("value")' style='color:red;'>*</sup> -->
                                             </label>
@@ -60,14 +62,14 @@
                                     <table  class='table'>
                                         <thead>
                                             <tr v-if='j.benefitTypeId.value == "3"'>
-                                                <th class='w20'>City Category</th>
+                                                <th class='w20'>City Group</th>
                                                 <th class='w10 center'>Unlimited</th>
                                                 <th class='w10 center'>Star <sup style='color:red;'>*</sup> </th>
                                                 <th class='w25 center'>Price</th>
                                                 <th class='w25'>Excess</th>        
                                             </tr>
                                             <tr v-else>
-                                                <th class='w20'>City Category</th>
+                                                <th class='w20'>City Group</th>
                                                 <th class='w10 center'>Unlimited</th>
                                                 <th class='w25 center'>Entitlement Per Day</th>
                                             </tr>                                            
@@ -79,7 +81,7 @@
                                                     <input :id='i.value' v-model='i.limitSpent' type='checkbox'>
                                                 </td><!-- @click='disableField(i.value)'-->
                                                 <td v-if='j.benefitTypeId.label == "Accomodation"' >
-                                                    <select v-model='i.starCat' class='p2-4' style='width:75px;' :disabled='i.limitSpent'>
+                                                    <select v-model='i.starCat' class='p2-4' style='width:75px;'>
                                                         <option value='1'>1</option>
                                                         <option value='2'>Upto 2</option>
                                                         <option value='3'>Upto 3</option>
@@ -133,7 +135,7 @@
                                     </table>
                                 </div>
                                 <div class='fl w100 p5-10 center m-top-25' v-else>
-                                            Ensure City Categoy is configured before you configure your {{j.benefitTypeId.label}} Policy 
+                                           Please ensure City groups are configured before proceed with {{j.benefitTypeId.label}} Policy 
                                 </div> 
                             </div>  
                             
@@ -310,7 +312,7 @@ export default {
                 for(var c=0;c < d.length; c++){
                         
                         if(d[c].benefits.length > 0 && d[c].cityCatAndAllowances.length === 0){
-                            alert('At least one City Category must be selected in '+d[c].benefitTypeId.label);
+                            alert('At least one City group must be selected in '+d[c].benefitTypeId.label);
                             self.disableSave = false;
                             return;
                         }
@@ -327,7 +329,7 @@ export default {
                                 let p = d[c].cityCatAndAllowances ;
                                 
                                 if(!p[t].limitSpent && p[t].starCat == '0'){
-                                    alert('Star need to mentioned in City category');
+                                    alert('Star must be specified for City groups');
                                         self.disableSave = false;
                                         return;
                                 }
@@ -340,8 +342,8 @@ export default {
                             for(let t=0;t < d[c].cityCatAndAllowances.length;t++){
                                 let p = d[c].cityCatAndAllowances ;
                                 
-                                if(!p[t].limitSpent && (Number(p[t].min) >= Number(p[t].max))){
-                                    alert('Maximum amount should be greater than Minmum amount');
+                                if(!p[t].limitSpent && (Number(p[t].min) > Number(p[t].max))){
+                                    alert('Maximum amount should be greater than Minimum amount');
                                         self.disableSave = false;
                                         return;
                                 }
@@ -406,13 +408,13 @@ export default {
                 
             });
             }else{
-                      alert('atleast one city category or bundle has to be there');
+                      alert('Atleast one City group And Benefit must be there under Accomodation');
                       self.disableSave = false;
                   }
              //URL to create bundle
                 
         }else{
-            alert("Name and Code is required");
+            alert("Please fill in all the required fields");
             self.disableSave = false;
         }
         

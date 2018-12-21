@@ -3,7 +3,7 @@
          <div class='p-15-top pa-lr br-right' style='width:35%;' >
                 <div class='roboto black mb25' style='font-size:18px;'>City Group</div>
                 <div class='centering mb25' @click="clean">Add City Group</div>
-                <div class='f14 p2-4 b6 br-btm'>City Category List</div>
+                <div class='f14 p2-4 b6 br-btm'>List of City Groups <span class="badge badge-primary">{{cityCategoryData.length}}</span></div>
                 <ul style='height:400px;overflow-y:auto;' id='sideList'>
                   <li  class='p10-20' v-for='i in cityCategoryData' :key='i.value'
                       :class='{"active-list" : i.value == activeCityCat}'>
@@ -16,28 +16,28 @@
                       </div>
                     </div>                    
                   </li>
-                  <li class='p10-20 center' style='border:1px solid #ddd;' v-if='cityCategoryData.length === 0' >No City Category</li>
+                  <li class='p10-20 center' style='border:1px solid #ddd;' v-if='cityCategoryData.length === 0' >No City Group</li>
                 </ul>
           </div>
         <div style='display:flex' class='w60 p-15-top pa-lr'>
           <div id='createSpace' v-show='createShow' class='w70 p10-20'>
               <div class='form-group'>
-                <label>Category</label><br>
+                <label>Group Name<sup class='b6'>*</sup></label><br>
                 <input class='form-control input-sm cus' type='text' name='cityCategory' value="" v-model='cityCategoryHolder'/>
               </div>
               <div class='form-group'>
-                <label>Assign City</label>
+                <label>Assign Cities</label>
                 <v-select maxHeight='250px'  multiple v-model='cityHolder' :options='cityData.filter(x => CompCit.indexOf(x.value) == -1)'></v-select>
                 
               </div>
               <div class="form-group">
                 <div class='pa2 flex justify-around'>
                   <button v-show='!showEdit' type='button' id='createBtn' class='btn btn-primary btn-sm' @click='create'>
-                    <i class="fa fa-plus" aria-hidden="true"></i>
-                    Add</button>
-                  <button v-show='showEdit' type='button' class='btn btn-danger btn-sm' @click="deleteCityCat(cityCategoryId)"><i class="fa fa-trash" aria-hidden="true"></i> Delete</button>
-                  <button v-show='showEdit' type='button' id='editBtn' class='btn btn-primary btn-sm' @click='edit'><i class="fa fa-floppy-o" aria-hidden="true"></i> Update</button>
-                  <button v-show='showEdit' class='btn btn-default btn-sm' @click="clean"><i class="fa fa-chevron-left" aria-hidden="true"></i> Back</button>
+                    <!-- <i class="fa fa-plus" aria-hidden="true"></i> -->
+                    Create City Group</button>
+                  <button v-show='showEdit' type='button' class='btn btn-danger btn-sm' @click="deleteCityCat(cityCategoryId)"> Delete</button>
+                  <button v-show='showEdit' type='button' id='editBtn' class='btn btn-primary btn-sm' @click='edit'> Update</button>
+                  <button v-show='showEdit' class='btn btn-default btn-sm' @click="clean"> Back</button>
                 </div>
               </div>
           </div>
@@ -54,7 +54,7 @@
               </div>
               <div class="form-group">
                 <div class='flex'>
-                  <button class='btn btn-default btn-sm' @click="clean"><i class="fa fa-chevron-left" aria-hidden="true"></i> Back</button>
+                  <button class='btn btn-default btn-sm' @click="clean"> Back</button>
                 </div>
               </div>
           </div>
@@ -152,6 +152,30 @@ export default {
           resetRefresh: function(){
             this.tellRefresh = false;
           },
+
+          getOld: function(){
+            var self = this;
+  
+            $.post(api.listCityCat,{'companyId' : api.companyId ,'methodType' :'list' }).done(function(data){
+                self.cityCategoryData = JSON.parse(data);//response
+                });
+              self.show()
+                $.get(api.listCity).done(function(res){
+                  self.cityData = JSON.parse(res).sort(function(a,b){
+                      var textA = a.label.toUpperCase();
+                      var textB = b.label.toUpperCase();
+                      return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+                  });
+                }).fail(function(err){
+                  console.log(err)
+                });
+                $.get(api.listCityCatList).done(function(res){
+                  let temp = JSON.parse(res);
+                  self.cityDataCat = temp.map(x => x.value)
+                }).fail(function(err){
+                  console.log(err)
+                });
+          },
           btnState : function(id,text,type){
             if(type === 1){
               $('#'+id).html(''+text+'...').attr('disabled','disabled');
@@ -171,7 +195,7 @@ export default {
           },
           show : function(){
             if(api.production){
-              setProgress(2);
+              // setProgress(2);
             }
           },
           fade: function(id,sec){
@@ -192,7 +216,7 @@ export default {
       create : function(){
             var self = this;let datas;
             if(self.cityCategoryHolder != null && self.cityHolder != null && self.cityHolder.length > 0 && self.cityCategoryHolder != '' && self.cityCategoryHolder != ' ' ){
-              self.btnState('createBtn','adding...',1);
+              self.btnState('createBtn','creating...',1);
               if(api.production){
                 datas = {'companyId' : api.companyId,'cityCat' : {'label':self.cityCategoryHolder,'value' : ''},'cities' : self.cityHolder};
               }else{
@@ -214,13 +238,13 @@ export default {
                       self.getCityCat();
                       self.$store.commit('showAlert','s|City Category \"'+ self.cityCategoryHolder +'\" is Created..!')
                       self.cityCategoryHolder = null;
-                      $('#createBtn').html('<i class="fa fa-plus" aria-hidden="true"></i> Add');
+                      $('#createBtn').html('Create City Group');
                       // location.reload();
                     });
                 }else{
-                  alertify.error(data);
+                  alertify.error("City Group name already exist.");
                   self.btnState('createBtn','create',0);
-                  $('#createBtn').html('<i class="fa fa-plus" aria-hidden="true"></i> Add');
+                  $('#createBtn').html('Create City Group');
                 }
                 //  self.dataReturn = JSON.parse(data);//response
                   
@@ -228,9 +252,9 @@ export default {
               
             }else{
               if(self.cityHolder !== null && self.cityHolder.length !== 0){
-                alert('City Category Name cannot be Empty')
+                alert('City Group Name cannot be empty')
               }else{
-                alert('Atleast one city need to be in a Category ')
+                alert('Atleast one City need to be in a City Group ')
               }
               
             }
@@ -262,7 +286,7 @@ export default {
           },
           deleteCityCat : function(id){
             var self = this;
-            if(confirm("Are Sure You want to delete this City Category") && id != null){
+            if(confirm("Are Sure You want to delete this City Group") && id != null){
               $.post(api.deleteCityCat,{'cityCatId' : id,'methodType':'delete'}).done(function(data){ //url for delte 
               //http://www.hobse.com/demo/index.php/customer/customer/policy/deleteCityCat
               var res = data
@@ -279,15 +303,14 @@ export default {
                 if(res.indexOf('f') === 0){
                 self.fade('deleteNotInfo',3)
                 
-                  self.$store.commit('showAlert','d|Sorry can\'t Delete this city Category because it is associated with some policy bundle !!!')
+                  self.$store.commit('showAlert','d|Sorry can\'t Delete this City Group because it is associated with some policy bundle.')
                 }else{
                   self.activeId = [];
                   // self.fade('deleteInfo',4);
-                  self.$store.commit('showAlert','d|City Category is Deleted..!')
+                  self.$store.commit('showAlert','d|City Group is Deleted..!')
                 }
-                self.getCityCat();
                 });
-                
+                  self.getOld();
               });
             }
           },
@@ -300,30 +323,42 @@ export default {
               return self.cityHolder.map(y => y.value).indexOf(x.value) == -1
             });
             // console.log(self.remCities);
-            if(api.production){
-              toSend ={ cityCat : { label : self.cityCategoryHolder, value : self.cityCategoryId },cities : self.cityHolder,remCities : self.remCities,companyId : api.companyId} ;
+            if(self.cityCategoryHolder != null && self.cityHolder != null && self.cityHolder.length > 0 && self.cityCategoryHolder != '' && self.cityCategoryHolder != ' ' ){
+              if(api.production){
+                toSend ={ cityCat : { label : self.cityCategoryHolder, value : self.cityCategoryId },cities : self.cityHolder,remCities : self.remCities,companyId : api.companyId} ;
+              }else{
+                toSend = JSON.stringify({ cityCat : { label : self.cityCategoryHolder, value : self.cityCategoryId },cities : self.cityHolder,remCities : self.remCities,companyId : api.companyId});
+              }
+              self.show()
+              $.post(api.updateCityCat,toSend)
+                .done(function(data){
+                  if(!data.includes('F|')){
+                      $.post(api.listCityCat,{'companyId' : api.companyId ,'methodType' :'list' }).done(function(res){
+                        self.cityCategoryData = JSON.parse(res);//response
+                        self.cityCategoryId = null;
+                        self.cityCategoryHolder = null;
+                        self.activeCityCat = '';
+                        self.cityHolder = [];
+                        self.preCityHolder  = [];
+                        self.remCities  = [];
+                        self.showEdit = false;
+                        self.activeId = [];
+                        self.getCityCat();
+                        self.$store.commit('showAlert','o|City Group updated.')
+                    });
+                  }else{
+                    let s = data.split('|')[1];
+                    alertify.error(s);
+                  } 
+                    
+                                        self.btnState('editBtn','Update',0);
+              });              
             }else{
-              toSend = JSON.stringify({ cityCat : { label : self.cityCategoryHolder, value : self.cityCategoryId },cities : self.cityHolder,remCities : self.remCities,companyId : api.companyId});
+              alert("Atleast one City need to be in a Group");
+              self.btnState('editBtn','Update',0);
+
             }
-            self.show()
-            $.post(api.updateCityCat,toSend)
-              .done(function(data){ 
-                  $.post(api.listCityCat,{'companyId' : api.companyId ,'methodType' :'list' }).done(function(res){
-                    self.cityCategoryData = JSON.parse(res);//response
-                    self.cityCategoryId = null;
-                    self.cityCategoryHolder = null;
-                    self.activeCityCat = '';
-                    self.cityHolder = [];
-                    self.preCityHolder  = [];
-                    self.remCities  = [];
-                    self.showEdit = false;
-                    self.activeId = [];
-                    self.btnState('editBtn','Update',0);
-                    self.getCityCat();
-                    self.$store.commit('showAlert','o|City Category updated..!')
-                });
-                
-              });
+
           }
   }
 }

@@ -28,7 +28,7 @@
             </div> -->
             <div class='roboto black mb25' style='font-size:18px;'>Grade Policy</div>
             <div class='centering mb25' style='' @click="show('1')">Add Grade Policy</div>
-            <div class='f14 p2-4 b6 br-btm' >List of Policies</div>
+            <div class='f14 p2-4 b6 br-btm' >List of Policies <span class='badge badge-primary'>{{policyBundleData.length}}</span></div>
             
             <ul id='sideList' class=''>
                 <!-- <li class='p10-20 center act-' v-if='policyBundleData.length === 0' >Add policy</li> -->
@@ -50,7 +50,8 @@
                     <div class='fl p5-10'>
                         <ul id='create-box' class='fl o-gray mb20'>
                             <li class='fl w100 b6 black mb20' style='padding-left:5px;'>
-                                <div class='fl w50'>Grade Policy Configuration</div>
+                                <div class='fl w50' v-if='policyBundleName !== null && policyBundleName.length > 0'>Grade Policy Configuration</div>
+                                <div class='fl w50 f16' v-else>{{policyBundleName}}<small> - (code: {{policyBundleCode}})</small></div>
                                 <div class='fr w50 al-right'>
                                     <button class='btn btn-primary btn-xs' @click='sendEdit' :disabled='disableSave'>
                                         <i class="fa fa-floppy-o" aria-hidden="true"></i>
@@ -68,11 +69,11 @@
                                 </div>                                
                             </li>
                             <li class='fl w50 p5-10 '>
-                                <div class='' for='policyName'> Name</div>
+                                <div class='' for='policyName'> Name <sup class='b6'>*</sup></div>
                                 <input placeholder="Name" id='policyName' class='pa10 f14 black b6' v-model='policyBundleName' />
                             </li>
                             <li class='fl w50 p5-10'>
-                                <div class='' for='policyBundleCode'>Code</div>
+                                <div class='' for='policyBundleCode'>Code <sup class='b6'>*</sup></div>
                                 <input id='policyBundleCode' class='pa10 f14 black' v-model='policyBundleCode' />
                             </li>
                             
@@ -112,7 +113,7 @@
                                                             </div>
                                                         </div>
                                                         <div class='pa10'>
-                                                            <label class='b6'>City Category
+                                                            <label class='b6'>City Group
                                                                 <!-- <sup v-if='j.benefitTypeId.value != "3" && copyHolder[index].benefits.length > 0' style='color:red;'>*</sup>
                                                                 <sup v-if='j.benefitTypeId.value == "3" && copyHolder[index].benefits.hasOwnProperty("value")' style='color:red;'>*</sup> -->
                                                             </label>
@@ -125,7 +126,7 @@
                                                         <table v-if='copyHolder[index].cityCatAndAllowances.length > 0' class='table'>
                                                             <thead>
                                                                 <tr v-if='j.benefitTypeId.value == "3"'>
-                                                                    <th class='w25'>City Category</th>
+                                                                    <th class='w25'>City Group</th>
                                                                     <th class='w15 center'>Unlimited</th>
                                                                     <th class='w10 center'>Star <sup style='color:red;'>*</sup> </th>
                                                                     <th class='w20 center'>Price</th>
@@ -133,7 +134,7 @@
                                                                     
                                                                 </tr>
                                                                 <tr v-else>
-                                                                    <th class='w20'>City Category</th>
+                                                                    <th class='w20'>City Group</th>
                                                                     <th class='w10 center'>Unlimited</th>
                                                                     <th class='w25 center'>Entitlement Per Day</th>
                                                                 </tr>
@@ -143,7 +144,7 @@
                                                                     <td class='w20'>{{i.label}}</td>
                                                                     <td class='w10 center'><input :id='i.value' v-model='i.limitSpent' type='checkbox' @change='reset(j.benefitTypeId.value,ind,index)' ></td><!-- @click='disableField(i.value)'-->
                                                                     <td v-if='j.benefitTypeId.label == "Accomodation"' >
-                                                                        <select v-model='i.starCat' class='p2-4' style='width:75px;' :disabled='i.limitSpent'>
+                                                                        <select v-model='i.starCat' class='p2-4' style='width:75px;'>
                                                                             <option value='1'>1</option>
                                                                             <option value='2'>Upto 2</option>
                                                                             <option value='3'>Upto 3</option>
@@ -196,7 +197,7 @@
                                                         </table>
                                                     </div>
                                                     <div class='fl w60 p10-20 center gray' v-else>
-                                                        Ensure City Categoy is configured before you configure your {{j.benefitTypeId.label}} Policy
+                                                      Please ensure City groups are configured before proceed with {{j.benefitTypeId.label}} Policy
                                                     </div>    
                                                     
                                                     
@@ -271,7 +272,7 @@
                                             <table class='table' v-if='displayHolder[index].cityCatAndAllowances.length > 0'>
                                                 <thead>
                                                     <tr v-if='j.benefitTypeId.value == "3"'>
-                                                        <th class='w25'>City Category</th>
+                                                        <th class='w25'>City Group</th>
                                                         <th class='w15 center'>Unlimited</th>
                                                         <th class='w10 center' >Star</th>
                                                         <th class='w15 center'> Price (Min - Max)</th>
@@ -279,7 +280,7 @@
                                                         
                                                     </tr>
                                                     <tr v-else>
-                                                        <th class='w20'>City Category</th>
+                                                        <th class='w20'>City Group</th>
                                                         <th class='w10 center'>Unlimited</th>
                                                         <th class='w25 center'>Entitlement Per Day</th>
                                                     </tr>
@@ -292,7 +293,7 @@
                                                         <td class='center' v-if="!i.limitSpent"><span v-money>{{ i.min }}</span> - <span v-money>{{ i.max }}</span></td>
                                                         <td class="center" v-else> -- - --</td>
                                                         <td class='center' v-if='i.flex != "1"'>{{ (!i.limitSpent) ? ((i.flex == '1') ? '' : '') + i.flexAmt + ((i.flex == '2') ? '%' : '') : '---'}}</td>
-                                                        <td class="center" v-money v-else>{{ i.flexAmt }}</td>
+                                                        <td class="center"  v-if='i.flex == "1"'>₹{{ i.flexAmt }}</td>
                                                     </tr>
                                                 </tbody>
                                                 <tbody v-else>
@@ -305,7 +306,7 @@
                                                 </tbody>
                                             </table>
                                             <div class='fl w100 p5-10 center gray' v-else>
-                                                No City Category Selected
+                                                No City Group Selected
                                             </div>
                                         </div>
                                 </div>
@@ -650,7 +651,7 @@ export default {
                     
                     
             }else{
-                alert('Select a policy Bundle')
+                alert('Select a Grade Policy')
             }
       },
       CreateHistory: function(type){
@@ -725,7 +726,7 @@ export default {
                         
                         if(d[c].benefits.length > 0 && d[c].cityCatAndAllowances.length === 0){
                                 
-                            alert('At least one City Category must be selected in '+d[c].benefitTypeId.label);
+                            alert('At least one City Group must be selected in '+d[c].benefitTypeId.label);
                             self.disableSave = false;
                             return;
                         }
@@ -741,7 +742,7 @@ export default {
                                 var p = d[c].cityCatAndAllowances ;
                                 
                                 if(!p[t].limitSpent && p[t].starCat == '0'){
-                                    alert('Star need to mentioned in City category');
+                                    alert('Star must be specified for City Groups');
                                         self.disableSave = false;
                                         return;
                                 }
@@ -755,8 +756,8 @@ export default {
                             for(let t=0;t < d[c].cityCatAndAllowances.length;t++){
                                 let p = d[c].cityCatAndAllowances ;
                                 
-                                if(!p[t].limitSpent && (Number(p[t].min) >= Number(p[t].max))){
-                                    alert('Maximum amount should be greater than Minmum amount');
+                                if(!p[t].limitSpent && (Number(p[t].min) > Number(p[t].max))){
+                                    alert('Maximum amount should be greater than Minimum amount');
                                         self.disableSave = false;
                                         return;
                                 }
@@ -775,7 +776,7 @@ export default {
                         var dd = data.split('|');
                     
                         if(dd[0].indexOf('T') === 0){
-                            self.getPolicyBundle(self.policyBundleId);
+                            self.getPolicyBundle(self.policyBundleId,'view');
                             self.$store.commit('showAlert','s|Policy Bundle updated successfully..!');
                             $.post(api.listPolicyBundle,{'companyId' : api.companyId }).done(function(res){//get refreshed bundle
                                 self.policyBundleData = JSON.parse(res);
@@ -800,12 +801,12 @@ export default {
             
             });
             }else{
-                alert('atleast one city category or bundle has to be there');
+                alert('Atleast one City group And Benefit must be there under Accomodation');
                 self.disableSave = false;
             }
               
         }else{
-            alert("Name and Code is required")
+            alert("Please fill in all the required fields")
             self.disableSave = false;
         }
 
@@ -860,7 +861,7 @@ export default {
      }else{
            this.showCity = true;
      }
-     this.CreateHistory(type);
+    //  this.CreateHistory(type);
     $.post(api.listPolicyBundle,{'companyId' : api.companyId }).done(function(res){
         self.policyBundleData = JSON.parse(res)
     });
