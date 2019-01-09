@@ -82,6 +82,7 @@
                                                 </td><!-- @click='disableField(i.value)'-->
                                                 <td v-if='j.benefitTypeId.label == "Accomodation"' >
                                                     <select v-model='i.starCat' class='p2-4' style='width:75px;'>
+                                                        <option value='0' disabled></option>
                                                         <option value='1'>1</option>
                                                         <option value='2'>Upto 2</option>
                                                         <option value='3'>Upto 3</option>
@@ -201,7 +202,7 @@ export default {
          for(let r= 0;r< this.copyHolder.length;r++){
              let o = this.copyHolder;
              if(o[r].benefitTypeId.value == '3' && o[r].benefits.length > 0){
-                 o[r].benefits.pop();
+                 o[r].benefits= [];
                  o[r].benefits.push(val)
              }
              if(o[r].benefitTypeId.value == '3' && o[r].benefits.length == 0){
@@ -311,12 +312,12 @@ export default {
           //check for the citycaetgory = 0 and benefit bundle = 0 what if nothing selected
                 for(var c=0;c < d.length; c++){
                         
-                        if(d[c].benefits.length > 0 && d[c].cityCatAndAllowances.length === 0){
+                        if(Array.isArray(d[c].cityCatAndAllowances) && d[c].cityCatAndAllowances.length === 0){
                             alert('At least one City group must be selected in '+d[c].benefitTypeId.label);
                             self.disableSave = false;
                             return;
                         }
-                        if(d[c].benefits.length === 0 && d[c].cityCatAndAllowances.length > 0){
+                        if(Array.isArray(d[c].benefits) && (d[c].benefits.length === 0 && d[c].benefits[0] === null)){
                             
                             alert('At least one Benefit must be selected in '+d[c].benefitTypeId.label);
                             self.disableSave = false;
@@ -328,7 +329,7 @@ export default {
                             for(let t=0;t < d[c].cityCatAndAllowances.length;t++){
                                 let p = d[c].cityCatAndAllowances ;
                                 
-                                if(!p[t].limitSpent && p[t].starCat == '0'){
+                                if( p[t].starCat == '0'){
                                     alert('Star must be specified for City groups');
                                         self.disableSave = false;
                                         return;
@@ -351,7 +352,6 @@ export default {
                             
                         }
                     }
-
             if(dataToSend.policybundles.length > 0){
                 self.shows()
             $.post(api.createPolicyBundle,(api.production) ? dataToSend : JSON.stringify(dataToSend)).done(function(res){

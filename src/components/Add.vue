@@ -9,7 +9,7 @@
                       :class='{"active-list" : i.value == activeCityCat}'>
                     <!-- <b>{{i.label}}</b> -->
                     <div class='flex items-center'>
-                      <div class='w75 cursor' @click="sendId(i.value,'view')" style='overflow-wrap: break-word;'> {{i.label}}</div>
+                      <div class='w75 cursor'  @click="sendId(i.value,'view')" style='overflow-wrap: break-word;'> {{i.label}}</div>
                         <div class='w25 al-right'>
                            <span v-if='i.label != "Master Category"' class="btn btn-default btn-xs  action-btn" @click='sendId(i.value,"edit")'><i class="fa fa-pencil" aria-hidden="true"></i></span>
                           <span class="btn btn-default btn-xs action-btn" @click="sendId(i.value,'view')"><i class="fa fa-eye" aria-hidden="true"></i></span>
@@ -49,7 +49,7 @@
                 <label>Assigned Cities</label>
                 <!-- <v-select maxHeight='250px'  multiple v-model='cityHolder' :options='cityData.filter(x => CompCit.indexOf(x.value) == -1)'></v-select> -->
                 <ul class='w100 flex' style='overflow:hidden;flex-wrap:wrap;'>
-                  <li class='p2-4' v-for='i in cityHolder' :key='i.value'>{{i.label}}{{ (index !== 0) ? ', ' : ""}}</li>
+                  <li class='p2-4' >{{ (cityHolder.length > 0) ? cityHolder.map(x => x.label).join(', ') : "" }}</li>
                 </ul>
               </div>
               <div class="form-group">

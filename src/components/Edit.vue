@@ -145,6 +145,7 @@
                                                                     <td class='w10 center'><input :id='i.value' v-model='i.limitSpent' type='checkbox' @change='reset(j.benefitTypeId.value,ind,index)' ></td><!-- @click='disableField(i.value)'-->
                                                                     <td v-if='j.benefitTypeId.label == "Accomodation"' >
                                                                         <select v-model='i.starCat' class='p2-4' style='width:75px;'>
+                                                                            <option value='0' disabled></option>
                                                                             <option value='1'>1</option>
                                                                             <option value='2'>Upto 2</option>
                                                                             <option value='3'>Upto 3</option>
@@ -289,7 +290,8 @@
                                                     <tr  v-for='i in displayHolder[index].cityCatAndAllowances' :id='i.value' :key='i.value'>
                                                         <td class=''>{{i.label}}</td>
                                                         <td class='center'>{{ (i.limitSpent) ? 'Yes' : 'No' }}</td>
-                                                        <td class='center'  v-if='j.benefitTypeId.value == "3"'>{{ (i.limitSpent) ? "--" : ((Number(i.starCat) > 1) ? 'upto ' + i.starCat : i.starCat)}}</td>
+                                                        <td class='center'  v-if='j.benefitTypeId.value == "3" && Number(i.starCat) !== 0'>{{ ((Number(i.starCat) > 1) ? 'upto ' + i.starCat : i.starCat)}}</td>
+                                                        <td class='center'  v-if='j.benefitTypeId.value == "3" && Number(i.starCat) == 0'>---</td>
                                                         <td class='center' v-if="!i.limitSpent"><span v-money>{{ i.min }}</span> - <span v-money>{{ i.max }}</span></td>
                                                         <td class="center" v-else> -- - --</td>
                                                         <td class='center' v-if='i.flex != "1"'>{{ (!i.limitSpent) ? ((i.flex == '1') ? '' : '') + i.flexAmt + ((i.flex == '2') ? '%' : '') : '---'}}</td>
@@ -460,7 +462,7 @@ export default {
          for(let r= 0;r< this.copyHolder.length;r++){
              let o = this.copyHolder;
              if(o[r].benefitTypeId.value == '3' && o[r].benefits.length > 0){
-                 o[r].benefits.pop();
+                 o[r].benefits=[];
                  o[r].benefits.push(val)
              }
              if(o[r].benefitTypeId.value == '3' && o[r].benefits.length == 0){
@@ -471,7 +473,7 @@ export default {
         for(let r= 0;r< this.displayHolder.length;r++){
              let o = this.displayHolder;
              if(o[r].benefitTypeId.value == '3' && o[r].benefits.length > 0){
-                 o[r].benefits.pop();
+                 o[r].benefits= [];
                  o[r].benefits.push(val)
              }
              if(o[r].benefitTypeId.value == '3' && o[r].benefits.length == 0){
@@ -724,13 +726,13 @@ export default {
                     //check for the citycaetgory = 0 and benefit bundle = 0 what if nothing selected
                     for(var c=0;c < d.length; c++){
                         
-                        if(d[c].benefits.length > 0 && d[c].cityCatAndAllowances.length === 0){
+                        if(Array.isArray(d[c].cityCatAndAllowances) && d[c].cityCatAndAllowances.length === 0){
                                 
                             alert('At least one City Group must be selected in '+d[c].benefitTypeId.label);
                             self.disableSave = false;
                             return;
                         }
-                        if(d[c].benefits.length == 0 && d[c].cityCatAndAllowances.length > 0){
+                        if(Array.isArray(d[c].benefits) && (d[c].benefits.length === 0 || d[c].benefits[0] === null)){
                             alert('At least one Benefit must be selected in '+d[c].benefitTypeId.label);
                             self.disableSave = false;
                             return;
@@ -741,7 +743,7 @@ export default {
                             for(var t=0;t < d[c].cityCatAndAllowances.length;t++){
                                 var p = d[c].cityCatAndAllowances ;
                                 
-                                if(!p[t].limitSpent && p[t].starCat == '0'){
+                                if(p[t].starCat == '0'){
                                     alert('Star must be specified for City Groups');
                                         self.disableSave = false;
                                         return;
@@ -765,8 +767,6 @@ export default {
                             
                         }                        
                     }
-
-
 
               if(dataToSend.policybundles.length > 0){
              // Bundle
