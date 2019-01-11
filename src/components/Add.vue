@@ -6,7 +6,7 @@
                 <div class='f14 p2-4 b6 br-btm'>List of City Groups <span class="badge badge-primary">{{cityCategoryData.length}}</span></div>
                 <ul style='height:400px;overflow-y:auto;' id='sideList'>
                   <li  class='p10-20' v-for='i in cityCategoryData' :key='i.value'
-                      :class='{"active-list" : i.value == activeCityCat}'>
+                      :class='{"active-list" : i.value == activeCityCat,"opa" :i.label === "Master Category"}'>
                     <!-- <b>{{i.label}}</b> -->
                     <div class='flex items-center'>
                       <div class='w75 cursor'  @click="sendId(i.value,'view')" style='overflow-wrap: break-word;'> {{i.label}}</div>
@@ -344,7 +344,7 @@ export default {
                         self.showEdit = false;
                         self.activeId = [];
                         self.getCityCat();
-                        self.$store.commit('showAlert','o|City Group updated.')
+                        self.$store.commit('showAlert','o|City Group Updated.')
                     });
                   }else{
                     let s = data.split('|')[1];

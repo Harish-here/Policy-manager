@@ -53,7 +53,7 @@
                                                             <!-- <sup v-if='j.benefitTypeId.value != "3" && copyHolder[index].benefits.length > 0' style='color:red;'>*</sup>
                                                             <sup v-if='j.benefitTypeId.value == "3"  && copyHolder[index].benefits.hasOwnProperty("value")' style='color:red;'>*</sup> -->
                                             </label>
-                                        <v-select maxHeight='250px' v-if='j.benefitTypeId.value == "3"' multiple v-model='copyHolder[index].cityCatAndAllowances' :options='j.cityCatAndAllowances'></v-select>
+                                        <v-select maxHeight='250px' v-if='j.benefitTypeId.value == "3"' multiple v-model='copyHolder[index].cityCatAndAllowances' :options='j.cityCatAndAllowances.filter(x => x.label !== "Master Category")'></v-select>
                                         <!--this is to make the option for other policies from accomodation -->
                                         <v-select maxHeight='250px' v-else multiple v-model='copyHolder[index].cityCatAndAllowances' :options='j.cityCatAndAllowances.filter(y => CityCat.indexOf(y.value) > -1)'></v-select>
                                     </div>
@@ -343,7 +343,7 @@ export default {
                             for(let t=0;t < d[c].cityCatAndAllowances.length;t++){
                                 let p = d[c].cityCatAndAllowances ;
                                 
-                                if(!p[t].limitSpent && (Number(p[t].min) > Number(p[t].max))){
+                                if(!p[t].limitSpent && (Number(p[t].min) >= Number(p[t].max))){
                                     alert('Maximum amount should be greater than Minimum amount');
                                         self.disableSave = false;
                                         return;

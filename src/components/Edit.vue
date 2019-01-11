@@ -22,18 +22,21 @@
     </div>
     <!-- show display or edit -->
     <div v-if='!showCity'>
-        <div class='fl p-15-top pa-lr br-right' style='width:34%;'>
+        <div class='fl p-15-top pa-lr br-right' style='width:30%;'>
             <!-- <div class='m-top-25 p2-4'>
                 <button class='btn btn-info' @click="show('1')"><b>Create Grade Policy </b></button>
             </div> -->
             <div class='roboto black mb25' style='font-size:18px;'>Grade Policy</div>
             <div class='centering mb25' style='' @click="show('1')">Add Grade Policy</div>
-            <div class='f14 p2-4 b6 br-btm' >List of Policies <span class='badge badge-primary'>{{policyBundleData.length}}</span></div>
+            <div class='f14 p2-4 b6 br-btm flex justify-between align-baseline' >
+                <span>List of Policies <span class='badge badge-primary'>{{policyBundleData.length}}</span></span>
+                <input type='text' style='height:24px;font-weight:400;border-radius:2px;padding:5px;' placeholder="Search policies" v-model='SearchString' />
+            </div>
             
             <ul id='sideList' class=''>
                 <!-- <li class='p10-20 center act-' v-if='policyBundleData.length === 0' >Add policy</li> -->
-                <li class='p10-20' style='overflow:hidden' v-for='i in policyBundleData' 
-                   :class='{"active-list" : i.value == activeListId,"al-left": i.value != activeListId}' :key='i.value'>
+                <li class='p10-20' style='overflow:hidden' v-for='i in MainList' 
+                   :class='{"active-list" : i.value == activeListId,"al-left": i.value != activeListId,"opa" :i.label === "Master Admin"}' :key='i.value'>
                    <div class='flex items-center'>
                     <div class='w75 cursor' @click="getPolicyBundle(i.value,'view')" style='overflow-wrap: break-word;'> {{i.label}}</div>
                     <div class='w25 al-right'>
@@ -42,7 +45,7 @@
                    </div>
                    </div>
                 </li>
-                <li class='p10-20 center' v-if='policyBundleData.length === 0' >No Grade Policy</li>
+                <li class='p10-20 center' v-if='MainList.length === 0' >No Grade Policy</li>
             
             </ul>
         </div>
@@ -117,7 +120,7 @@
                                                                 <!-- <sup v-if='j.benefitTypeId.value != "3" && copyHolder[index].benefits.length > 0' style='color:red;'>*</sup>
                                                                 <sup v-if='j.benefitTypeId.value == "3" && copyHolder[index].benefits.hasOwnProperty("value")' style='color:red;'>*</sup> -->
                                                             </label>
-                                            <v-select maxHeight='250px' v-if='j.benefitTypeId.value == "3"' multiple v-model='copyHolder[index].cityCatAndAllowances' :options='j.cityCatAndAllowances'></v-select>
+                                            <v-select maxHeight='250px' v-if='j.benefitTypeId.value == "3"' multiple v-model='copyHolder[index].cityCatAndAllowances' :options='j.cityCatAndAllowances.filter(x => x.label !== "Master Category")'></v-select>
                                             <!--this is to make the option for other policies from accomodation -->
                                             <v-select maxHeight='250px' v-else multiple v-model='copyHolder[index].cityCatAndAllowances' :options='j.cityCatAndAllowances.filter(y => CityCat.indexOf(y.value) > -1)'></v-select>
                                                         </div>
@@ -370,7 +373,8 @@ export default {
            activeTab:"Accomodation",
            activeListId: "",
            singleSelect: '',
-           showCity: false
+           showCity: false,
+           SearchString: ''
       }
   },
   directives: {
@@ -400,46 +404,16 @@ export default {
   },
   components : { List, Add },
   computed : {
-      sample(){
+      MainList(){
           const self = this;
-          if(self.policyBundle !== null && self.displayHolder.length > 0){
-                //  return  self.policyBundle.map(function(obj){
-                //                 for(var t= 0;t<self.displayHolder.length;t++){
-                //                     if(self.displayHolder[t].benefitTypeId.value == obj.benefitTypeId.value){
-                //                         return self.displayHolder[t];
-                //                     }else{
-                //                         return {
-                //                             "benefitTypeId": {
-                //                                     "label": obj.benefitTypeId.label,
-                //                                     "value": obj.benefitTypeId.value
-                //                                 },
-                //                                 "priority": "",
-                //                                 "benefits": [],
-                //                                 "cityCatAndAllowances" :[]
-                //                         };
-                //                     }
-                //                 }
-                //             });
-                return self.policyBundle.map(function(obj){
-                    var find = self.displayHolder.find(function(x){ return x.benefitTypeId.value === obj.benefitTypeId.value;})
-                    if(find !== undefined){
-                        return find;
-                    }else{
-                         return {
-                                            "benefitTypeId": {
-                                                    "label": obj.benefitTypeId.label,
-                                                    "value": obj.benefitTypeId.value
-                                                },
-                                                "priority": "",
-                                                "benefits": [],
-                                                "cityCatAndAllowances" :[]
-                                        };
-                    }
-                });       
-                            
-            }
-
-      },
+         if(this.SearchString.length > 0){
+             return this.policyBundleData.filter(x =>{
+                 return x.label.toLowerCase().includes(self.SearchString.toLowerCase())
+             });
+         }else{
+             return this.policyBundleData
+         }
+     },
       CityCat(){
          //this is hold the selecetd city category of the accomodtion
          return this.copyHolder
@@ -491,6 +465,7 @@ export default {
           }
       }
  },
+
   methods:{
       show : function(num){
           const self = this;
@@ -758,7 +733,7 @@ export default {
                             for(let t=0;t < d[c].cityCatAndAllowances.length;t++){
                                 let p = d[c].cityCatAndAllowances ;
                                 
-                                if(!p[t].limitSpent && (Number(p[t].min) > Number(p[t].max))){
+                                if(!p[t].limitSpent && (Number(p[t].min) >= Number(p[t].max))){
                                     alert('Maximum amount should be greater than Minimum amount');
                                         self.disableSave = false;
                                         return;
@@ -830,11 +805,12 @@ export default {
                             });
                         }else{
                             // self.$store.commit('showAlert','o|'+dd[1]); temporary move to show case delete msg
-                            self.$store.commit('showAlert','d|Policy Bundle deleted successfully..!');
+                            self.$store.commit('showAlert','d|Couldn\'t delete the policy bundle since it was assigned to some employee');
                         }
                     }else{
                         // self.$store.commit('showAlert','d|Error in deleting the policy');need to work here
-                         self.$store.commit('showAlert','d|Policy Bundle deleted successfully..!');
+                        //  self.$store.commit('showAlert','d|Policy Bundle deleted successfully..!');
+                        self.$store.commit('showAlert','d|Couldn\'t delete the policy bundle since it was assigned to some employee');
                             $.post(api.listPolicyBundle,{'companyId' : api.companyId }).done(function(res){
                                 self.showEdit = false;
                                 self.policyBundleData = JSON.parse(res)
