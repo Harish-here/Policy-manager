@@ -1,11 +1,11 @@
 <template>
   <div id='policy' class='fl w100'>
     <div class='fl br-right' style='width:16%;height:100%;background:ghostwhite;'>
-        <div class='menu-heads'>Grade Policy</div>
+        <div class='menu-heads'>Travel Policy</div>
         <ul id='sidemenu'>
             <li @click='show("1")' class='centering' :class='{"act-": !showCity}'>
                 <span class='center'>
-                    Grade Policy
+                    Travel Policy
                 </span>
             </li>
             
@@ -26,8 +26,8 @@
             <!-- <div class='m-top-25 p2-4'>
                 <button class='btn btn-info' @click="show('1')"><b>Create Grade Policy </b></button>
             </div> -->
-            <div class='roboto black mb25' style='font-size:18px;'>Grade Policy</div>
-            <div class='centering mb25' style='' @click="show('1')">Add Grade Policy</div>
+            <div class='roboto black mb25' style='font-size:18px;'>Travel Policy</div>
+            <div class='centering mb25' style='' @click="show('1')">Add Travel Policy</div>
             <div class='f14 p2-4 b6 br-btm flex justify-between align-baseline' >
                 <span>List of Policies <span class='badge badge-primary'>{{policyBundleData.length}}</span></span>
                 <input type='text' style='height:24px;font-weight:400;border-radius:2px;padding:5px;' placeholder="Search policies" v-model='SearchString' />
@@ -45,7 +45,7 @@
                    </div>
                    </div>
                 </li>
-                <li class='p10-20 center' v-if='MainList.length === 0' >No Grade Policy</li>
+                <li class='p10-20 center' v-if='MainList.length === 0' >No Travel Policy</li>
             
             </ul>
         </div>
@@ -53,13 +53,13 @@
                     <div class='fl p5-10'>
                         <ul id='create-box' class='fl o-gray mb20'>
                             <li class='fl w100 b6 black mb20' style='padding-left:5px;'>
-                                <div class='fl w50' v-if='policyBundleName !== null && policyBundleName.length > 0'>Grade Policy Configuration</div>
+                                <div class='fl w50' v-if='policyBundleName !== null && policyBundleName.length > 0'>Travel Policy Configuration</div>
                                 <div class='fl w50 f16' v-else>{{policyBundleName}}<small> - (code: {{policyBundleCode}})</small></div>
                                 <div class='fr w50 al-right'>
                                     <button class='btn btn-primary btn-xs' @click='sendEdit' :disabled='disableSave'>
                                         <i class="fa fa-floppy-o" aria-hidden="true"></i>
                                         Save
-                                        <i v-if='disableSave' class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+                                        <!-- <i v-if='disableSave' class="fa fa-spinner fa-spin" aria-hidden="true"></i> -->
                                     </button>
                                     <button class='btn btn-danger btn-xs' @click="deleteBundle(policyBundleId)" :disabled='disableSave'>
                                         <i class="fa fa-trash" aria-hidden="true"></i>
@@ -521,6 +521,7 @@ export default {
             self.siwtchTab(id);
             let h;
             self.showEdit = false;
+            self.showDetails = false;
             self.shows()
             if(self.policyBundleHolder != ''){
                     $.post(api.getPolicyBundle,{'benefitBundleId' : id}) 
@@ -628,7 +629,7 @@ export default {
                     
                     
             }else{
-                alert('Select a Grade Policy')
+                alert('Select a Travel Policy')
             }
       },
       CreateHistory: function(type){
@@ -795,7 +796,7 @@ export default {
               $.post(api.deletePolicyBundle,{ benefitBundleId : id }).done(function(data){
                     if(data.includes('|')){
                         var dd = data.toString().split('|');
-                        if(dd[0].indexOf('T') === 0){
+                        if(dd[0].includes('t')){
                             self.$store.commit('showAlert','d|Policy Bundle deleted successfully..!');
                             $.post(api.listPolicyBundle,{'companyId' : api.companyId }).done(function(res){
                                 self.showEdit = false;
@@ -806,6 +807,7 @@ export default {
                         }else{
                             // self.$store.commit('showAlert','o|'+dd[1]); temporary move to show case delete msg
                             self.$store.commit('showAlert','d|Couldn\'t delete the policy bundle since it was assigned to some employee');
+                            self.disableSave = false;
                         }
                     }else{
                         // self.$store.commit('showAlert','d|Error in deleting the policy');need to work here

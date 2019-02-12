@@ -10,7 +10,7 @@
           <button class='btn btn-primary btn-xs fr' data-toggle="modal" data-target="#myModal2"><span style='color:#fff !important;'><i class="fa fa-location-arrow" aria-hidden="true"></i> Manage City Category</span>
           </button>
         </li> -->
-        <li role="presentation" class='b3 f21'>Grade Policy </li>
+        <li role="presentation" class='b3 f21'>Travel Policy </li>
     </ul>
     <hr class='fl w100'>
     <transition name='fade'>
