@@ -3,9 +3,12 @@
          <div class='p-15-top pa-lr br-right' style='width:35%;' >
                 <div class='roboto black mb25' style='font-size:18px;'>City Group</div>
                 <div class='centering mb25' @click="clean">Add City Group</div>
-                <div class='f14 p2-4 b6 br-btm'>List of City Groups <span class="badge badge-primary">{{cityCategoryData.length}}</span></div>
+                <div class='f14 p2-4 b6 br-btm flex justify-between align-baseline'>
+                  <span>List of City Groups <span class="badge badge-primary">{{cityCategoryData.length}}</span></span>
+                  <input type='text' style='height:24px;font-weight:400;border-radius:2px;padding:5px;' placeholder="Search city groups" v-model='SearchString' />
+                </div>
                 <ul style='height:400px;overflow-y:auto;' id='sideList'>
-                  <li  class='p10-20' v-for='i in cityCategoryData' :key='i.value'
+                  <li  class='p10-20' v-for='i in MainList' :key='i.value'
                       :class='{"active-list" : i.value == activeCityCat,"opa" :i.label === "Master Category"}'>
                     <!-- <b>{{i.label}}</b> -->
                     <div class='flex items-center'>
@@ -16,7 +19,7 @@
                       </div>
                     </div>                    
                   </li>
-                  <li class='p10-20 center' style='border:1px solid #ddd;' v-if='cityCategoryData.length === 0' >No City Group</li>
+                  <li class='p10-20 center' style='border:1px solid #ddd;' v-if='MainList.length === 0' >No City Group</li>
                 </ul>
           </div>
         <div style='display:flex' class='w60 p-15-top pa-lr'>
@@ -95,10 +98,12 @@ export default {
           activeCityCat : '',
           cityDataCat: [],
           activeId: [],
-          activeCityVal:[]
+          activeCityVal:[],
+          SearchString: ""
       }
   },
- created(){
+  
+  created(){
      var self = this;
   
           $.post(api.listCityCat,{'companyId' : api.companyId ,'methodType' :'list' }).done(function(data){
@@ -126,6 +131,11 @@ export default {
        const self = this;
        return self.$store.state.alt
      },
+    MainList(){
+      return (this.SearchString.length > 0) ?
+              this.cityCategoryData.filter( x => x.label.toLowerCase().includes(this.SearchString.toLowerCase())) :
+              this.cityCategoryData
+    },
      SelectedId(){
        if(this.activeId.length > 0){
         return this.activeId;
