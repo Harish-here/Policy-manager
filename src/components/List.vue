@@ -3,7 +3,7 @@
       
     <div class='fl w100'>
       <ul id='create-box' class='fl o-gray w100 mb20' style=''>
-            <li class='fl w100 b6 black mb20' style='padding-left:5px;' v-if='bundleName.length === 0'>Grade Policy Configuration</li>
+            <li class='fl w100 b6 black mb20' style='padding-left:5px;' v-if='bundleName.length === 0'>Travel Policy Configuration</li>
              <li class='fl w100 b6 f16 mb20' style='padding-left:5px;' v-else>{{bundleName}}<small> - (code: {{bundleCode}})</small></li>
 
             <li class='fl w50 p5-10'>
