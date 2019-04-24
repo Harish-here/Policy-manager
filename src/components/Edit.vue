@@ -54,7 +54,7 @@
                         <ul id='create-box' class='fl o-gray mb20'>
                             <li class='fl w100 b6 black mb20' style='padding-left:5px;'>
                                 <div class='fl w50' v-if='policyBundleName !== null && policyBundleName.length > 0'>Travel Policy Configuration</div>
-                                <div class='fl w50 f16' v-else>{{policyBundleName}}<small> - (code: {{policyBundleCode}})</small></div>
+                                <div class='fl w50 f16' v-else>{{policyBundleName}}<small> - (Code: {{policyBundleCode}})</small></div>
                                 <div class='fr w50 al-right'>
                                     <button class='btn btn-primary btn-xs' @click='sendEdit' :disabled='disableSave'>
                                         <i class="fa fa-floppy-o" aria-hidden="true"></i>
@@ -215,7 +215,7 @@
         <div class='fl w50 p-15-top pa-lr br-right' id ='displayPanel' v-if='showDetails'>
                 <div class='fl w100 p5-10'>
                     <ul id='create-box' class='fl w100 o-gray'>
-                        <li class='fl w100 b6 f16 mb20' style='padding-left:5px;'>{{policyBundleName}}<small> - (code: {{policyBundleCode}})</small></li>
+                        <li class='fl w100 b6 f16 mb20' style='padding-left:5px;'>{{policyBundleName}}<small> - (Code: {{policyBundleCode}})</small></li>
                         <!-- <li class='fl w50 p5-10'>
                             <div class='' for='policyName'>Name</div>
                             <input id='policyName' v-model='policyBundleName' class='p5-10 br-none bg-gray  f14 black b6' disabled/>
@@ -749,9 +749,9 @@ export default {
              self.shows()
             $.post(api.updatePolicyBundle,(api.production) ? dataToSend : JSON.stringify(dataToSend)).done(function(data){
                     if(data.includes('|')){
-                        var dd = data.split('|');
-                    
-                        if(dd[0].indexOf('T') === 0){
+                        var dd = data.toString().split('|');
+                        var ok = dd[0].trim();
+                        if(ok.includes('T')){
                             self.getPolicyBundle(self.policyBundleId,'view');
                             self.$store.commit('showAlert','s|Policy Bundle updated successfully..!');
                             $.post(api.listPolicyBundle,{'companyId' : api.companyId }).done(function(res){//get refreshed bundle

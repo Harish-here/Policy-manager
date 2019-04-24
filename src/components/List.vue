@@ -4,7 +4,7 @@
     <div class='fl w100'>
       <ul id='create-box' class='fl o-gray w100 mb20' style=''>
             <li class='fl w100 b6 black mb20' style='padding-left:5px;' v-if='bundleName.length === 0'>Travel Policy Configuration</li>
-             <li class='fl w100 b6 f16 mb20' style='padding-left:5px;' v-else>{{bundleName}}<small> - (code: {{bundleCode}})</small></li>
+             <li class='fl w100 b6 f16 mb20' style='padding-left:5px;' v-else>{{bundleName}}<small> - (Code: {{bundleCode}})</small></li>
 
             <li class='fl w50 p5-10'>
                 <div class=''>Name <sup class='b6'>*</sup></div>
@@ -355,9 +355,10 @@ export default {
             if(dataToSend.policybundles.length > 0){
                 self.shows()
             $.post(api.createPolicyBundle,(api.production) ? dataToSend : JSON.stringify(dataToSend)).done(function(res){
-                if(res){
-                const tt = res.toString().split('|');
-                if(tt[0].indexOf('T') === 0){
+                console.log(res.toString().includes('T'));
+                if(res.toString().includes('T')){
+                const tt = res.split('|');
+                if(res.includes('T|')){
                     
                     $.post(api.getModelPolicyBundle,{'companyId' : api.companyId }).done(function(res){
                         var t = JSON.parse(res);
