@@ -355,10 +355,10 @@ export default {
             if(dataToSend.policybundles.length > 0){
                 self.shows()
             $.post(api.createPolicyBundle,(api.production) ? dataToSend : JSON.stringify(dataToSend)).done(function(res){
-                console.log(res.toString().includes('T'));
-                if(res.toString().includes('T')){
+                //console.log(res.toString().includes('T'));
+                
                 const tt = res.split('|');
-                if(res.includes('T|')){
+                if(res.toString().includes('T')){
                     
                     $.post(api.getModelPolicyBundle,{'companyId' : api.companyId }).done(function(res){
                         var t = JSON.parse(res);
@@ -404,7 +404,7 @@ export default {
                 setTimeout(function(){
                     self.$emit('refresh',1);
                 },2000)
-                 }
+                
                   
                 
             });

@@ -753,7 +753,7 @@ export default {
                         var ok = dd[0].trim();
                         if(ok.includes('T')){
                             self.getPolicyBundle(self.policyBundleId,'view');
-                            self.$store.commit('showAlert','s|Policy Bundle updated successfully..!');
+                            self.$store.commit('showAlert','s|Travel Policy updated successfully..!');
                             $.post(api.listPolicyBundle,{'companyId' : api.companyId }).done(function(res){//get refreshed bundle
                                 self.policyBundleData = JSON.parse(res);
                                 
@@ -770,7 +770,7 @@ export default {
                             
                         }
                     }else{
-                        self.$store.commit('showAlert','d|Error in updating the policy');
+                        self.$store.commit('showAlert','d|Error in updating the Travel Policy');
                         self.disableSave = false;
                     }
                     
@@ -797,7 +797,7 @@ export default {
                     if(data.includes('|')){
                         var dd = data.toString().split('|');
                         if(dd[0].includes('t')){
-                            self.$store.commit('showAlert','d|Policy Bundle deleted successfully..!');
+                            self.$store.commit('showAlert','d|Travel Policy deleted successfully..!');
                             $.post(api.listPolicyBundle,{'companyId' : api.companyId }).done(function(res){
                                 self.showEdit = false;
                                 self.policyBundleData = JSON.parse(res)
@@ -806,13 +806,13 @@ export default {
                             });
                         }else{
                             // self.$store.commit('showAlert','o|'+dd[1]); temporary move to show case delete msg
-                            self.$store.commit('showAlert','d|Couldn\'t delete the policy bundle since it was assigned to some employee');
+                            self.$store.commit('showAlert','d|Couldn\'t delete the Travel Policy since it was assigned to some employee');
                             self.disableSave = false;
                         }
                     }else{
                         // self.$store.commit('showAlert','d|Error in deleting the policy');need to work here
                         //  self.$store.commit('showAlert','d|Policy Bundle deleted successfully..!');
-                        self.$store.commit('showAlert','d|Couldn\'t delete the policy bundle since it was assigned to some employee');
+                        self.$store.commit('showAlert','d|Couldn\'t delete the Travel Policy since it was assigned to some employee');
                             $.post(api.listPolicyBundle,{'companyId' : api.companyId }).done(function(res){
                                 self.showEdit = false;
                                 self.policyBundleData = JSON.parse(res)

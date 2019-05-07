@@ -52,7 +52,8 @@
                 <label>Assigned Cities</label>
                 <!-- <v-select maxHeight='250px'  multiple v-model='cityHolder' :options='cityData.filter(x => CompCit.indexOf(x.value) == -1)'></v-select> -->
                 <ul class='w100 flex' style='overflow:hidden;flex-wrap:wrap;'>
-                  <li class='p2-4' >{{ (cityHolder.length > 0) ? cityHolder.map(x => x.label).join(', ') : "" }}</li>
+                  <li class='p2-4' v-if='cityCategoryHolder != "Master Category"' >{{ (cityHolder.length > 0) ? cityHolder.map(x => x.label).join(', ') : "" }}</li>
+                  <li class='p2-4' v-else>All Cities</li>
                 </ul>
               </div>
               <div class="form-group">
@@ -246,7 +247,7 @@ export default {
                       self.btnState('createBtn','create',0);
                       //self.fade('createInfo',3);
                       self.getCityCat();
-                      self.$store.commit('showAlert','s|City Category \"'+ self.cityCategoryHolder +'\" is Created..!')
+                      self.$store.commit('showAlert','s|City Group \"'+ self.cityCategoryHolder +'\" is Created')
                       self.cityCategoryHolder = null;
                       $('#createBtn').html('Create City Group');
                       // location.reload();
@@ -299,7 +300,7 @@ export default {
             if(confirm("Are Sure You want to delete this City Group") && id != null){
               $.post(api.deleteCityCat,{'cityCatId' : id,'methodType':'delete'}).done(function(data){ //url for delte 
               //http://www.hobse.com/demo/index.php/customer/customer/policy/deleteCityCat
-              var res = data
+              var res = data.toString();
               self.activeId = []
               self.show()
               $.post(api.listCityCat,{'companyId' : api.companyId ,'methodType' :'list' }).done(function(datas){
@@ -310,10 +311,10 @@ export default {
                 self.tellRefresh = true;
                 self.preCityHolder  = [];
                 self.showEdit = false;
-                if(res.indexOf('f') === 0){
+                if(res.includes('f|')){
                 self.fade('deleteNotInfo',3)
                 
-                  self.$store.commit('showAlert','d|Sorry can\'t Delete this City Group because it is associated with some policy bundle.')
+                  self.$store.commit('showAlert','d|Sorry can\'t Delete this City Group because it is associated with some Travel Policy.')
                 }else{
                   self.activeId = [];
                   // self.fade('deleteInfo',4);
