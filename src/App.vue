@@ -1,24 +1,20 @@
 <template>
-  <div id="app">
+  <div>
     <transition name='fade'>
       <div class='p5-10 white b6 w100 center' v-if='showAlert' style='position:fixed;top:0;z-index:7000' :class='classs'>
         {{label}}
       </div>
     </transition>
     <ul class='fl w100 p20-40 al-left bg-gray' id='pageTitle'>
-        <!-- <li>
-          <button class='btn btn-primary btn-xs fr' data-toggle="modal" data-target="#myModal2"><span style='color:#fff !important;'><i class="fa fa-location-arrow" aria-hidden="true"></i> Manage City Category</span>
-          </button>
-        </li> -->
+       
         <li role="presentation" class='b3 f21'>Travel Policy </li>
     </ul>
-    <hr class='fl w100'>
-    <transition name='fade'>
+    
       <div class='fl w100'>
           <!-- <router-view></router-view> -->
           <Add :toRefresh='tellRefresh' @refreshDone='resetRefresh' />
         </div>
-    </transition>
+    
       
     <div class="modal right fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
         <div class="modal-dialog" role="document">

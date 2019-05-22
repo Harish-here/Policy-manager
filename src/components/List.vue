@@ -1,5 +1,5 @@
 <template>
-  <div id='create' class='fl  w100'>
+  <div id='create' class='fl  w100' >
       
     <div class='fl w100'>
       <ul id='create-box' class='fl o-gray w100 mb20' style=''>

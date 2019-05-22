@@ -49,7 +49,7 @@
             
             </ul>
         </div>
-        <div class='fl w50 p-15-top pa-lr br-right' id='editPanel' v-if='showEdit'>
+        <div class='fl w50 p-15-top pa-lr br-right overflow-y-auto' style="height:550px" id='editPanel' v-if='showEdit'>
                     <div class='fl p5-10'>
                         <ul id='create-box' class='fl o-gray mb20'>
                             <li class='fl w100 b6 black mb20' style='padding-left:5px;'>
@@ -212,7 +212,7 @@
                         </div>
                     </div>
         <!-- display the details of policy -->          
-        <div class='fl w50 p-15-top pa-lr br-right' id ='displayPanel' v-if='showDetails'>
+        <div class='fl w50 p-15-top pa-lr br-right overflow-y-auto'  style="height:550px" id ='displayPanel' v-if='showDetails'>
                 <div class='fl w100 p5-10'>
                     <ul id='create-box' class='fl w100 o-gray'>
                         <li class='fl w100 b6 f16 mb20' style='padding-left:5px;'>{{policyBundleName}}<small> - (Code: {{policyBundleCode}})</small></li>
@@ -324,11 +324,11 @@
         </div>
     </div>
     <!--Create panel -->
-    <div id='createPanel'  class='fl w50 p-15-top pa-lr' v-if='createPanelShow && !showCity'>
+    <div id='createPanel'  class='fl w50 p-15-top pa-lr overflow-y-auto'  style="height:550px" v-if='createPanelShow && !showCity'>
         <List @refresh='getList' :getFresh='toRefresh' @doneRefresh='resetFresh'/>
     </div>
     <!-- City Group -->
-    <div class='fl w80' v-if='showCity'>
+    <div class='fl w80 overflow-y-auto' style="height:100%" v-if='showCity'>
         <Add/>
     </div>
     
