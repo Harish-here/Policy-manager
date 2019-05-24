@@ -704,7 +704,7 @@ export default {
                         
                         if(Array.isArray(d[c].cityCatAndAllowances) && d[c].cityCatAndAllowances.length === 0){
                                 
-                            alert('At least one City Group must be selected in '+d[c].benefitTypeId.label);
+                            alert('Atleast one City Group must be selected in '+d[c].benefitTypeId.label);
                             self.disableSave = false;
                             return;
                         }
@@ -720,7 +720,7 @@ export default {
                                 var p = d[c].cityCatAndAllowances ;
                                 
                                 if(p[t].starCat == '0'){
-                                    alert('Star must be specified for City Groups');
+                                    alert('Please specify Star category.');
                                         self.disableSave = false;
                                         return;
                                 }
@@ -735,7 +735,7 @@ export default {
                                 let p = d[c].cityCatAndAllowances ;
                                 
                                 if(!p[t].limitSpent && (Number(p[t].min) >= Number(p[t].max))){
-                                    alert('Maximum amount should be greater than Minimum amount');
+                                    alert('Maximum amount should be greater than Minimum amount.');
                                         self.disableSave = false;
                                         return;
                                 }
@@ -753,7 +753,7 @@ export default {
                         var ok = dd[0].trim();
                         if(ok.includes('T')){
                             self.getPolicyBundle(self.policyBundleId,'view');
-                            self.$store.commit('showAlert','s|Travel Policy updated successfully..!');
+                            self.$store.commit('showAlert','s|Travel policy updated successfully.');
                             $.post(api.listPolicyBundle,{'companyId' : api.companyId }).done(function(res){//get refreshed bundle
                                 self.policyBundleData = JSON.parse(res);
                                 
@@ -777,12 +777,12 @@ export default {
             
             });
             }else{
-                alert('Atleast one City group And Benefit must be there under Accomodation');
+                alert('Atleast one City Group and Benefit must be there under Accomodation!');
                 self.disableSave = false;
             }
               
         }else{
-            alert("Please fill in all the required fields")
+            alert("Please fill in all the required fields.")
             self.disableSave = false;
         }
 
@@ -790,7 +790,7 @@ export default {
       deleteBundle : function(id){
           var self = this;
           
-          if(confirm("Are you sure you want to delete this Policy ?")){
+          if(confirm("Are you sure you want to delete this Travel Policy ?")){
               self.shows();
               self.disableSave = true;
               $.post(api.deletePolicyBundle,{ benefitBundleId : id }).done(function(data){

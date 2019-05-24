@@ -136,7 +136,7 @@
                                     </table>
                                 </div>
                                 <div class='fl w100 p5-10 center m-top-25' v-else>
-                                           Please ensure City groups are configured before proceed with {{j.benefitTypeId.label}} Policy 
+                                           Please ensure City Groups are configured before proceed with {{j.benefitTypeId.label}} Policy. 
                                 </div> 
                             </div>  
                             
@@ -313,7 +313,7 @@ export default {
                 for(var c=0;c < d.length; c++){
                         
                         if(Array.isArray(d[c].cityCatAndAllowances) && d[c].cityCatAndAllowances.length === 0){
-                            alert('At least one City group must be selected in '+d[c].benefitTypeId.label);
+                            alert('Atleast one City Group must be selected in '+d[c].benefitTypeId.label);
                             self.disableSave = false;
                             return;
                         }
@@ -330,7 +330,7 @@ export default {
                                 let p = d[c].cityCatAndAllowances ;
                                 
                                 if( p[t].starCat == '0'){
-                                    alert('Star must be specified for City groups');
+                                    alert('Please specify Star category.');
                                         self.disableSave = false;
                                         return;
                                 }
@@ -344,7 +344,7 @@ export default {
                                 let p = d[c].cityCatAndAllowances ;
                                 
                                 if(!p[t].limitSpent && (Number(p[t].min) >= Number(p[t].max))){
-                                    alert('Maximum amount should be greater than Minimum amount');
+                                    alert('Maximum amount should be greater than Minimum amount.');
                                         self.disableSave = false;
                                         return;
                                 }
@@ -388,7 +388,7 @@ export default {
                                     "cityCatAndAllowances" :[]
                             })
                         }
-                        self.$store.commit('showAlert','s|Policy Bundle '+ self.bundleName +' is created..!');
+                        self.$store.commit('showAlert','s|Travel policy created successfully.');
                         self.disableSave = false;
                         self.bundleName = '';
                         self.bundleCode = '';
@@ -409,13 +409,13 @@ export default {
                 
             });
             }else{
-                      alert('Atleast one City group And Benefit must be there under Accomodation');
+                      alert('Atleast one City Group and Benefit must be there under Accomodation!');
                       self.disableSave = false;
                   }
              //URL to create bundle
                 
         }else{
-            alert("Please fill in all the required fields");
+            alert("Please fill in all the required fields.");
             self.disableSave = false;
         }
         

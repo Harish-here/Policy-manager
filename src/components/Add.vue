@@ -247,13 +247,13 @@ export default {
                       self.btnState('createBtn','create',0);
                       //self.fade('createInfo',3);
                       self.getCityCat();
-                      self.$store.commit('showAlert','s|City Group \"'+ self.cityCategoryHolder +'\" is Created')
+                      self.$store.commit('showAlert','s|City Group: \"'+ self.cityCategoryHolder +'\" created successfully.')
                       self.cityCategoryHolder = null;
                       $('#createBtn').html('Create City Group');
                       // location.reload();
                     });
                 }else{
-                  alertify.error("City Group name already exist.");
+                  alertify.error("City Group name already exists!");
                   self.btnState('createBtn','create',0);
                   $('#createBtn').html('Create City Group');
                 }
@@ -263,9 +263,9 @@ export default {
               
             }else{
               if(self.cityHolder !== null && self.cityHolder.length !== 0){
-                alert('City Group Name cannot be empty')
+                alert('Please enter City Group name.')
               }else{
-                alert('Atleast one City need to be in a City Group ')
+                alert('Atleast one city is required to create a City Group!')
               }
               
             }
@@ -314,7 +314,7 @@ export default {
                 if(res.includes('f|')){
                 self.fade('deleteNotInfo',3)
                 
-                  self.$store.commit('showAlert','d|Sorry can\'t Delete this City Group because it is associated with some Travel Policy.')
+                  self.$store.commit('showAlert','d|This City Group cannot be deleted because it is associated with one or more Travel Policies.')
                 }else{
                   self.activeId = [];
                   // self.fade('deleteInfo',4);

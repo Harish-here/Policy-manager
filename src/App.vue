@@ -215,7 +215,7 @@ export default {
                   self.btnState('createBtn','create',0);
                   //self.fade('createInfo',3);
                   self.getCityCat();
-                  self.$store.commit('showAlert','s|City Category \"'+ self.cityCategoryHolder +'\" is Created..!')
+                  self.$store.commit('showAlert','s|City Group \"'+ self.cityCategoryHolder +'\" is Created..!')
                   self.cityCategoryHolder = null;
                   $('#createBtn').html('add');
                   // location.reload();
@@ -224,9 +224,9 @@ export default {
               
             }else{
               if(self.cityHolder !== null && self.cityHolder.length !== 0){
-                alert('City Category Name cannot be Empty')
+                alert('Please enter City Group name.')
               }else{
-                alert('Atleast one city need to be in a Category ')
+                alert('Atleast one city is required to create a City Group! ')
               }
               
             }
