@@ -23,7 +23,7 @@
                 </ul>
           </div>
         <div style='display:flex' class='w60 p-15-top pa-lr'>
-          <div id='createSpace' v-show='createShow' class='w70 p10-20'>
+          <div id='createSpace' v-show='createShow' class='w70 p10-20' style='margin-bottom:100px;'>
               <div class='form-group'>
                 <label>Group Name<sup class='b6'>*</sup></label><br>
                 <input class='form-control input-sm cus' type='text' name='cityCategory' value="" v-model='cityCategoryHolder'/>
@@ -44,7 +44,7 @@
                 </div>
               </div>
           </div>
-          <div id='viewSpace' v-show='viewShow' class='w70 p10-20'>
+          <div id='viewSpace' v-show='viewShow' class='w70 p10-20' style='margin-bottom:100px;'>
               <div class='form-group'>
                 <div class='b6 f16 mb20'>{{cityCategoryHolder}}</div>
               </div>
@@ -103,7 +103,7 @@ export default {
           SearchString: ""
       }
   },
-  
+
   created(){
      var self = this;
   

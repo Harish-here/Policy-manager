@@ -61,7 +61,7 @@
                                         Save
                                         <!-- <i v-if='disableSave' class="fa fa-spinner fa-spin" aria-hidden="true"></i> -->
                                     </button>
-                                    <button class='btn btn-danger btn-xs' @click="deleteBundle(policyBundleId)" :disabled='disableSave'>
+                                    <button v-if='isDefault === "0"' class='btn btn-danger btn-xs' @click="deleteBundle(policyBundleId)" :disabled='disableSave'>
                                         <i class="fa fa-trash" aria-hidden="true"></i>
                                         Delete
                                     </button>
@@ -329,7 +329,7 @@
     </div>
     <!-- City Group -->
     <div class='fl w80 overflow-y-auto' style="height:100%" v-if='showCity'>
-        <Add/>
+        <Add />
     </div>
     
 
@@ -420,6 +420,14 @@ export default {
          .find(x => x.benefitTypeId.value == '3')
          .cityCatAndAllowances
          .map(y => y.value)
+      },
+      isDefault(){
+          const self = this;
+          if(this.activeListId !== "" && this.MainList.length > 0){
+              return this.MainList.find(x => x.value == self.activeListId)["defaul"];
+          }else{
+              return "0"
+          }
       }
   },
   
@@ -513,7 +521,7 @@ export default {
           self.showDetails = true;
       },
 
-      getPolicyBundle : function(id,type){
+      getPolicyBundle: function(id,type){
             const self = this;
             self.activeTab = "Accomodation";
             self.activeListId = id;
